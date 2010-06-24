@@ -1,0 +1,5 @@
+# Obviously, don't add built program.
+build/
+# Don't track the examples, either. They don't need version control.
+# (They also can include built wads, which would be bad.)
+example/

@@ -1,0 +1,33 @@
+cmake_minimum_required(VERSION 2.6)
+
+project(DH-dlc)
+
+if(CMAKE_HOST_WIN32)
+	set(PATH_SEP "'\\\\'" CACHE INTERNAL "PATH_SEP" FORCE)
+else()
+	set(PATH_SEP "'/'" CACHE INTERNAL "PATH_SEP" FORCE)
+endif()
+
+if(CMAKE_HOST_APPLE)
+	add_definitions(-DTARGET_OS_APPLE)
+endif()
+
+if(CMAKE_HOST_UNIX)
+	add_definitions(-DTARGET_OS_UNIX)
+endif()
+
+if(CMAKE_HOST_WIN32)
+	add_definitions(-DTARGET_OS_WIN32)
+endif()
+
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+	add_definitions(-Wall)
+endif()
+
+
+add_subdirectory(DH-dlc)
+add_subdirectory(DH-wad)
+
+
+
