@@ -361,9 +361,9 @@ int main(int argc, char** argv)
 		fileTEXTMAP << "// Compiled by DH-dlc.\n\n";
 
 		// TODO make a command for this
-		if (global_object->hasObject("namespace"))
+		if (global_object->hasObject(name_t("namespace")))
 		{
-			obj_t namespaceObj = global_object->getObject("namespace");
+			obj_t namespaceObj = global_object->getObject(name_t("namespace"));
 
 			if (namespaceObj->getType() == type_name_string())
 				fileTEXTMAP << "namespace = " << namespaceObj->encode(false) << ";\n\n";

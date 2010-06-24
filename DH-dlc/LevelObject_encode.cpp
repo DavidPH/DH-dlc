@@ -19,6 +19,7 @@
 
 /*
 	2010/02/28 - Update for lo_type enum.
+	2010/06/24 - Update for explicit name_t constructors.
 */
 
 #include "LevelObject.hpp"
@@ -36,6 +37,77 @@
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"
 #include "types/string_t.hpp"
+
+
+
+static const name_t name_ambush          ("ambush");
+static const name_t name_angle           ("angle");
+static const name_t name_arg0            ("arg0");
+static const name_t name_arg1            ("arg1");
+static const name_t name_arg2            ("arg2");
+static const name_t name_arg3            ("arg3");
+static const name_t name_arg4            ("arg4");
+static const name_t name_blockfloaters   ("blockfloaters");
+static const name_t name_blocking        ("blocking");
+static const name_t name_blockmonsters   ("blockmonsters");
+static const name_t name_blocksound      ("blocksound");
+static const name_t name_checkswitchrange("checkswitchrange");
+static const name_t name_clipmidtex      ("clipmidtext");
+static const name_t name_coop            ("coop");
+static const name_t name_dm              ("dm");
+static const name_t name_dontdraw        ("dontdraw");
+static const name_t name_dontpegbottom   ("dontpegbottom");
+static const name_t name_dontpegtop      ("dontpegtop");
+static const name_t name_dormant         ("dormant");
+static const name_t name_firstsideonly   ("firstsideonly");
+static const name_t name_flags           ("flags");
+static const name_t name_flags2          ("flags2");
+static const name_t name_friend          ("friend");
+static const name_t name_height          ("height");
+static const name_t name_heightceiling   ("heightceiling");
+static const name_t name_heightfloor     ("heightfloor");
+static const name_t name_id              ("id");
+static const name_t name_impact          ("impact");
+static const name_t name_invisible       ("invisible");
+static const name_t name_jumpover        ("jumpover");
+static const name_t name_lightlevel      ("lightlevel");
+static const name_t name_mapped          ("mapped");
+static const name_t name_midtex3d        ("midtex3d");
+static const name_t name_missilecross    ("missilecross");
+static const name_t name_monstercross    ("monstercross");
+static const name_t name_monsteruse      ("monsteruse");
+static const name_t name_offsetx         ("offsetx");
+static const name_t name_offsety         ("offsety");
+static const name_t name_playercross     ("playercross");
+static const name_t name_playerpush      ("playerpush");
+static const name_t name_playeruse       ("playeruse");
+static const name_t name_repeatspecial   ("repeatspecial");
+static const name_t name_secret          ("secret");
+static const name_t name_sector          ("sector");
+static const name_t name_sideback        ("sideback");
+static const name_t name_sidefront       ("sidefront");
+static const name_t name_single          ("single");
+static const name_t name_skill1          ("skill1");
+static const name_t name_skill2          ("skill2");
+static const name_t name_skill3          ("skill3");
+static const name_t name_skill4          ("skill4");
+static const name_t name_skill5          ("skill5");
+static const name_t name_special         ("special");
+static const name_t name_standing        ("standing");
+static const name_t name_texturebottom   ("texturebottom");
+static const name_t name_textureceiling  ("textureceiling");
+static const name_t name_texturefloor    ("texturefloor");
+static const name_t name_texturemiddle   ("texturemiddle");
+static const name_t name_texturetop      ("texturetop");
+static const name_t name_translucent     ("translucent");
+static const name_t name_twosided        ("twosided");
+static const name_t name_type            ("type");
+static const name_t name_v1              ("v1");
+static const name_t name_v2              ("v2");
+static const name_t name_wrapmidtex      ("wrapmidtext");
+static const name_t name_x               ("x");
+static const name_t name_y               ("y");
+static const name_t name_zoneboundry     ("zoneboundry");
 
 
 
@@ -204,74 +276,74 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 		{
 			binReturn.reserve(16);
 
-			binReturn += getObject("v1")->encode(BIN_OBJECT); // 0-1
-			binReturn += getObject("v2")->encode(BIN_OBJECT); // 2-3
+			binReturn += getObject(name_v1)->encode(BIN_OBJECT); // 0-1
+			binReturn += getObject(name_v2)->encode(BIN_OBJECT); // 2-3
 
 			// 4-5
-			if (hasObject("flags"))
-				binReturn += getObject("flags")->encode(USHORT);
+			if (hasObject(name_flags))
+				binReturn += getObject(name_flags)->encode(USHORT);
 			else
 			{
 				int flags = 0;
 
-				CHECKFLAG("blocking",      0x0001);
-				CHECKFLAG("blockmonsters", 0x0002);
-				CHECKFLAG("twosided",      0x0004);
-				CHECKFLAG("dontpegtop",    0x0008);
-				CHECKFLAG("dontpegbottom", 0x0010);
-				CHECKFLAG("secret",        0x0020);
-				CHECKFLAG("blocksound",    0x0040);
-				CHECKFLAG("dontdraw",      0x0080);
-				CHECKFLAG("mapped",        0x0100);
-				CHECKFLAG("repeatspecial", 0x0200);
-				CHECKFLAG("monsteruse",    0x2000);
-				CHECKFLAG("blocking",      0x4000);
+				CHECKFLAG(name_blocking,      0x0001);
+				CHECKFLAG(name_blockmonsters, 0x0002);
+				CHECKFLAG(name_twosided,      0x0004);
+				CHECKFLAG(name_dontpegtop,    0x0008);
+				CHECKFLAG(name_dontpegbottom, 0x0010);
+				CHECKFLAG(name_secret,        0x0020);
+				CHECKFLAG(name_blocksound,    0x0040);
+				CHECKFLAG(name_dontdraw,      0x0080);
+				CHECKFLAG(name_mapped,        0x0100);
+				CHECKFLAG(name_repeatspecial, 0x0200);
+				CHECKFLAG(name_monsteruse,    0x2000);
+				CHECKFLAG(name_blocking,      0x4000);
 
-				if (hasObject("playeruse") && to_bool(getObject("playeruse")))
-					if (hasObject("playercross") && to_bool(getObject("playercross")))
+				if (hasObject(name_playeruse) && to_bool(getObject(name_playeruse)))
+					if (hasObject(name_playercross) && to_bool(getObject(name_playercross)))
 						flags |= 0x1800;
 					else
 						flags |= 0x0400;
-				else if (hasObject("monstercross") && to_bool(getObject("monstercross")))
+				else if (hasObject(name_monstercross) && to_bool(getObject(name_monstercross)))
 					flags |= 0x0800;
-				else if (hasObject("impact") && to_bool(getObject("impact")))
+				else if (hasObject(name_impact) && to_bool(getObject(name_impact)))
 					flags |= 0x0C00;
-				else if (hasObject("playerpush") && to_bool(getObject("playerpush")))
+				else if (hasObject(name_playerpush) && to_bool(getObject(name_playerpush)))
 					flags |= 0x1000;
-				else if (hasObject("missilecross") && to_bool(getObject("missilecross")))
+				else if (hasObject(name_missilecross) && to_bool(getObject(name_missilecross)))
 					flags |= 0x1400;
 
 				binReturn += (flags     ) & 0xFF;
 				binReturn += (flags >> 8) & 0xFF;
 			}
 
-			CHECKVALUE("special",   UBYTE,      "\x00",     1); // 06
-			CHECKVALUE("arg0",      UBYTE,      "\x00",     1); // 07
-			CHECKVALUE("arg1",      UBYTE,      "\x00",     1); // 08
-			CHECKVALUE("arg2",      UBYTE,      "\x00",     1); // 09
-			CHECKVALUE("arg3",      UBYTE,      "\x00",     1); // 10
-			CHECKVALUE("arg4",      UBYTE,      "\x00",     1); // 11
-			CHECKVALUE("sidefront", BIN_OBJECT, "\xFF\xFF", 2); // 12-13
-			CHECKVALUE("sideback",  BIN_OBJECT, "\xFF\xFF", 2); // 14-15
+			CHECKVALUE(name_special,   UBYTE,      "\x00",     1); // 06
+			CHECKVALUE(name_arg0,      UBYTE,      "\x00",     1); // 07
+			CHECKVALUE(name_arg1,      UBYTE,      "\x00",     1); // 08
+			CHECKVALUE(name_arg2,      UBYTE,      "\x00",     1); // 09
+			CHECKVALUE(name_arg3,      UBYTE,      "\x00",     1); // 10
+			CHECKVALUE(name_arg4,      UBYTE,      "\x00",     1); // 11
+			CHECKVALUE(name_sidefront, BIN_OBJECT, "\xFF\xFF", 2); // 12-13
+			CHECKVALUE(name_sideback,  BIN_OBJECT, "\xFF\xFF", 2); // 14-15
 
 			int_s_t flags = 0;
-			if (hasObject("moreflags"))
-				flags = to_int_s(getObject("moreflags"));
+			if (hasObject(name_flags2))
+				flags = to_int_s(getObject(name_flags2));
 			else
 			{
-				CHECKFLAG("zoneboundry",      0x01);
-				CHECKFLAG("jumpover",         0x02);
-				CHECKFLAG("blockfloaters",    0x04);
-				CHECKFLAG("clipmidtex",       0x08);
-				CHECKFLAG("wrapmidtex",       0x10);
-				CHECKFLAG("midtex3d",         0x20);
-				CHECKFLAG("checkswitchrange", 0x40);
-				CHECKFLAG("firstsideonly",    0x80);
+				CHECKFLAG(name_zoneboundry,      0x01);
+				CHECKFLAG(name_jumpover,         0x02);
+				CHECKFLAG(name_blockfloaters,    0x04);
+				CHECKFLAG(name_clipmidtex,       0x08);
+				CHECKFLAG(name_wrapmidtex,       0x10);
+				CHECKFLAG(name_midtex3d,         0x20);
+				CHECKFLAG(name_checkswitchrange, 0x40);
+				CHECKFLAG(name_firstsideonly,    0x80);
 			}
 
 			int_s_t id = 0;
-			if (hasObject("id"))
-				id = to_int_s(getObject("id"));
+			if (hasObject(name_id))
+				id = to_int_s(getObject(name_id));
 
 			int flagArg = -1;
 			int id1Arg  = -1;
@@ -320,10 +392,10 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 			if (flagArg != -1)
 				binReturn[7+flagArg] = flags & 0xFF;
 
-			if (id1Arg != -1 && hasObject("id"))
+			if (id1Arg != -1 && hasObject(name_id))
 				binReturn[7+id1Arg] = id & 0xFF;
 
-			if (id2Arg != -1 && hasObject("id"))
+			if (id2Arg != -1 && hasObject(name_id))
 				binReturn[7+id2Arg] = (id >> 8) & 0xFF;
 
 			return binReturn;
@@ -332,34 +404,34 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 		{
 			binReturn.reserve(14);
 
-			binReturn += getObject("v1")->encode(BIN_OBJECT); // 0-1
-			binReturn += getObject("v2")->encode(BIN_OBJECT); // 2-3
+			binReturn += getObject(name_v1)->encode(BIN_OBJECT); // 0-1
+			binReturn += getObject(name_v2)->encode(BIN_OBJECT); // 2-3
 
 			// 4-5
-			if (hasObject("flags"))
-				binReturn += getObject("flags")->encode(USHORT);
+			if (hasObject(name_flags))
+				binReturn += getObject(name_flags)->encode(USHORT);
 			else
 			{
 				int flags = 0;
 
-				CHECKFLAG("blocking",      0x0001);
-				CHECKFLAG("blockmonsters", 0x0002);
-				CHECKFLAG("twosided",      0x0004);
-				CHECKFLAG("dontpegtop",    0x0008);
-				CHECKFLAG("dontpegbottom", 0x0010);
-				CHECKFLAG("secret",        0x0020);
-				CHECKFLAG("blocksound",    0x0040);
-				CHECKFLAG("dontdraw",      0x0080);
-				CHECKFLAG("mapped",        0x0100);
+				CHECKFLAG(name_blocking,      0x0001);
+				CHECKFLAG(name_blockmonsters, 0x0002);
+				CHECKFLAG(name_twosided,      0x0004);
+				CHECKFLAG(name_dontpegtop,    0x0008);
+				CHECKFLAG(name_dontpegbottom, 0x0010);
+				CHECKFLAG(name_secret,        0x0020);
+				CHECKFLAG(name_blocksound,    0x0040);
+				CHECKFLAG(name_dontdraw,      0x0080);
+				CHECKFLAG(name_mapped,        0x0100);
 
 				binReturn += (flags     ) & 0xFF;
 				binReturn += (flags >> 8) & 0xFF;
 			}
 
-			CHECKVALUE("id",        USHORT,     "\x00\x00", 2); // 06-07
-			CHECKVALUE("special",   USHORT,     "\x00\x00", 2); // 08-09
-			CHECKVALUE("sidefront", BIN_OBJECT, "\xFF\xFF", 2); // 10-11
-			CHECKVALUE("sideback",  BIN_OBJECT, "\xFF\xFF", 2); // 12-13
+			CHECKVALUE(name_id,        USHORT,     "\x00\x00", 2); // 06-07
+			CHECKVALUE(name_special,   USHORT,     "\x00\x00", 2); // 08-09
+			CHECKVALUE(name_sidefront, BIN_OBJECT, "\xFF\xFF", 2); // 10-11
+			CHECKVALUE(name_sideback,  BIN_OBJECT, "\xFF\xFF", 2); // 12-13
 
 			return binReturn;
 		}
@@ -369,13 +441,13 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 	{
 		binReturn.reserve(26);
 
-		CHECKVALUE("heightfloor",    SSHORT,     "\x00\x00",  2); // 00-01
-		CHECKVALUE("heightceiling",  SSHORT,     "\x00\x00",  2); // 02-03
-		CHECKVALUE("texturefloor",   BIN_STRING, NULL_STRING, 8); // 04-11
-		CHECKVALUE("textureceiling", BIN_STRING, NULL_STRING, 8); // 12-19
-		CHECKVALUE("lightlevel",     USHORT,     "\xA0\x00",  2); // 20-21
-		CHECKVALUE("special",        USHORT,     "\x00\x00",  2); // 22-23
-		CHECKVALUE("id",             USHORT,     "\x00\x00",  2); // 24-25
+		CHECKVALUE(name_heightfloor,    SSHORT,     "\x00\x00",  2); // 00-01
+		CHECKVALUE(name_heightceiling,  SSHORT,     "\x00\x00",  2); // 02-03
+		CHECKVALUE(name_texturefloor,   BIN_STRING, NULL_STRING, 8); // 04-11
+		CHECKVALUE(name_textureceiling, BIN_STRING, NULL_STRING, 8); // 12-19
+		CHECKVALUE(name_lightlevel,     USHORT,     "\xA0\x00",  2); // 20-21
+		CHECKVALUE(name_special,        USHORT,     "\x00\x00",  2); // 22-23
+		CHECKVALUE(name_id,             USHORT,     "\x00\x00",  2); // 24-25
 
 		return binReturn;
 	}
@@ -384,12 +456,12 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 	{
 		binReturn.reserve(30);
 
-		CHECKVALUE("offsetx",       SSHORT,     "\x00\x00",  2); // 00-01
-		CHECKVALUE("offsety",       SSHORT,     "\x00\x00",  2); // 02-03
-		CHECKVALUE("texturetop",    BIN_STRING, NULL_STRING, 8); // 04-11
-		CHECKVALUE("texturebottom", BIN_STRING, NULL_STRING, 8); // 12-19
-		CHECKVALUE("texturemiddle", BIN_STRING, NULL_STRING, 8); // 20-27
-		binReturn += getObject("sector")->encode(BIN_OBJECT);    // 28-29
+		CHECKVALUE(name_offsetx,       SSHORT,     "\x00\x00",  2); // 00-01
+		CHECKVALUE(name_offsety,       SSHORT,     "\x00\x00",  2); // 02-03
+		CHECKVALUE(name_texturetop,    BIN_STRING, NULL_STRING, 8); // 04-11
+		CHECKVALUE(name_texturebottom, BIN_STRING, NULL_STRING, 8); // 12-19
+		CHECKVALUE(name_texturemiddle, BIN_STRING, NULL_STRING, 8); // 20-27
+		binReturn += getObject(name_sector)->encode(BIN_OBJECT);    // 28-29
 
 		return binReturn;
 	}
@@ -400,45 +472,45 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 		{
 			binReturn.reserve(20);
 
-			CHECKVALUE("id",     USHORT, "\x00\x00", 2);    // 00-01
-			binReturn += getObject("x")->encode(SSHORT);    // 02-03
-			binReturn += getObject("y")->encode(SSHORT);    // 04-05
-			CHECKVALUE("height", USHORT, "\x00\x00", 2);    // 06-07
-			CHECKVALUE("angle",  USHORT, "\x00\x00", 2);    // 08-09
-			binReturn += getObject("type")->encode(SSHORT); // 10-11
+			CHECKVALUE(name_id,     USHORT, "\x00\x00", 2);    // 00-01
+			binReturn += getObject(name_x)->encode(SSHORT);    // 02-03
+			binReturn += getObject(name_y)->encode(SSHORT);    // 04-05
+			CHECKVALUE(name_height, USHORT, "\x00\x00", 2);    // 06-07
+			CHECKVALUE(name_angle,  USHORT, "\x00\x00", 2);    // 08-09
+			binReturn += getObject(name_type)->encode(SSHORT); // 10-11
 
 			// 12-13
-			if (hasObject("flags"))
-				binReturn += getObject("flags")->encode(USHORT);
+			if (hasObject(name_flags))
+				binReturn += getObject(name_flags)->encode(USHORT);
 			if (option_out_binary_hexen)
 			{
 				int flags = 0;
 
-				CHECKFLAG("skill1",      0x0001);
-				CHECKFLAG("skill2",      0x0001);
-				CHECKFLAG("skill3",      0x0002);
-				CHECKFLAG("skill4",      0x0004);
-				CHECKFLAG("skill5",      0x0004);
-				CHECKFLAG("ambush",      0x0008);
-				CHECKFLAG("dormant",     0x0010);
-				CHECKFLAG("single",      0x0100);
-				CHECKFLAG("coop",        0x0200);
-				CHECKFLAG("dm",          0x0400);
-				CHECKFLAG("translucent", 0x0800);
-				CHECKFLAG("invisible",   0x1000);
-				CHECKFLAG("friend",      0x2000);
-				CHECKFLAG("standing",    0x4000);
+				CHECKFLAG(name_skill1,      0x0001);
+				CHECKFLAG(name_skill2,      0x0001);
+				CHECKFLAG(name_skill3,      0x0002);
+				CHECKFLAG(name_skill4,      0x0004);
+				CHECKFLAG(name_skill5,      0x0004);
+				CHECKFLAG(name_ambush,      0x0008);
+				CHECKFLAG(name_dormant,     0x0010);
+				CHECKFLAG(name_single,      0x0100);
+				CHECKFLAG(name_coop,        0x0200);
+				CHECKFLAG(name_dm,          0x0400);
+				CHECKFLAG(name_translucent, 0x0800);
+				CHECKFLAG(name_invisible,   0x1000);
+				CHECKFLAG(name_friend,      0x2000);
+				CHECKFLAG(name_standing,    0x4000);
 
 				binReturn += (flags >> 8) & 0xFF;
 				binReturn += (flags     ) & 0xFF;
 			}
 
-			CHECKVALUE("special", UBYTE, "\x00", 1); // 14
-			CHECKVALUE("arg0",    UBYTE, "\x00", 1); // 15
-			CHECKVALUE("arg1",    UBYTE, "\x00", 1); // 16
-			CHECKVALUE("arg2",    UBYTE, "\x00", 1); // 17
-			CHECKVALUE("arg3",    UBYTE, "\x00", 1); // 18
-			CHECKVALUE("arg4",    UBYTE, "\x00", 1); // 19
+			CHECKVALUE(name_special, UBYTE, "\x00", 1); // 14
+			CHECKVALUE(name_arg0,    UBYTE, "\x00", 1); // 15
+			CHECKVALUE(name_arg1,    UBYTE, "\x00", 1); // 16
+			CHECKVALUE(name_arg2,    UBYTE, "\x00", 1); // 17
+			CHECKVALUE(name_arg3,    UBYTE, "\x00", 1); // 18
+			CHECKVALUE(name_arg4,    UBYTE, "\x00", 1); // 19
 
 			return binReturn;
 		}
@@ -446,29 +518,29 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 		{
 			binReturn.reserve(10);
 
-			binReturn += getObject("x")->encode(SSHORT);    // 0-1
-			binReturn += getObject("y")->encode(SSHORT);    // 2-3
-			CHECKVALUE("angle", USHORT, "\x00\x00", 2);     // 4-5
-			binReturn += getObject("type")->encode(SSHORT); // 6-7
+			binReturn += getObject(name_x)->encode(SSHORT);    // 0-1
+			binReturn += getObject(name_y)->encode(SSHORT);    // 2-3
+			CHECKVALUE(name_angle, USHORT, "\x00\x00", 2);     // 4-5
+			binReturn += getObject(name_type)->encode(SSHORT); // 6-7
 
 			// 8-9
-			if (hasObject("flags"))
-				binReturn += getObject("flags")->encode(USHORT);
+			if (hasObject(name_flags))
+				binReturn += getObject(name_flags)->encode(USHORT);
 			else if (option_out_binary_strife)
 			{
 				int flags = 0;
 
-				CHECKFLAG   ("skill1",      0x0001);
-				CHECKFLAG   ("skill2",      0x0001);
-				CHECKFLAG   ("skill3",      0x0002);
-				CHECKFLAG   ("skill4",      0x0004);
-				CHECKFLAG   ("skill5",      0x0004);
-				CHECKFLAG   ("standing",    0x0008);
-				CHECKFLAGNOT("single",      0x0010);
-				CHECKFLAG   ("ambush",      0x0020);
-				CHECKFLAG   ("friendly",    0x0040);
-				CHECKFLAG   ("translucent", 0x0100);
-				CHECKFLAG   ("invisible",   0x0200);
+				CHECKFLAG   (name_skill1,      0x0001);
+				CHECKFLAG   (name_skill2,      0x0001);
+				CHECKFLAG   (name_skill3,      0x0002);
+				CHECKFLAG   (name_skill4,      0x0004);
+				CHECKFLAG   (name_skill5,      0x0004);
+				CHECKFLAG   (name_standing,    0x0008);
+				CHECKFLAGNOT(name_single,      0x0010);
+				CHECKFLAG   (name_ambush,      0x0020);
+				CHECKFLAG   (name_friend,      0x0040);
+				CHECKFLAG   (name_translucent, 0x0100);
+				CHECKFLAG   (name_invisible,   0x0200);
 
 				binReturn += (flags >> 8) & 0xFF;
 				binReturn += (flags     ) & 0xFF;
@@ -477,16 +549,16 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 			{
 				int flags = 0;
 
-				CHECKFLAG   ("skill1",      0x0001);
-				CHECKFLAG   ("skill2",      0x0001);
-				CHECKFLAG   ("skill3",      0x0002);
-				CHECKFLAG   ("skill4",      0x0004);
-				CHECKFLAG   ("skill5",      0x0004);
-				CHECKFLAG   ("ambush",      0x0008);
-				CHECKFLAGNOT("single",      0x0010);
-				CHECKFLAGNOT("dm",          0x0020);
-				CHECKFLAGNOT("coop",        0x0040);
-				CHECKFLAG   ("friend",      0x0080);
+				CHECKFLAG   (name_skill1,      0x0001);
+				CHECKFLAG   (name_skill2,      0x0001);
+				CHECKFLAG   (name_skill3,      0x0002);
+				CHECKFLAG   (name_skill4,      0x0004);
+				CHECKFLAG   (name_skill5,      0x0004);
+				CHECKFLAG   (name_ambush,      0x0008);
+				CHECKFLAGNOT(name_single,      0x0010);
+				CHECKFLAGNOT(name_dm,          0x0020);
+				CHECKFLAGNOT(name_coop,        0x0040);
+				CHECKFLAG   (name_friend,      0x0080);
 
 				binReturn += (flags >> 8) & 0xFF;
 				binReturn += (flags     ) & 0xFF;
@@ -500,8 +572,8 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 	{
 		binReturn.reserve(4);
 
-		binReturn += getObject("x")->encode(SSHORT);
-		binReturn += getObject("y")->encode(SSHORT);
+		binReturn += getObject(name_x)->encode(SSHORT);
+		binReturn += getObject(name_y)->encode(SSHORT);
 
 		return binReturn;
 	}

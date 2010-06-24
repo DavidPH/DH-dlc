@@ -377,7 +377,7 @@ bool_t parse_bool(std::string const & value)
 	if (check_all<bool_t, parse_bool, to_bool, parse_bool_unary, parse_bool_unary, parse_bool_function>(&data))
 		return data.valueReturn;
 
-	return to_bool(get_object(value));
+	return to_bool(get_object(name_t(value)));
 }
 
 template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &), T (Tfunc)(std::string const &, std::vector<std::string> const &)>
@@ -410,7 +410,7 @@ static T parse_num_base(std::string const & value)
 	if (isdigit(value[0]))
 		return Tconv(string_t(value));
 
-	return Tconv(get_object(value));
+	return Tconv(get_object(name_t(value)));
 }
 
 int_s_t parse_int_s(std::string const & value)
@@ -453,10 +453,10 @@ string_t parse_string(std::string const & value)
 		return data.valueReturn;
 
 	// This is required to be able to parse UDMF.
-	if (!option_strict_strings && !has_object(value))
+	if (!option_strict_strings && !has_object(name_t(value)))
 		return string_t(value);
 
-	return to_string(get_object(value));
+	return to_string(get_object(name_t(value)));
 }
 
 
@@ -525,8 +525,8 @@ std::string parse_name(std::string const & value)
 
 obj_t parse_obj(std::string const & value, std::string const & type)
 {
-	if (has_object(value))
-		return get_object(value, type);
+	if (has_object(name_t(value)))
+		return get_object(name_t(value), type);
 
 	return get_object(parse_int_s(value), type);
 }

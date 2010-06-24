@@ -151,7 +151,7 @@ bool_t parse_bool_unary(std::string const & opString)
 bool_t parse_bool_unary(std::string const & opString, std::string const & value)
 {
 	if (opString == function_name_exists())
-		return has_object(value);
+		return has_object(name_t(value));
 
 	if (opString == function_name_not())
 		return !parse_bool(value);

@@ -106,7 +106,7 @@ void process_token(SourceToken st) throw(CompilerException)
 		}
 	}
 
-	global_object->addObject(st.getName(), st);
+	global_object->addObject(name_t(st.getName()), st);
 }
 
 

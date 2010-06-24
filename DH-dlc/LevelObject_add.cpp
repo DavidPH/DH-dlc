@@ -31,6 +31,7 @@
 	2010/02/16 - Remove addGlobal argument from addObject(name_t, obj_t,
 		bool).
 	2010/02/28 - Update for lo_type enum.
+	2010/06/24 - Update for explicit name_t constructors.
 */
 
 #include "LevelObject.hpp"
@@ -66,7 +67,7 @@ void LevelObject::addBase(std::string const & base)
 	if (this->data.getType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
 
-	obj_t other = get_object(base);
+	obj_t other = get_object(name_t(base));
 
 	if (other->data.getType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
@@ -91,7 +92,7 @@ void LevelObject::addData(std::string const & data, std::string const & name)
 		{
 			st.clear();
 			ss >> st;
-			this->addObject(st.getName(), st);
+			this->addObject(name_t(st.getName()), st);
 		}
 		catch (CompilerException& e)
 		{
@@ -125,7 +126,7 @@ bool LevelObject::addDataIf(std::string const & data, std::string const & value1
 	int cmpResult;
 
 	if (type.empty())
-		cmpResult = cmp( get_object(value1)->data, get_object(value2)->data );
+		cmpResult = cmp( get_object(name_t(value1))->data, get_object(name_t(value2))->data );
 
 	else if (type == type_name_bool())
 		cmpResult = cmp( parse_bool(value1), parse_bool(value2) );
@@ -257,15 +258,15 @@ bool LevelObject::addDataIf(std::string const & data, std::vector<std::string> c
 			case OP_EXISTS:
 
 			if (
-				(op_local ? hasObject(*it) : has_object(*it)) != op_not)
+				(op_local ? hasObject(name_t(*it)) : has_object(name_t(*it))) != op_not)
 				CHECK_RESULT
 
 			case OP_FALSE:
 
 			if (
 				(
-					!(op_local ? hasObject(*it) : has_object(*it)) ||
-					!to_bool(op_local ? getObject(*it) : get_object(*it))
+					!(op_local ? hasObject(name_t(*it)) : has_object(name_t(*it))) ||
+					!to_bool(op_local ? getObject(name_t(*it)) : get_object(name_t(*it)))
 				) != op_not
 			)
 				CHECK_RESULT
@@ -274,8 +275,8 @@ bool LevelObject::addDataIf(std::string const & data, std::vector<std::string> c
 
 			if (
 				(
-					(op_local ? hasObject(*it) : has_object(*it)) &&
-					to_bool(op_local ? getObject(*it) : get_object(*it))
+					(op_local ? hasObject(name_t(*it)) : has_object(name_t(*it))) &&
+					to_bool(op_local ? getObject(name_t(*it)) : get_object(name_t(*it)))
 				) != op_not
 			)
 				CHECK_RESULT
@@ -361,8 +362,8 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		// this DOES NOT prevent objects from being output
 		else if (commandName == command_name_delete() && this->data.getType() == any_t::OBJMAP_T)
 		{
-			if (this->hasObject(st.getBase(0)))
-				this->data.getObjMap().erase(st.getBase(0));
+			if (this->hasObject(name_t(st.getBase(0))))
+				this->data.getObjMap().erase(name_t(st.getBase(0)));
 
 			clean_objects();
 		}
@@ -441,7 +442,7 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 			if (forType.empty())
 				forType = type_name_int();
 
-			std::string forName  = st.getBase(0);
+			name_t      forName   (st.getBase(0));
 			std::string forStart = st.getBase(1);
 			std::string forStop  = st.getBase(2);
 			std::string forStep  = st.getBase(3, "1");
@@ -490,7 +491,7 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		// Used to return a value from a function.
 		else if (commandName == command_name_return() && this->data.getType() == any_t::OBJMAP_T)
 		{
-			this->data.getObjMap()[".return_value"] = LevelObject::create(make_string(this->data.getObjMap()[".return_type"]), st.getBase(0));
+			this->data.getObjMap()[name_t(".return_value")] = LevelObject::create(make_string(this->data.getObjMap()[name_t(".return_type")]), st.getBase(0));
 			this->isReturned = 1;
 		}
 
@@ -578,11 +579,11 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 	if (newType.empty())
 	{
 		if (!st.getBase(0).empty())
-			newType = get_object(st.getBase(0))->type;
+			newType = get_object(name_t(st.getBase(0)))->type;
 		else if (this->hasObject(name))
 			newType = this->getObject(name)->type;
-		else if (has_object(st.getValue()))
-			newType = get_object(st.getValue())->type;
+		else if (has_object(name_t(st.getValue())))
+			newType = get_object(name_t(st.getValue()))->type;
 		else
 			newType = get_default_type(name.getString(), this->type);
 	}

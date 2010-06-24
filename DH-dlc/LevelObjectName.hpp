@@ -22,7 +22,8 @@
 	str_t was used, but I'm changing that to try and make the code clearer.
 	(And avoid potential "double dipping" of parse_name calls.)
 
-	03/02/2010 - Original version.
+	2010/03/02 - Original version.
+	2010/06/24 - Make constructors explicit.
 */
 
 #ifndef LEVELOBJECTNAME_H
@@ -37,13 +38,13 @@
 class LevelObjectName
 {
 	public:
-		LevelObjectName(LevelObjectName const & other, size_t count = -1);
+		         LevelObjectName(LevelObjectName const & other, size_t count = -1);
 		/*
 			This constructor is for special use, and does NOT parse
 			the name. Does not even break up by '.'.
 		*/
-		LevelObjectName(char const * name);
-		LevelObjectName(std::string const & raw_name);
+		explicit LevelObjectName(char const * name);
+		explicit LevelObjectName(std::string const & raw_name);
 
 		bool empty() const;
 
@@ -71,7 +72,7 @@ class LevelObjectName
 		/*
 			Only for internal use. Does not initialize to anything.
 		*/
-		LevelObjectName();
+		explicit LevelObjectName();
 
 		std::vector<std::string> _name;
 };

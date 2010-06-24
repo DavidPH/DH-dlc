@@ -126,10 +126,10 @@ TYPE##_t parse_##TYPE##_function_distance(std::vector<std::string> const & args)
 		obj_t p1 = parse_obj(args[0], type_name_vertex()); \
 		obj_t p2 = parse_obj(args[1], type_name_vertex()); \
 		\
-		x1 = to_##TYPE(p1->getObject(key_name_x())); \
-		y1 = to_##TYPE(p1->getObject(key_name_y())); \
-		x2 = to_##TYPE(p2->getObject(key_name_x())); \
-		y2 = to_##TYPE(p2->getObject(key_name_y())); \
+		x1 = to_##TYPE(p1->getObject(name_t(key_name_x()))); \
+		y1 = to_##TYPE(p1->getObject(name_t(key_name_y()))); \
+		x2 = to_##TYPE(p2->getObject(name_t(key_name_x()))); \
+		y2 = to_##TYPE(p2->getObject(name_t(key_name_y()))); \
 	} \
 	else if (args.size() == 4) \
 	{ \
@@ -156,11 +156,11 @@ TYPE##_t parse_##TYPE##_function_facing(std::vector<std::string> const & args) \
 		obj_t p1 = parse_obj(args[0], type_name_vertex()); \
 		obj_t p2 = parse_obj(args[1], type_name_vertex()); \
 		\
-		x1 = to_##TYPE(p1->getObject(key_name_x())); \
-		x2 = to_##TYPE(p2->getObject(key_name_x())); \
+		x1 = to_##TYPE(p1->getObject(name_t(key_name_x()))); \
+		x2 = to_##TYPE(p2->getObject(name_t(key_name_x()))); \
 		\
-		y1 = to_##TYPE(p1->getObject(key_name_y())); \
-		y2 = to_##TYPE(p2->getObject(key_name_y())); \
+		y1 = to_##TYPE(p1->getObject(name_t(key_name_y()))); \
+		y2 = to_##TYPE(p2->getObject(name_t(key_name_y()))); \
 	} \
 	/* ([float] x1, [float] y1, [float] x2, [float] y2) */ \
 	else if (args.size() == 4) \
