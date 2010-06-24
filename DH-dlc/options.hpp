@@ -270,6 +270,7 @@ NAME_FUNC(type, vertex,  "VERTEX",  "VERTEX",  "vertex")
 // miscellaneous
 NAME_FUNC(misc, false,  "false",  "FALSE",  "false")
 NAME_FUNC(misc, global, "global", "GLOBAL", "global")
+NAME_FUNC(misc, this,   "this",   "THIS",   "this")
 NAME_FUNC(misc, true,   "true",   "TRUE",   "true")
 
 #undef NAME_FUNC

@@ -148,6 +148,9 @@ obj_t LevelObject::getObject(name_t const & name)
 		if (name.getString() == misc_name_global())
 			return global_object->getObject(name.getRest());
 
+		if (name.getString() == misc_name_this())
+			return this->getObject(name.getRest());
+
 		return this->getObject(name.getFirst())->getObject(name.getRest());
 	}
 
@@ -173,6 +176,9 @@ bool LevelObject::hasObject(name_t const & name)
 	{
 		if (name.getString() == misc_name_global())
 			return global_object->hasObject(name.getRest());
+
+		if (name.getString() == misc_name_this())
+			return this->hasObject(name.getRest());
 
 		if (!this->hasObject(name.getFirst()))
 			return false;
