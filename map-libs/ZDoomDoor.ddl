@@ -1,6 +1,6 @@
 // ZDoomDoor compound object
 
-# include : "std-zdoom.ddl";
+# include : "lib-udmf-zdoom.ddl";
 
 
 

@@ -3,7 +3,7 @@
 # include : "VertexCenter.ddl";
 # include : "VertexOffset.ddl";
 
-# include : "std-zdoom.ddl";
+# include : "lib-udmf-zdoom.ddl";
 
 
 
@@ -73,11 +73,6 @@ box = 6v, 7l
 The whole construct can be in any orientation, although because
 the angle of movement is a byte angle, certain angles will
 most likely cause bleeding.
-
-Note that bleeding may occur anyways. This is a long standing
-issue that I have yet to fix. I don't even know what the
-problem is, just that if it happens there seems to be no way to
-fix it. Perhaps it's a ZDoom bug... UPDATE: Pre-build BSP tree!
 
 */
 
