@@ -18,8 +18,9 @@
 */
 
 /*
-	03/02/2010 - Update for new process_options.h.
-	06/02/2010 - Added --debug-token option for debugging.
+	2010/02/03 - Update for new process_options.h.
+	2010/02/06 - Added --debug-token option for debugging.
+	2010/06/24 - Added option_lib_udmf_strict.
 */
 
 #define PROCESS_OPTION_USER_ERROR usage(); exit(2);
@@ -46,8 +47,9 @@ PROCESS_OPTION_DEFINE_bool(force_default_types, false)
 
 PROCESS_OPTION_DEFINE_bool(interactive, false)
 
-PROCESS_OPTION_DEFINE_bool(lib_std,  true)
-PROCESS_OPTION_DEFINE_bool(lib_udmf, false)
+PROCESS_OPTION_DEFINE_bool(lib_std,         true)
+PROCESS_OPTION_DEFINE_bool(lib_udmf,        true)
+PROCESS_OPTION_DEFINE_bool(lib_udmf_strict, false)
 
 PROCESS_OPTION_DEFINE_bool(out_any,            true)
 PROCESS_OPTION_DEFINE_bool(out_binary_doom,    false)
@@ -111,8 +113,9 @@ PROCESS_OPTION_LONG_DECLARE
 
 	PROCESS_OPTION_HANDLE_LONG_bool(interactive, "interactive", 12);
 
-	PROCESS_OPTION_HANDLE_LONG_bool(lib_std,  "std-lib",  3);
-	PROCESS_OPTION_HANDLE_LONG_bool(lib_udmf, "udmf-lib", 9);
+	PROCESS_OPTION_HANDLE_LONG_bool(lib_std,         "lib-std",          8);
+	PROCESS_OPTION_HANDLE_LONG_bool(lib_udmf,        "lib-udmf",         9);
+	PROCESS_OPTION_HANDLE_LONG_bool(lib_udmf_strict, "lib-udmf-strict", 16);
 
 	PROCESS_OPTION_HANDLE_LONG_bool(out_any,            "any-out",            8);
 	PROCESS_OPTION_HANDLE_LONG_bool(out_binary_doom,    "doom-binary-out",    4);

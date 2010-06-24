@@ -1,13 +1,4 @@
-// "Standard" definitions.
-
-# typedef new :       bool   : value;
-# typedef new : short float  : value;
-# typedef new :       float  : value;
-# typedef new : long  float  : value;
-# typedef new : short int    : value;
-# typedef new :       int    : value;
-# typedef new : long  int    : value;
-# typedef new :       string : value;
+// UDMF definitions.
 
 # typedef new : LINEDEF : object;
 # typedef new : SECTOR  : object;
@@ -23,8 +14,8 @@
 
 # default type : id : int : LINEDEF;
 
-# default type : v1 : VERTEX : LINEDEF;
-# default type : v2 : VERTEX : LINEDEF;
+# default type : v1 : int : LINEDEF;
+# default type : v2 : int : LINEDEF;
 
 # default type : blocking      : bool : LINEDEF;
 # default type : blockmonsters : bool : LINEDEF;
@@ -59,8 +50,8 @@
 # default type : arg3    : int : LINEDEF;
 # default type : arg4    : int : LINEDEF;
 
-# default type : sidefront : SIDEDEF : LINEDEF;
-# default type : sideback  : SIDEDEF : LINEDEF;
+# default type : sidefront : int : LINEDEF;
+# default type : sideback  : int : LINEDEF;
 
 # default type : comment : string : LINEDEF;
 
@@ -88,7 +79,7 @@
 # default type : texturebottom : string : SIDEDEF;
 # default type : texturemiddle : string : SIDEDEF;
 
-# default type : sector : SECTOR : SIDEDEF;
+# default type : sector : int : SIDEDEF;
 
 # default type : comment : string : SIDEDEF;
 

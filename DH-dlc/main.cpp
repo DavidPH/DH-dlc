@@ -104,8 +104,8 @@ void usage()
 		"In this last case, the source file is assumed to be the argument with the .ddl\n"
 		"  extension added.\n"
 		"\n"
-		"The Library options (*-lib) are mutually exclusive.\n"
-		"If more than one is selected, the first listed here is used.\n"
+		"The Library options (lib-*) are additive (except where noted).\n"
+		"lib-udmf-strict will replace lib-udmf if both are enabled.\n"
 		"\n"
 		"The Output options (*-out) are mutually exclusive.\n"
 		"If more than one is selected, the first listed here is used.\n"
@@ -129,8 +129,9 @@ void usage()
 		"      --script-acs     sets the output name for ACS scripts [default: SCRIPTS]\n"
 		"\n"
 		"Libraries:\n"
-		"      --do-udmf-lib  automatically include udmf.ddl\n"
-		"      --no-std-lib   do not automatically include std.ddl\n"
+		"      --no-lib-std          do not automatically include lib-std.ddl\n"
+		"      --no-lib-udmf         do not automatically include lib-udmf.ddl\n"
+		"      --do-lib-udmf-strict  automatically include lib-udmf-strict.ddl\n"
 		"\n"
 		"Input:\n"
 		"  -C, --no-case-sensitive  reads source files as case insensitive\n"
@@ -236,10 +237,13 @@ int main(int argc, char** argv)
 
 
 
-	if (option_lib_udmf)
-		process_file("udmf.ddl");
-	else if (option_lib_std)
-		process_file("std.ddl");
+	if (option_lib_std)
+		process_file("lib-std.ddl");
+
+	if (option_lib_udmf_strict)
+		process_file("lib-udmf-strict.ddl");
+	else if (option_lib_udmf)
+		process_file("lib-udmf.ddl");
 
 	FOREACH_T(std::vector<std::string>, it, option_arg)
 	{

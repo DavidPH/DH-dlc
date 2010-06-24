@@ -18,12 +18,14 @@
 */
 
 /*
-	03/02/2010 - Update for new process_options.h.
-	04/02/2010 - Added command_name_deletevolatile().
-	06/02/2010 - Added --debug-token option for debugging.
-	06/02/2010 - Added command_name_return().
-	15/02/2010 - Added command_name_break(), command_name_continue(),
+	2010/02/03 - Update for new process_options.h.
+	2010/02/04 - Added command_name_deletevolatile().
+	2010/02/06 - Added --debug-token option for debugging.
+	2010/02/06 - Added command_name_return().
+	2010/02/15 - Added command_name_break(), command_name_continue(),
 		command_name_for(), and command_name_do().
+	2010/06/24 - Added several type_*().
+	2010/06/24 - Added option_lib_udmf_strict.
 */
 
 #ifndef OPTIONS_H
@@ -46,6 +48,7 @@ PROCESS_OPTION_EXTERN_bool(interactive);
 
 PROCESS_OPTION_EXTERN_bool(lib_std);
 PROCESS_OPTION_EXTERN_bool(lib_udmf);
+PROCESS_OPTION_EXTERN_bool(lib_udmf_strict);
 
 PROCESS_OPTION_EXTERN_bool(out_any);
 PROCESS_OPTION_EXTERN_bool(out_binary_doom);

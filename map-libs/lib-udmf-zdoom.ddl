@@ -1,4 +1,4 @@
-// ZDoom specific fields.
+// UDMF ZDoom added definitions.
 
 
 
