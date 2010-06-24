@@ -32,35 +32,50 @@
 #include "../common/string_funcs.hpp"
 #include "exceptions/FunctionException.hpp"
 #include "exceptions/UnknownFunctionException.hpp"
+#include "types/binary.hpp"
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"
 #include "types/string_t.hpp"
 
 
 
-typedef bool_t   (*bool_func_t)   (std::vector<std::string> const &);
+typedef bool_t    (*bool_func_t)    (std::vector<std::string> const &);
 
-typedef int_s_t  (*int_s_func_t)  (std::vector<std::string> const &);
-typedef int_t    (*int_func_t)    (std::vector<std::string> const &);
-typedef int_l_t  (*int_l_func_t)  (std::vector<std::string> const &);
+typedef int_s_t   (*int_s_func_t)   (std::vector<std::string> const &);
+typedef int_t     (*int_func_t)     (std::vector<std::string> const &);
+typedef int_l_t   (*int_l_func_t)   (std::vector<std::string> const &);
 
-typedef real_s_t (*real_s_func_t) (std::vector<std::string> const &);
-typedef real_t   (*real_func_t)   (std::vector<std::string> const &);
-typedef real_l_t (*real_l_func_t) (std::vector<std::string> const &);
+typedef real_s_t  (*real_s_func_t)  (std::vector<std::string> const &);
+typedef real_t    (*real_func_t)    (std::vector<std::string> const &);
+typedef real_l_t  (*real_l_func_t)  (std::vector<std::string> const &);
 
-typedef string_t (*string_func_t) (std::vector<std::string> const &);
+typedef string_t  (*string_func_t)  (std::vector<std::string> const &);
+typedef string8_t (*string8_func_t) (std::vector<std::string> const &);
 
-std::map<std::string, bool_func_t> bool_func_map;
+typedef sword_t   (*sword_func_t)   (std::vector<std::string> const &);
 
-std::map<std::string, int_s_func_t> int_s_func_map;
-std::map<std::string, int_func_t>   int_func_map;
-std::map<std::string, int_l_func_t> int_l_func_map;
+typedef ubyte_t   (*ubyte_func_t)   (std::vector<std::string> const &);
 
-std::map<std::string, real_s_func_t> real_s_func_map;
-std::map<std::string, real_func_t>   real_func_map;
-std::map<std::string, real_l_func_t> real_l_func_map;
+typedef uword_t   (*uword_func_t)   (std::vector<std::string> const &);
 
-std::map<std::string, string_func_t> string_func_map;
+std::map<std::string, bool_func_t>    bool_func_map;
+
+std::map<std::string, int_s_func_t>   int_s_func_map;
+std::map<std::string, int_func_t>     int_func_map;
+std::map<std::string, int_l_func_t>   int_l_func_map;
+
+std::map<std::string, real_s_func_t>  real_s_func_map;
+std::map<std::string, real_func_t>    real_func_map;
+std::map<std::string, real_l_func_t>  real_l_func_map;
+
+std::map<std::string, string_func_t>  string_func_map;
+std::map<std::string, string8_func_t> string8_func_map;
+
+std::map<std::string, sword_func_t>   sword_func_map;
+
+std::map<std::string, ubyte_func_t>   ubyte_func_map;
+
+std::map<std::string, uword_func_t>   uword_func_map;
 
 
 
@@ -290,6 +305,13 @@ PARSE_FUNCTION(real);
 PARSE_FUNCTION(real_l);
 
 PARSE_FUNCTION(string);
+PARSE_FUNCTION(string8);
+
+PARSE_FUNCTION(sword);
+
+PARSE_FUNCTION(ubyte);
+
+PARSE_FUNCTION(uword);
 
 
 

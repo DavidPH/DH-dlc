@@ -39,6 +39,7 @@
 #include "exceptions/FunctionException.hpp"
 #include "exceptions/InvalidTypeException.hpp"
 #include "exceptions/ParsingException.hpp"
+#include "types/binary.hpp"
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"
 #include "types/string_t.hpp"
@@ -220,6 +221,11 @@ template <class T, T (Tparse)(std::string const &)>
 static bool check_math(ParsingData<string_t> * data)
 {
 	return check_math_string<string_t, parse_string>(data);
+}
+template <class T, T (Tparse)(std::string const &)>
+static bool check_math(ParsingData<string8_t> * data)
+{
+	return check_math_string<string8_t, parse_string8>(data);
 }
 
 template <class T, T (Tconv)(any_t const &)>
@@ -439,24 +445,49 @@ real_l_t parse_real_l(std::string const & value)
 	return parse_num_base<real_l_t, parse_real_l, to_real_l, parse_real_l_unary, parse_real_l_unary, parse_real_l_function>(value);
 }
 
-string_t parse_string(std::string const & value)
+template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &), T (Tfunc)(std::string const &, std::vector<std::string> const &)>
+static T parse_string_base(std::string const & value)
 {
 	if (value.empty())
-		return string_t(value);
+		return T(value);
 
 	if (value[0] == '$')
-		return string_t(value.substr(1));
+		return T(value.substr(1));
 
-	ParsingData<string_t> data(value);
+	ParsingData<T> data(value);
 
-	if (check_all<string_t, parse_string, to_string, parse_string_unary, parse_string_unary, parse_string_function>(&data))
+	if (check_all<T, Tparse, Tconv, Tconst, Tunary, Tfunc>(&data))
 		return data.valueReturn;
 
 	// This is required to be able to parse UDMF.
 	if (!option_strict_strings && !has_object(name_t(value)))
-		return string_t(value);
+		return T(value);
 
-	return to_string(get_object(name_t(value)));
+	return Tconv(get_object(name_t(value)));
+}
+
+string_t parse_string(std::string const & value)
+{
+	return parse_string_base<string_t, parse_string, to_string, parse_string_unary, parse_string_unary, parse_string_function>(value);
+}
+string8_t parse_string8(std::string const & value)
+{
+	return parse_string_base<string8_t, parse_string8, to_string8, parse_string8_unary, parse_string8_unary, parse_string8_function>(value);
+}
+
+sword_t parse_sword(std::string const & value)
+{
+	return parse_num_base<sword_t, parse_sword, to_sword, parse_sword_unary, parse_sword_unary, parse_sword_function>(value);
+}
+
+ubyte_t parse_ubyte(std::string const & value)
+{
+	return parse_num_base<ubyte_t, parse_ubyte, to_ubyte, parse_ubyte_unary, parse_ubyte_unary, parse_ubyte_function>(value);
+}
+
+uword_t parse_uword(std::string const & value)
+{
+	return parse_num_base<uword_t, parse_uword, to_uword, parse_uword_unary, parse_uword_unary, parse_uword_function>(value);
 }
 
 

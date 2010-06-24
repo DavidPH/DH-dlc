@@ -28,6 +28,7 @@
 #include "types.hpp"
 #include "../common/string_funcs.hpp"
 #include "exceptions/UnknownFunctionException.hpp"
+#include "types/binary.hpp"
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"
 #include "types/string_t.hpp"
@@ -307,6 +308,58 @@ string_t parse_string_unary(std::string const & opString, std::string const & va
 
 	throw UnknownFunctionException("["+opString+"]");
 }
+
+string8_t parse_string8_unary(std::string const & opString)
+{
+	if (opString == function_name_mapname())
+		return string8_t(option_map_name);
+
+	throw UnknownFunctionException("["+opString+"]");
+}
+string8_t parse_string8_unary(std::string const & opString, std::string const & value)
+{
+	if (opString == function_name_lower())
+		return string8_t(tolower(value));
+
+	if (opString == function_name_upper())
+		return string8_t(toupper(value));
+
+	throw UnknownFunctionException("["+opString+"]");
+}
+
+sword_t parse_sword_unary(std::string const & opString)
+{
+	CONST_common_int(sword);
+
+	throw UnknownFunctionException("["+opString+"]");
+}
+sword_t parse_sword_unary(std::string const & opString, std::string const & value)
+{
+	throw UnknownFunctionException("["+opString+"]");
+}
+
+ubyte_t parse_ubyte_unary(std::string const & opString)
+{
+	CONST_common_int(ubyte);
+
+	throw UnknownFunctionException("["+opString+"]");
+}
+ubyte_t parse_ubyte_unary(std::string const & opString, std::string const & value)
+{
+	throw UnknownFunctionException("["+opString+"]");
+}
+
+uword_t parse_uword_unary(std::string const & opString)
+{
+	CONST_common_int(uword);
+
+	throw UnknownFunctionException("["+opString+"]");
+}
+uword_t parse_uword_unary(std::string const & opString, std::string const & value)
+{
+	throw UnknownFunctionException("["+opString+"]");
+}
+
 
 
 

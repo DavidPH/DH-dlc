@@ -49,6 +49,7 @@
 #include "exceptions/InvalidTypeException.hpp"
 #include "exceptions/NoSuchElementException.hpp"
 #include "exceptions/UnknownCommandException.hpp"
+#include "types/binary.hpp"
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"
 #include "types/string_t.hpp"
@@ -73,6 +74,13 @@ LevelObject::LevelObject(std::string const & type) : LevelObject_INIT_LIST(type,
 	else if (type == type_name_longfloat())  data = real_l_t(0);
 
 	else if (type == type_name_string())     data = string_t("");
+	else if (type == type_name_string8())    data = string8_t("");
+
+	else if (type == type_name_sword())      data = sword_t(0);
+
+	else if (type == type_name_ubyte())      data = ubyte_t(0);
+
+	else if (type == type_name_uword())      data = uword_t(0);
 
 	else                                     data = objmap_t();
 }
@@ -89,6 +97,13 @@ LevelObject::LevelObject(std::string const & type, std::string const & value) : 
 	else if (type == type_name_longfloat())  data = parse_real_l(value);
 
 	else if (type == type_name_string())     data = parse_string(value);
+	else if (type == type_name_string8())    data = parse_string8(value);
+
+	else if (type == type_name_sword())      data = parse_sword(value);
+
+	else if (type == type_name_ubyte())      data = parse_ubyte(value);
+
+	else if (type == type_name_uword())      data = parse_uword(value);
 
 	else                                     data = objmap_t();
 }

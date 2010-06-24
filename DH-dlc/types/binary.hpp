@@ -47,6 +47,7 @@ class string8_t
 		explicit string8_t();
 		         string8_t(string8_t const &);
 		explicit string8_t(char const *);
+		explicit string8_t(std::string const &);
 
 		void clear();
 

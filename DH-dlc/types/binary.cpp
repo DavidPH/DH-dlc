@@ -42,6 +42,14 @@ string8_t::string8_t(char const * value)
 	for (size_t index = 0; value[index] && index < 8; ++index)
 		_data[index] = value[index];
 }
+string8_t::string8_t(std::string const & value)
+{
+	// In case value is less than eight characters.
+	clear();
+
+	for (size_t index = 0; index < value.size() && index < 8; ++index)
+		_data[index] = value[index];
+}
 
 void string8_t::clear()
 {

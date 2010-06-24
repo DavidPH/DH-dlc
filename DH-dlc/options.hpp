@@ -259,6 +259,10 @@ NAME_FUNC(type, short,      "short",      "SHORT",      "short")
 NAME_FUNC(type, shortfloat, "shortfloat", "SHORTFLOAT", "shortfloat")
 NAME_FUNC(type, shortint,   "shortint",   "SHORTINT",   "shortint")
 NAME_FUNC(type, string,     "string",     "STRING",     "string")
+NAME_FUNC(type, string8,    "string8",    "STRING8",    "string8")
+NAME_FUNC(type, sword,      "sword",      "SWORD",      "sword")
+NAME_FUNC(type, ubyte,      "ubyte",      "UBYTE",      "ubyte")
+NAME_FUNC(type, uword,      "uword",      "UWORD",      "uword")
 
 // internal object types
 NAME_FUNC(type, linedef, "LINEDEF", "LINEDEF", "linedef")
