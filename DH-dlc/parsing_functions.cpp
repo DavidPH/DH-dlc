@@ -205,11 +205,7 @@ DEFINE_FUNCTION(distance)
 
 	return hypot(x1 - x2, y1 - y2);
 }
-// TODO: Add hypot for binary ints so this can be ADD_FUNC_NUMBER.
-ADD_FUNCTION(int_s, distance, "distance");
-ADD_FUNCTION(int,   distance, "distance");
-ADD_FUNCTION(int_l, distance, "distance");
-ADD_FUNC_REAL(distance, "distance");
+ADD_FUNC_NUMBER(distance, "distance");
 
 DEFINE_FUNCTION(facing)
 {
@@ -273,11 +269,7 @@ DEFINE_FUNCTION(hypot)
 
 	return hypot(Tparse(args[0]), Tparse(args[1]));
 }
-// TODO: Add hypot for binary ints so this can be ADD_FUNC_NUMBER.
-ADD_FUNCTION(int_s, hypot, "hypot");
-ADD_FUNCTION(int,   hypot, "hypot");
-ADD_FUNCTION(int_l, hypot, "hypot");
-ADD_FUNC_REAL(hypot, "hypot");
+ADD_FUNC_NUMBER(hypot, "hypot");
 
 #define FUNCTION_RANDOM(TYPE) \
 TYPE##_t parse_##TYPE##_function_random(std::vector<std::string> const & args) \

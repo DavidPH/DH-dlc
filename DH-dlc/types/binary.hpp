@@ -28,11 +28,14 @@
 	member function. And...
 
 	2010/05/09 - Original version.
+	2010/06/24 - Added abs, sqrt, and hypot for the numeric classes so that
+		they can be treated like the other int classes.
 */
 
 #ifndef TYPES__BINARY_H
 #define TYPES__BINARY_H
 
+#include <cmath>
 #include <ostream>
 #include <string>
 
@@ -167,11 +170,17 @@ class uword_t
 
 
 sword_t abs(sword_t const &);
+ubyte_t abs(ubyte_t const &);
+uword_t abs(uword_t const &);
 
 int cmp(string8_t const &, string8_t const &);
 int cmp(sword_t   const &, sword_t   const &);
 int cmp(ubyte_t   const &, ubyte_t   const &);
 int cmp(uword_t   const &, uword_t   const &);
+
+sword_t hypot(sword_t const &, sword_t const &);
+ubyte_t hypot(ubyte_t const &, ubyte_t const &);
+uword_t hypot(uword_t const &, uword_t const &);
 
 bool operator == (string8_t const &, string8_t const &);
 bool operator == (sword_t   const &, sword_t   const &);
@@ -237,7 +246,19 @@ std::ostream& operator << (std::ostream &, sword_t   const &);
 std::ostream& operator << (std::ostream &, ubyte_t   const &);
 std::ostream& operator << (std::ostream &, uword_t   const &);
 
+sword_t sqrt(sword_t const &);
+ubyte_t sqrt(ubyte_t const &);
+uword_t sqrt(uword_t const &);
 
+
+
+inline sword_t abs(sword_t const & i) {return (i < sword_t(0)) ? (i * sword_t(-1)) : (i);}
+inline ubyte_t abs(ubyte_t const & i) {return i;}
+inline uword_t abs(uword_t const & i) {return i;}
+
+inline sword_t hypot(sword_t const & l, sword_t const & r) {return sqrt((l * l) + (r * r));}
+inline ubyte_t hypot(ubyte_t const & l, ubyte_t const & r) {return sqrt((l * l) + (r * r));}
+inline uword_t hypot(uword_t const & l, uword_t const & r) {return sqrt((l * l) + (r * r));}
 
 inline bool operator == (string8_t const & l, string8_t const & r) {return cmp(l, r) == 0;}
 inline bool operator == (sword_t   const & l, sword_t   const & r) {return cmp(l, r) == 0;}
@@ -297,6 +318,10 @@ inline uword_t   operator + (uword_t   const & l, uword_t   const & r) {return u
 inline sword_t   operator - (sword_t   const & l, sword_t   const & r) {return sword_t  (l) -= r;}
 inline ubyte_t   operator - (ubyte_t   const & l, ubyte_t   const & r) {return ubyte_t  (l) -= r;}
 inline uword_t   operator - (uword_t   const & l, uword_t   const & r) {return uword_t  (l) -= r;}
+
+inline sword_t sqrt(sword_t const & i) {return sword_t(sqrt(i.makeInt()));}
+inline ubyte_t sqrt(ubyte_t const & i) {return ubyte_t(sqrt(i.makeInt()));}
+inline uword_t sqrt(uword_t const & i) {return uword_t(sqrt(i.makeInt()));}
 
 
 

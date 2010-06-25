@@ -162,8 +162,6 @@ int cmp(uword_t const & l, uword_t const & r)
 	return 0;
 }
 
-
-
 std::ostream & operator << (std::ostream & out, string8_t const & in)
 {
 	for (size_t index = 0; index < 8; ++index)
