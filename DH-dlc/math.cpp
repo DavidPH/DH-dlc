@@ -20,6 +20,7 @@
 /*
 	2010/02/14 - get_z_range is 0..max-1, not 0..max. Oops.
 	2010/02/14 - Made generating the seed independant of the size of long.
+	2010/06/24 - Added binary type RNGs.
 */
 
 #include "math.hpp"
@@ -31,6 +32,7 @@
 
 #include "options.hpp"
 #include "types.hpp"
+#include "types/binary.hpp"
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"
 #include "types/string_t.hpp"
@@ -256,6 +258,33 @@ int_l_t random_int_l(const int_l_t& max)
 int_l_t random_int_l(const int_l_t& min, const int_l_t& max)
 {
 	return random_int_l(max-min) + min;
+}
+
+sword_t random_sword(const sword_t& max)
+{
+	return to_sword(random_int_l(to_int_l(max)));
+}
+sword_t random_sword(const sword_t& min, const sword_t& max)
+{
+	return to_sword(random_int_l(to_int_l(min), to_int_l(max)));
+}
+
+ubyte_t random_ubyte(const ubyte_t& max)
+{
+	return to_ubyte(random_int_l(to_int_l(max)));
+}
+ubyte_t random_ubyte(const ubyte_t& min, const ubyte_t& max)
+{
+	return to_ubyte(random_int_l(to_int_l(min), to_int_l(max)));
+}
+
+uword_t random_uword(const uword_t& max)
+{
+	return to_uword(random_int_l(to_int_l(max)));
+}
+uword_t random_uword(const uword_t& min, const uword_t& max)
+{
+	return to_uword(random_int_l(to_int_l(min), to_int_l(max)));
 }
 
 

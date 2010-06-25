@@ -18,7 +18,7 @@
 */
 
 /*
-
+	2010/06/24 - Added binary type RNGs.
 */
 
 #ifndef LO_MATH_H
@@ -61,6 +61,15 @@ int_t   random_int(const int_t&);
 int_t   random_int(const int_t&, const int_t&);
 int_l_t random_int_l(const int_l_t&);
 int_l_t random_int_l(const int_l_t&, const int_l_t&);
+
+sword_t random_sword(const sword_t&);
+sword_t random_sword(const sword_t&, const sword_t&);
+
+ubyte_t random_ubyte(const ubyte_t&);
+ubyte_t random_ubyte(const ubyte_t&, const ubyte_t&);
+
+uword_t random_uword(const uword_t&);
+uword_t random_uword(const uword_t&, const uword_t&);
 
 
 

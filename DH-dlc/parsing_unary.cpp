@@ -335,6 +335,8 @@ sword_t parse_sword_unary(std::string const & opString)
 }
 sword_t parse_sword_unary(std::string const & opString, std::string const & value)
 {
+	UNARY_common_int(sword);
+
 	throw UnknownFunctionException("["+opString+"]");
 }
 
@@ -346,6 +348,8 @@ ubyte_t parse_ubyte_unary(std::string const & opString)
 }
 ubyte_t parse_ubyte_unary(std::string const & opString, std::string const & value)
 {
+	UNARY_common_int(ubyte);
+
 	throw UnknownFunctionException("["+opString+"]");
 }
 
@@ -357,6 +361,8 @@ uword_t parse_uword_unary(std::string const & opString)
 }
 uword_t parse_uword_unary(std::string const & opString, std::string const & value)
 {
+	UNARY_common_int(uword);
+
 	throw UnknownFunctionException("["+opString+"]");
 }
 
