@@ -1,5 +1,5 @@
 /*
-    Copyright 2009 David Hill
+    Copyright 2009, 2010 David Hill
 
     This file is part of DH-wad.
 
@@ -17,6 +17,11 @@
     along with DH-wad.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+	2010/06/24 - Altered interface to allow using different file name and
+		lump name.
+*/
+
 #include <fstream>
 #include <string>
 
@@ -25,23 +30,44 @@
 
 
 
-bool process_file(const std::string& dirname, const std::string& filename, bool addEmpty)
+bool process_file(std::string const & nameDir, std::string const & nameFile, std::string const & nameLump_, bool addAlways)
 {
-	std::ifstream lumpStream((dirname + filename).c_str(), std::ios_base::in | std::ios_base::binary | std::ios_base::ate);
+	std::string nameLump;
 
-	if (!lumpStream)
+	if (nameLump_.empty())
 	{
-		if (addEmpty)
+		// Strips file extension.
+		nameLump = nameFile.substr(0, nameFile.find_first_of('.'));
+	}
+	else
+	{
+		nameLump = nameLump_;
+	}
+
+	if (nameFile.empty())
+	{
+		if (addAlways)
 		{
-			lump_list.push_back(Lump("", filename));
+			lump_list.push_back(Lump("", nameLump));
 			return true;
 		}
 
 		return false;
 	}
 
-	// Strips file extension.
-	std::string lumpName = filename.substr(0, filename.find_first_of('.'));
+
+	std::ifstream lumpStream((nameDir + nameFile).c_str(), std::ios_base::in | std::ios_base::binary | std::ios_base::ate);
+
+	if (!lumpStream)
+	{
+		if (addAlways)
+		{
+			lump_list.push_back(Lump("", nameLump));
+			return true;
+		}
+
+		return false;
+	}
 
 	size_t lumpSize = lumpStream.tellg();
 	lumpStream.seekg(0);
@@ -53,7 +79,7 @@ bool process_file(const std::string& dirname, const std::string& filename, bool 
 	while (lumpStream.get(lumpChar))
 		lumpData += lumpChar;
 
-	lump_list.push_back(Lump(lumpData, lumpName));
+	lump_list.push_back(Lump(lumpData, nameLump));
 
 	lumpStream.close();
 

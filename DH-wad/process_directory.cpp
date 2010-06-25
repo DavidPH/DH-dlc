@@ -69,7 +69,7 @@ void process_directory(std::string const & dirName, bool primeDir)
 		}
 		else
 		{
-			process_file(dirName, fileName);
+			process_file(dirName, fileName, fileName);
 		}
 	}
 	while (FindNextFile(findResult, &findData) != 0);
@@ -104,7 +104,7 @@ void process_directory(std::string const & dirName, bool primeDir)
 		}
 		else if (nextDir->d_type == DT_REG)
 		{
-			process_file(dirName, fileName);
+			process_file(dirName, fileName, fileName);
 		}
 		else
 		{

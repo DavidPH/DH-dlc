@@ -18,7 +18,8 @@
 */
 
 /*
-	03/02/2010 - Update for new process_options.h.
+	2010/02/03 - Update for new process_options.h.
+	2010/06/24 - Added option_explicit.
 */
 
 #include <cstdlib>
@@ -32,7 +33,8 @@
 
 
 
-PROCESS_OPTION_DEFINE_bool(iwad, false)
+PROCESS_OPTION_DEFINE_bool(explicit, false)
+PROCESS_OPTION_DEFINE_bool(iwad,     false)
 
 PROCESS_OPTION_DEFINE_string(output, "")
 
@@ -55,7 +57,8 @@ PROCESS_OPTION_LONG_DECLARE
 		exit(0);
 	}
 
-	PROCESS_OPTION_HANDLE_LONG_bool(iwad, "iwad", 3);
+	PROCESS_OPTION_HANDLE_LONG_bool(explicit, "explicit", 8);
+	PROCESS_OPTION_HANDLE_LONG_bool(iwad,     "iwad",     4);
 
 	PROCESS_OPTION_HANDLE_LONG_string(output, "output", 3);
 
@@ -72,6 +75,8 @@ PROCESS_OPTION_SHORT_DECLARE
 		usage();
 		exit(0);
 	}
+
+	PROCESS_OPTION_HANDLE_SHORT_bool(explicit, 'e');
 
 	PROCESS_OPTION_HANDLE_SHORT_string(output, 'o');
 

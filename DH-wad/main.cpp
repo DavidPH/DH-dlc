@@ -31,6 +31,7 @@
 #include "main.hpp"
 #include "options.hpp"
 #include "process_directory.hpp"
+#include "process_file.hpp"
 #include "process_map.hpp"
 #include "../common/foreach.hpp"
 
@@ -79,6 +80,7 @@ void usage()
 		"      --version  displays version and exits\n"
 		"\n"
 		"  -d, --directory  processes the specified directory\n"
+		"  -e, --explicit   processes arguments as an explicit list of files\n"
 		"      --iwad       outputs an IWAD instead of a PWAD\n"
 		"  -m, --map        processes the specified directory as a map\n"
 		"  -o, --output     sets the output directory\n"
@@ -130,47 +132,60 @@ int main(int argc, char** argv)
 		}
 	}
 
-	FOREACH_T(string_multi_opt_t, it, option_arg)
+	if (option_explicit)
 	{
-		if (it->empty()) continue;
-
-		if ((*it)[it->size()-1] != PATHSEP)
-			(*it) += PATHSEP;
-
-		process_directory(it->c_str());
-	}
-
-	FOREACH_T(string_multi_opt_t, it, option_directory)
-	{
-		if (it->empty()) continue;
-
-		if ((*it)[it->size()-1] != PATHSEP)
-			(*it) += PATHSEP;
-
-		process_directory(it->c_str(), false);
-	}
-
-	FOREACH_T(string_multi_opt_t, it, option_map)
-	{
-		if (it->empty()) continue;
-
-		// Actually needs to NOT have the trailing path seperator...
-		if ((*it)[it->size()-1] == PATHSEP)
-			(*it) = it->substr(0, it->size()-1);
-
-		std::string base;
-		std::string name(*it);
-
-		size_t lastSep = it->find_last_of(PATHSEP);
-
-		if (lastSep != std::string::npos)
+		for (size_t index = 0; index+1 < option_arg.size(); ++index)
 		{
-			// Must include the seperator.
-			base = it->substr(0, lastSep+1);
-			name = it->substr(lastSep+1);
+			std::string const & nameFile = option_arg[index+0];
+			std::string const & nameLump = option_arg[index+1];
+
+			process_file("./", nameFile, nameLump, true);
+		}
+	}
+	else
+	{
+		FOREACH_T(string_multi_opt_t, it, option_arg)
+		{
+			if (it->empty()) continue;
+
+			if ((*it)[it->size()-1] != PATHSEP)
+				(*it) += PATHSEP;
+
+			process_directory(it->c_str());
 		}
 
-		process_map(base.c_str(), name.c_str());
+		FOREACH_T(string_multi_opt_t, it, option_directory)
+		{
+			if (it->empty()) continue;
+
+			if ((*it)[it->size()-1] != PATHSEP)
+				(*it) += PATHSEP;
+
+			process_directory(it->c_str(), false);
+		}
+
+		FOREACH_T(string_multi_opt_t, it, option_map)
+		{
+			if (it->empty()) continue;
+
+			// Actually needs to NOT have the trailing path seperator...
+			if ((*it)[it->size()-1] == PATHSEP)
+				(*it) = it->substr(0, it->size()-1);
+
+			std::string base;
+			std::string name(*it);
+
+			size_t lastSep = it->find_last_of(PATHSEP);
+
+			if (lastSep != std::string::npos)
+			{
+				// Must include the seperator.
+				base = it->substr(0, lastSep+1);
+				name = it->substr(lastSep+1);
+			}
+
+			process_map(base.c_str(), name.c_str());
+		}
 	}
 
 	std::ofstream fileWAD(option_output.c_str(), std::ios_base::out | std::ios_base::binary);

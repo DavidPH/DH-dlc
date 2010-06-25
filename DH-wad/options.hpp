@@ -18,7 +18,8 @@
 */
 
 /*
-	03/02/2010 - Update for new process_options.h.
+	2010/02/03 - Update for new process_options.h.
+	2010/06/24 - Added option_explicit.
 */
 
 
@@ -30,6 +31,7 @@
 
 
 
+PROCESS_OPTION_EXTERN_bool(explicit);
 PROCESS_OPTION_EXTERN_bool(iwad);
 
 PROCESS_OPTION_EXTERN_string(output);

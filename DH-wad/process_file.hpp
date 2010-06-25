@@ -1,5 +1,5 @@
 /*
-    Copyright 2009 David Hill
+    Copyright 2009, 2010 David Hill
 
     This file is part of DH-wad.
 
@@ -17,6 +17,11 @@
     along with DH-wad.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+	2010/06/24 - Altered interface to allow using different file name and
+		lump name.
+*/
+
 #ifndef PROCESS_FILE_H
 #define PROCESS_FILE_H
 
@@ -24,8 +29,15 @@
 
 
 
-// Returns true if lump added, else false.
-bool process_file(const std::string&, const std::string&, bool=false);
+/*
+	Returns true if lump added, else false.
+
+	If nameFile is empty and addAlways is true, add an empty lump by
+	nameLump.
+
+	If nameLump is empty, use nameFile.
+*/
+bool process_file(std::string const & nameDir, std::string const & nameFile, std::string const & nameLump, bool addAlways = false);
 
 
 

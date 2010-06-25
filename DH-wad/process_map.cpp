@@ -1,5 +1,5 @@
 /*
-    Copyright 2009 David Hill
+    Copyright 2009, 2010 David Hill
 
     This file is part of DH-wad.
 
@@ -17,28 +17,32 @@
     along with DH-wad.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+
+*/
+
 #include "process_directory.hpp"
 #include "process_file.hpp"
 #include "process_map.hpp"
 
 
 
-#define PROCESS_SPECIAL(TAG, NAME)						\
-if (lumpName == #TAG || lumpName == #TAG "_START" || lumpName == NAME)		\
-{										\
-										\
-	if (!process_file(dirnameBase + dirname + '/', #TAG "_START.txt"))	\
-	if (!process_file(dirnameBase + dirname + '/', #TAG "_START.lmp"))	\
-	process_file(dirnameBase + dirname + '/', #TAG "_START", true);		\
-										\
-	process_directory(dirnameBase + dirname + '/', false);			\
-										\
-	if (!process_file(dirnameBase + dirname + '/', #TAG "_END.txt"))	\
-	if (!process_file(dirnameBase + dirname + '/', #TAG "_END.lmp"))	\
-	process_file(dirnameBase + dirname + '/', #TAG "_END", true);		\
-										\
-	return;									\
-}										\
+#define PROCESS_SPECIAL(TAG, NAME) \
+if (lumpName == #TAG || lumpName == #TAG "_START" || lumpName == NAME) \
+{ \
+	\
+	if (!process_file(dirnameBase + dirname + '/', #TAG "_START.txt", "")) \
+	if (!process_file(dirnameBase + dirname + '/', #TAG "_START.lmp", "")) \
+	process_file(dirnameBase + dirname + '/', #TAG "_START", "", true); \
+	\
+	process_directory(dirnameBase + dirname + '/', false); \
+	\
+	if (!process_file(dirnameBase + dirname + '/', #TAG "_END.txt", "")) \
+	if (!process_file(dirnameBase + dirname + '/', #TAG "_END.lmp", "")) \
+	process_file(dirnameBase + dirname + '/', #TAG "_END", "", true); \
+	\
+	return; \
+} \
 else (void) 0
 
 
@@ -80,16 +84,16 @@ void process_map(const std::string& dirnameBase, const std::string& dirname)
 	PROCESS_SPECIAL(SS, "sprites");
 	PROCESS_SPECIAL(TX, "textures");
 
-	if (!process_file(dirnameBase + dirname + '/', lumpName+".txt"))
-		if (!process_file(dirnameBase + dirname + '/', lumpName+".lmp"))
-			process_file(dirnameBase + dirname + '/', lumpName, true);
+	if (!process_file(dirnameBase + dirname + '/', lumpName+".txt", ""))
+		if (!process_file(dirnameBase + dirname + '/', lumpName+".lmp", ""))
+			process_file(dirnameBase + dirname + '/', lumpName, "", true);
 
 	for (int index = 0; mapLumps[index] != NULL; ++index)
-		process_file(dirnameBase + dirname + '/', mapLumps[index]);
+		process_file(dirnameBase + dirname + '/', mapLumps[index], "");
 
-	if (!process_file(dirnameBase + dirname + '/', "ENDMAP.txt"))
-		if (!process_file(dirnameBase + dirname + '/', "ENDMAP.lmp"))
-			process_file(dirnameBase + dirname + '/', "ENDMAP", true);
+	if (!process_file(dirnameBase + dirname + '/', "ENDMAP.txt", ""))
+		if (!process_file(dirnameBase + dirname + '/', "ENDMAP.lmp", ""))
+			process_file(dirnameBase + dirname + '/', "ENDMAP", "", true);
 }
 
 
