@@ -211,6 +211,12 @@ The following command line options are worth noting:
 		without checking for special sub-directories. Multiple uses are
 		cumulative.
 
+	--explicit Uses args as pairs of strings indicating filename-lumpname.
+		If lumpname is empty, use filename. If filename is empty, add
+		empty lump. Everything added by --directory and --map is
+		ignored. It is strongly suggested that --output be used when
+		using this option.
+
 	--iwad Outputs an IWAD instead of a PWAD.
 
 	--map DIR Adds DIR as if it were a map/special directory. Multiple uses
