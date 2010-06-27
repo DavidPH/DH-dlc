@@ -28,6 +28,7 @@
 #include <climits>
 #include <cmath>
 #include <cstdlib>
+#include <ctime>
 #include <fstream>
 
 #include "options.hpp"
