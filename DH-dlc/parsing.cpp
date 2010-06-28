@@ -432,6 +432,14 @@ int_l_t parse_int_l(std::string const & value)
 	return parse_num_base<int_l_t, parse_int_l, to_int_l, parse_int_l_unary, parse_int_l_unary, parse_int_l_function>(value);
 }
 
+obj_t parse_obj(std::string const & value, std::string const & type)
+{
+	if (has_object(name_t(value)))
+		return get_object(name_t(value), type);
+
+	return get_object(parse_int_s(value), type);
+}
+
 real_s_t parse_real_s(std::string const & value)
 {
 	return parse_num_base<real_s_t, parse_real_s, to_real_s, parse_real_s_unary, parse_real_s_unary, parse_real_s_function>(value);
@@ -488,78 +496,6 @@ ubyte_t parse_ubyte(std::string const & value)
 uword_t parse_uword(std::string const & value)
 {
 	return parse_num_base<uword_t, parse_uword, to_uword, parse_uword_unary, parse_uword_unary, parse_uword_function>(value);
-}
-
-
-
-std::string parse_name(std::string const & value)
-{
-	if (value.empty())
-		return value;
-
-	// .*\[.*\] is an index, but \[.*\] is a unary function
-	if (*value.rbegin() == ']' && *value.begin() != '[')
-	{
-		int bracketCount = 0;
-
-		for (size_t index = value.size()-1; ; --index)
-		{
-			char indexChar = value[index];
-
-			     if (indexChar == '[') ++bracketCount;
-			else if (indexChar == ']') --bracketCount;
-
-			if (bracketCount == 0)
-			{
-				std::string valueBase(value, 0, index);
-				std::string valueRest(value, index+1, (value.size() - (index+1)) - 1);
-
-				return valueBase + make_string(parse_int_l(valueRest));
-			}
-
-			if (index == 0) break;
-		}
-
-		if (bracketCount != 0)
-			throw ParsingException("unbalanced brackets:" + value);
-	}
-
-	// .*<.*> is an index, but <.*> is an invalid function.
-	if (*value.rbegin() == '>' && *value.begin() != '<')
-	{
-		int bracketCount = 0;
-
-		for (size_t index = value.size()-1; ; --index)
-		{
-			char indexChar = value[index];
-
-			     if (indexChar == '<') ++bracketCount;
-			else if (indexChar == '>') --bracketCount;
-
-			if (bracketCount == 0)
-			{
-				std::string valueBase(value, 0, index);
-				std::string valueRest(value, index+1, (value.size() - (index+1)) - 1);
-
-				return valueBase + parse_string(valueRest).makeString();
-			}
-
-			if (index == 0) break;
-		}
-
-		if (bracketCount != 0)
-			throw ParsingException("unbalanced brackets:" + value);
-	}
-
-	return value;
-}
-
-obj_t parse_obj(std::string const & value, std::string const & type)
-{
-	if (has_object(name_t(value)))
-		return get_object(name_t(value), type);
-
-	return get_object(parse_int_s(value), type);
 }
 
 

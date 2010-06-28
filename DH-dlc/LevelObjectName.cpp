@@ -25,6 +25,11 @@
 
 #include "parsing.hpp"
 #include "../common/foreach.hpp"
+#include "exceptions/ParsingException.hpp"
+#include "types/int_t.hpp"
+#include "types/string_t.hpp"
+
+static std::string parse_name(std::string const & value);
 
 
 
@@ -143,6 +148,68 @@ std::ostream & operator << (std::ostream & out, LevelObjectName const & in)
 		out << '.' << in._name[index];
 
 	return out;
+}
+
+static std::string parse_name(std::string const & value)
+{
+	if (value.empty())
+		return value;
+
+	// .*\[.*\] is an index, but \[.*\] is a unary function
+	if (*value.rbegin() == ']' && *value.begin() != '[')
+	{
+		int bracketCount = 0;
+
+		for (size_t index = value.size()-1; ; --index)
+		{
+			char indexChar = value[index];
+
+			     if (indexChar == '[') ++bracketCount;
+			else if (indexChar == ']') --bracketCount;
+
+			if (bracketCount == 0)
+			{
+				std::string valueBase(value, 0, index);
+				std::string valueRest(value, index+1, (value.size() - (index+1)) - 1);
+
+				return valueBase + make_string(parse_int_l(valueRest));
+			}
+
+			if (index == 0) break;
+		}
+
+		if (bracketCount != 0)
+			throw ParsingException("unbalanced brackets:" + value);
+	}
+
+	// .*<.*> is an index, but <.*> is an invalid function.
+	if (*value.rbegin() == '>' && *value.begin() != '<')
+	{
+		int bracketCount = 0;
+
+		for (size_t index = value.size()-1; ; --index)
+		{
+			char indexChar = value[index];
+
+			     if (indexChar == '<') ++bracketCount;
+			else if (indexChar == '>') --bracketCount;
+
+			if (bracketCount == 0)
+			{
+				std::string valueBase(value, 0, index);
+				std::string valueRest(value, index+1, (value.size() - (index+1)) - 1);
+
+				return valueBase + parse_string(valueRest).makeString();
+			}
+
+			if (index == 0) break;
+		}
+
+		if (bracketCount != 0)
+			throw ParsingException("unbalanced brackets:" + value);
+	}
+
+	return value;
 }
 
 
