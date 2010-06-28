@@ -103,8 +103,8 @@ parsing_FunctionAdder_##TYPE##_##FUNC##_##NAME \
 
 #define ADD_FUNCTION2(TYPE1, TYPE2, FUNC, NAME) \
 static parsing_FunctionAdder<TYPE1##_func_t> \
-parsing_FunctionAdder_##TYPE1##_##TYPE2##__##FUNC \
-(TYPE1##_func_map, NAME, &parse_function_##FUNC<TYPE2##_t, to_##TYPE2, parse_##TYPE2>)
+parsing_FunctionAdder_##TYPE1##_##TYPE2##_##FUNC##_##NAME \
+(TYPE1##_func_map, #NAME, &parse_function_##FUNC<TYPE2##_t, to_##TYPE2, parse_##TYPE2>)
 
 #define ADD_FUNCTION(TYPE, FUNC, NAME) \
 ADD_FUNCTION2(TYPE, TYPE, FUNC, NAME)
@@ -154,8 +154,8 @@ DEFINE_FUNCTION(cmp)
 
 	return Tconv(int_s_t( cmp(Tparse(args[0]), Tparse(args[1])) ));
 }
-ADD_FUNC_NUMBER(cmp, "cmp");
-ADD_FUNC_STRING(cmp, "cmp");
+ADD_FUNC_NUMBER(cmp, cmp);
+ADD_FUNC_STRING(cmp, cmp);
 
 DEFINE_FUNCTION2(bool_t, bcmp)
 {
@@ -173,13 +173,14 @@ DEFINE_FUNCTION2(bool_t, bcmp)
 
 	throw FunctionException("unknown cmp:" + args[1]);
 }
-ADD_FUNCTION2(bool, int_s,  bcmp, "cmpis");
-ADD_FUNCTION2(bool, int,    bcmp, "cmpi");
-ADD_FUNCTION2(bool, int_l,  bcmp, "cmpil");
-ADD_FUNCTION2(bool, real_s, bcmp, "cmpfs");
-ADD_FUNCTION2(bool, real,   bcmp, "cmpf");
-ADD_FUNCTION2(bool, real_l, bcmp, "cmpfl");
-ADD_FUNCTION2(bool, string, bcmp, "cmps");
+ADD_FUNCTION2(bool, int_s,  bcmp, cmpis);
+ADD_FUNCTION2(bool, int,    bcmp, cmpi);
+ADD_FUNCTION2(bool, int_l,  bcmp, cmpil);
+ADD_FUNCTION2(bool, real_s, bcmp, cmpfs);
+ADD_FUNCTION2(bool, real,   bcmp, cmpf);
+ADD_FUNCTION2(bool, real_l, bcmp, cmpfl);
+ADD_FUNCTION2(bool, real_l, bcmp, cmp);
+ADD_FUNCTION2(bool, string, bcmp, cmps);
 
 DEFINE_FUNCTION(distance)
 {
@@ -207,7 +208,7 @@ DEFINE_FUNCTION(distance)
 
 	return hypot(x1 - x2, y1 - y2);
 }
-ADD_FUNC_NUMBER(distance, "distance");
+ADD_FUNC_NUMBER(distance, distance);
 
 DEFINE_FUNCTION(facing)
 {
@@ -262,7 +263,7 @@ DEFINE_FUNCTION(facing)
 	else
 		return angle3 + T(270);
 }
-ADD_FUNC_REAL(facing, "facing");
+ADD_FUNC_REAL(facing, facing);
 
 DEFINE_FUNCTION(hypot)
 {
@@ -271,7 +272,7 @@ DEFINE_FUNCTION(hypot)
 
 	return hypot(Tparse(args[0]), Tparse(args[1]));
 }
-ADD_FUNC_NUMBER(hypot, "hypot");
+ADD_FUNC_NUMBER(hypot, hypot);
 
 #define FUNCTION_RANDOM(TYPE) \
 TYPE##_t parse_##TYPE##_function_random(std::vector<std::string> const & args) \
@@ -341,7 +342,7 @@ T parse__function(std::string const & opString, std::vector<std::string> const &
 		{
 			obj_t argObj = LevelObject::create(type_name_string(), "$"+args[index]);
 
-			name_t argName(std::string(key_name_arg()) + make_string(index))
+			name_t argName(std::string(key_name_arg()) + make_string(index));
 
 			funcObj->addObject(argName, argObj);
 		}
