@@ -39,6 +39,8 @@
 
 
 
+static std::map< std::string, std::map<std::string, std::string> > custom_function_map;
+
 typedef bool_t    (*bool_func_t)    (std::vector<std::string> const &);
 
 typedef int_s_t   (*int_s_func_t)   (std::vector<std::string> const &);
@@ -292,36 +294,89 @@ FUNCTION_RANDOM(uword);
 
 
 
+void add_function(std::string const & type, std::string const & name, std::string const & data)
+{
+	custom_function_map[type][name] = data;
+}
 
-#define PARSE_FUNCTION(TYPE) \
-TYPE##_t parse_##TYPE##_function(std::string const & opString, std::vector<std::string> const & args) \
-{ \
-	TYPE##_func_t func = TYPE##_func_map[opString]; \
-	\
-	if (func != NULL) return (*func)(args); \
-	\
-	throw UnknownFunctionException(opString); \
+std::string const & get_function(std::string const & type, std::string const & name)
+{
+	return custom_function_map[type][name];
+}
+
+bool has_function(std::string const & type, std::string const & name)
+{
+	std::map< std::string, std::map<std::string, std::string> >::iterator itType = custom_function_map.find(type);
+
+	if (itType == custom_function_map.end()) return false;
+
+	std::map<std::string, std::string>::iterator itName = itType->second.find(name);
+
+	if (itName == itType->second.end()) return false;
+
+	return true;
 }
 
 
-PARSE_FUNCTION(bool);
 
-PARSE_FUNCTION(int_s);
-PARSE_FUNCTION(int);
-PARSE_FUNCTION(int_l);
+#define PARSE_FUNCTION(TYPE, TYPE_NAME) \
+TYPE##_t parse_##TYPE##_function(std::string const & opString, std::vector<std::string> const & args) \
+{ \
+	return parse__function<TYPE##_t, TYPE##_func_t, to_##TYPE>(opString, args, TYPE##_func_map, TYPE_NAME); \
+}
+template <class T, class Tfunc, T(Tconv)(any_t const &)>
+T parse__function(std::string const & opString, std::vector<std::string> const & args, std::map<std::string, Tfunc> & TfuncMap, char const * Tname)
+{
+	if (has_function(Tname, opString))
+	{
+		obj_t funcObj = LevelObject::create();
 
-PARSE_FUNCTION(real_s);
-PARSE_FUNCTION(real);
-PARSE_FUNCTION(real_l);
+		obj_t returnType = LevelObject::create(type_name_string(), "$"+std::string(Tname));
+		funcObj->addObject(name_t(".return_type"), returnType);
 
-PARSE_FUNCTION(string);
-PARSE_FUNCTION(string8);
+		obj_t argcObj = LevelObject::create(type_name_shortint(), make_string(args.size()));
+		funcObj->addObject(name_t(key_name_argc()), argcObj);
 
-PARSE_FUNCTION(sword);
+		for (int_s_t index = 0; (size_t)index < args.size(); ++index)
+		{
+			obj_t argObj = LevelObject::create(type_name_string(), "$"+args[index]);
 
-PARSE_FUNCTION(ubyte);
+			name_t argName(std::string(key_name_arg()) + make_string(index))
 
-PARSE_FUNCTION(uword);
+			funcObj->addObject(argName, argObj);
+		}
+
+		funcObj->addData(get_function(Tname, opString));
+
+		obj_t returnValue = funcObj->getObject(name_t(".return_value"));
+		return Tconv(returnValue);
+	}
+
+	Tfunc func = TfuncMap[opString];
+
+	if (func != NULL) return (*func)(args);
+
+	throw UnknownFunctionException(opString);
+}
+
+PARSE_FUNCTION(bool, type_name_bool());
+
+PARSE_FUNCTION(int_s, type_name_shortint());
+PARSE_FUNCTION(int,   type_name_int());
+PARSE_FUNCTION(int_l, type_name_longint());
+
+PARSE_FUNCTION(real_s, type_name_shortfloat());
+PARSE_FUNCTION(real,   type_name_float());
+PARSE_FUNCTION(real_l, type_name_longfloat());
+
+PARSE_FUNCTION(string,  type_name_string());
+PARSE_FUNCTION(string8, type_name_string8());
+
+PARSE_FUNCTION(sword, type_name_sword());
+
+PARSE_FUNCTION(ubyte, type_name_ubyte());
+
+PARSE_FUNCTION(uword, type_name_uword());
 
 
 

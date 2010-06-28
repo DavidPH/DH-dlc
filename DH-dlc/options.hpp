@@ -179,6 +179,7 @@ NAME_FUNC(command, else,           "#else",           "#ELSE",           "#else"
 NAME_FUNC(command, elseifcmp,      "#elseifcmp",      "#ELSEIFCMP",      "#elseifcmp")
 NAME_FUNC(command, elseif,         "#elseif",         "#ELSEIF",         "#elseif")
 NAME_FUNC(command, error,          "#error",          "#ERROR",          "#error")
+NAME_FUNC(command, function,       "#function",       "#FUNCTION",       "#function")
 NAME_FUNC(command, for,            "#for",            "#FOR",            "#for")
 NAME_FUNC(command, ifcmp,          "#ifcmp",          "#IFCMP",          "#ifcmp")
 NAME_FUNC(command, if,             "#if",             "#IF",             "#if")
@@ -248,8 +249,10 @@ NAME_FUNC(iftype, not,    "not",    "NOT",    "not")
 NAME_FUNC(iftype, true,   "true",   "TRUE",   "true")
 
 // internal key names
-NAME_FUNC(key, x, "x", "X", "x")
-NAME_FUNC(key, y, "y", "Y", "y")
+NAME_FUNC(key, arg,  "arg",  "ARG",  "arg")
+NAME_FUNC(key, argc, "argc", "ARGC", "argc")
+NAME_FUNC(key, x,    "x",    "X",    "x")
+NAME_FUNC(key, y,    "y",    "Y",    "y")
 
 // internal value types
 NAME_FUNC(type, bool,       "bool",       "BOOL",       "bool")

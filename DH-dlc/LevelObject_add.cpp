@@ -491,8 +491,10 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		// Used to return a value from a function.
 		else if (commandName == command_name_return() && this->data.getType() == any_t::OBJMAP_T)
 		{
-			this->data.getObjMap()[name_t(".return_value")] = LevelObject::create(make_string(this->data.getObjMap()[name_t(".return_type")]), st.getBase(0));
-			this->isReturned = 1;
+			obj_t returnType  = getObject(name_t(".return_type"));
+			obj_t returnValue = create(to_string(returnType).makeString(), st.getBase(0));
+			addObject(name_t(".return_value"), returnValue);
+			isReturned = 1;
 		}
 
 		// # script : FILENAME { data }

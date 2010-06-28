@@ -31,6 +31,10 @@
 
 
 
+void add_function(std::string const & type, std::string const & name, std::string const & data);
+std::string const & get_function(std::string const & type, std::string const & name);
+bool has_function(std::string const & type, std::string const & name);
+
 std::vector<std::string> parse_args(std::string const &);
 
 bool_t parse_bool(std::string const &);

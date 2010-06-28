@@ -131,6 +131,12 @@ Examples:
 Defines a compound object. When compounding as TYPE, data is added to the
 compounded object. See Compound Objects.
 
+[RETURN TYPE] # function : NAME {DATA}
+Defines a custom function that is invoked like a normal function. Arguments can
+be accessed by arg0, arg1, arg2, etc. The number of args is stored in argc. The
+command #return is used to return a value. If the function ends without
+returning a value, the result is undefined.
+
 # include : FILENAME;
 Processes the indicated file. If file is not found, then directories indicated
 by --include are checked, followed by those in the environment variable
@@ -211,7 +217,7 @@ Implementation NOTE: #else can be used anywhere, including consecutively. It
 Works based on the last #if command. If multiple #else commands are used, every
 other one is added, effectively reversing the last #if result each time.
 
-Looping commands:
+Flow control commands:
 
 # break;
 Terminates the current (innermost) loop.
@@ -233,6 +239,10 @@ step defaults to 1. If a type is used with the command, the iterator will be
 that type.
 
 If #continue is used in a for loop, the iterator is still incremented.
+
+# return : value;
+Returns a value from a function. The return type is determined by the function.
+If not called from a function, the result is undefined.
 
 # while : value {data}
 Command loops until value evaluates to false, adding data each loop. If value
