@@ -8,11 +8,11 @@
 		x, y: Center of circle.
 
 	Output variables:
-		v[steps]: Array of VERTEXes in a circle starting with 0 and
-			ending with steps-1.
+		v[steps+1]: Array of VERTEXes in a circle starting with 0 and
+			ending with steps. v[steps] is v[0].
 */
 
-# include : "VertexOffset.ddl"
+# include : "VertexOffset.ddl";
 
 # typedef new : VertexCircle : compound object;
 
@@ -44,6 +44,8 @@
 			d = radius;
 		}
 	}
+
+	[VERTEX] v[steps] = v[0];
 }
 
 
