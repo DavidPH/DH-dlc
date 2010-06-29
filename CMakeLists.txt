@@ -4,7 +4,7 @@ project(DH-dlc)
 
 
 
-if(CMAKE_SYSTEM_NAME EQUAL "Windows")
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	add_definitions(-DTARGET_OS_WIN32)
 	set(PATH_SEP "'\\\\'" CACHE INTERNAL "PATH_SEP" FORCE)
 else()
