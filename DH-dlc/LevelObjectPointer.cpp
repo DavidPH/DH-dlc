@@ -20,102 +20,12 @@
 /*
 	A simple reference counting LevelObject pointer.
 
-	06/02/2010 - Original version.
-	16/02/2010 - No more cmp function here.
+	2010/02/06 - Original version.
+	2010/02/16 - No more cmp function here.
+	2010/06/30 - Inlined the functions.
 */
 
 #include "LevelObjectPointer.hpp"
-
-#include "LevelObject.hpp"
-#include "math.hpp"
-#include "types.hpp"
-
-
-
-LevelObjectPointer::LevelObjectPointer(LevelObject * p) : _p(p)
-{
-	//std::cerr << "LevelObject::LevelObject(" << p << ");\n";
-
-	//std::cerr << "  _p == " << _p << ";\n";
-	//if (_p) std::cerr << "  _p->_refCount == " << _p->_refCount << ";\n";
-
-	if (_p) ++_p->_refCount;
-
-	//std::cerr << "LevelObject::LevelObject(" << p << ") return;\n";
-}
-LevelObjectPointer::LevelObjectPointer(LevelObjectPointer const & p) : _p(p._p)
-{
-	//std::cerr << "LevelObject::LevelObject(obj_t(" << p._p << "));\n";
-
-	//std::cerr << "  _p == " << _p << ";\n";
-	//if (_p) std::cerr << "  _p->_refCount == " << _p->_refCount << ";\n";
-
-	if (_p) ++_p->_refCount;
-
-	//std::cerr << "LevelObject::LevelObject(obj_t(" << p._p << ")) return;\n";
-}
-LevelObjectPointer::~LevelObjectPointer()
-{
-	//std::cerr << "LevelObject::~LevelObject();\n";
-
-	//std::cerr << "  _p == " << _p << ";\n";
-	//if (_p) std::cerr << "  _p->_refCount == " << _p->_refCount << ";\n";
-
-	if (_p && (--_p->_refCount == 0))
-	{
-		//std::cerr << "  delete _p;\n";
-		delete _p;
-	}
-
-	//std::cerr << "LevelObject::~LevelObject() return;\n";
-}
-
-bool LevelObjectPointer::isLastPointer() const
-{
-	if (_p) return _p->_refCount == 1;
-	else    return true;
-}
-
-LevelObject       * LevelObjectPointer::operator -> ()       {return  _p;}
-LevelObject const * LevelObjectPointer::operator -> () const {return  _p;}
-LevelObject       & LevelObjectPointer::operator *  ()       {return *_p;}
-LevelObject const & LevelObjectPointer::operator *  () const {return *_p;}
-
-bool LevelObjectPointer::operator == (const LevelObjectPointer & other) const
-{
-	return this->_p == other._p;
-}
-
-LevelObjectPointer & LevelObjectPointer::operator = (const LevelObjectPointer & p)
-{
-	//std::cerr << "LevelObject::operator=(" << p._p << ");\n";
-
-	// DO NOT CHANGE THE ORDER OF THESE STATEMENTS!
-	// (This order properly handles self-assignment)
-	// (This order also properly handles recursion)
-
-	LevelObject* const old = this->_p;
-
-	this->_p = p._p;
-
-	//std::cerr << "  _p == " << _p << ";\n";
-	//if (_p) std::cerr << "  _p->_refCount == " << _p->_refCount << ";\n";
-
-	if (this->_p) ++_p->_refCount;
-
-	//std::cerr << "  old == " << old << ";\n";
-	//if (old) std::cerr << "  old->_refCount == " << old->_refCount << ";\n";
-
-	if (old && --old->_refCount == 0)
-	{
-		//std::cerr << "  delete old;\n";
-		delete old;
-	}
-
-	//std::cerr << "LevelObject::operator=(" << p._p << ") return;\n";
-
-	return *this;
-}
 
 
 
