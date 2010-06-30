@@ -203,7 +203,7 @@ T num_from_string(std::string const & value)
 
 			T num_part = num_from_char<T>(num_char, base);
 
-			for (size_t i = pos - base_pos; i; --i)
+			for (size_t i = pos - base_pos - 1; i; --i)
 				num_part /= T(base);
 
 			num += num_part;
