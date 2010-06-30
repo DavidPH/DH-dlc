@@ -60,7 +60,7 @@ lo_type get_lo_type(std::string const & type_name);
 
 void add_lo_type_redirect(const std::string&, const std::string&);
 
-std::string const & get_lo_type_redirect(std::string const &);
+std::string get_lo_type_redirect(std::string const &);
 
 bool is_lo_type_redirect(const std::string&);
 

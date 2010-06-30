@@ -60,10 +60,13 @@ void process_token(SourceToken st) throw(CompilerException)
 			return;
 		}
 
-		// [TYPE] # function : NAME { data }
+		// [TYPE] # function : NAME [: TYPE ...] { data }
 		if (st.getName() == command_name_function())
 		{
 			add_function(st.getType(), st.getBase(0), st.getData());
+
+			for (size_t index = 1; index < st.getBase().size(); ++index)
+				add_function(st.getBase(index), st.getBase(0), st.getData());
 
 			return;
 		}

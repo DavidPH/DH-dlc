@@ -23,9 +23,14 @@
 
 #include "lo_types.hpp"
 
-#include <map>
+#include "global_object.hpp"
+#include "LevelObjectName.hpp"
+#include "options.hpp"
 
 #include "exceptions/NoDefaultTypeException.hpp"
+#include "types/string_t.hpp"
+
+#include <map>
 
 
 
@@ -85,9 +90,16 @@ void add_lo_type_redirect(std::string const & new_type, std::string const & old_
 	lo_type_redirects[new_type] = old_type;
 }
 
-std::string const & get_lo_type_redirect(std::string const & type)
+std::string get_lo_type_redirect(std::string const & type)
 {
 	if (type.empty()) return type;
+
+	if (type == type_name_returntype())
+	{
+		obj_t returnType = get_object(name_t(".return_type"));
+
+		return to_string(returnType).makeString();
+	}
 
 	if (is_lo_type_redirect(type))
 		return lo_type_redirects[type];
@@ -97,6 +109,8 @@ std::string const & get_lo_type_redirect(std::string const & type)
 
 bool is_lo_type_redirect(std::string const & type)
 {
+	if (type == type_name_returntype()) return true;
+
 	return !lo_type_redirects[type].empty();
 }
 

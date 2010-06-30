@@ -131,11 +131,15 @@ Examples:
 Defines a compound object. When compounding as TYPE, data is added to the
 compounded object. See Compound Objects.
 
-[RETURN TYPE] # function : NAME {DATA}
+[RETURN TYPE] # function : NAME [: TYPE ...] {DATA}
 Defines a custom function that is invoked like a normal function. Arguments can
 be accessed by arg0, arg1, arg2, etc. The number of args is stored in argc. The
 command #return is used to return a value. If the function ends without
 returning a value, the result is undefined.
+
+Specifying extra types adds the function to the available functions for those
+types. The return type is always the type the function was called from. If you
+need to declare a variable of the calling type, use returntype.
 
 # include : FILENAME;
 Processes the indicated file. If file is not found, then directories indicated
@@ -649,6 +653,10 @@ These are the internally recognized value types:
 	int: stores an integer
 	float: stores a rational
 	string: stores text
+	string8: stores up to 8 characters of text
+	sword: stores a 16-bit signed integer
+	ubyte: stores an 8-bit unsigned integer
+	uword: stores a 16-bit unsigned integer
 
 The numeric types also have short and long variants. Short numbers have a fixed
 size that is decided when the program is compiled (currently, they are basic C
@@ -658,6 +666,9 @@ the --precision option. Long numbers are of unlimited size and precision.
 If GMPLib is not used, then long numbers are simply the largest available type,
 normal floats are long floats, and normal ints are still bound by precision,
 but are at most long.
+
+Some of the types (string8, sword, ubyte, uword) exist for mapping to binary
+map formats. While they can be used normally, there is very little reason to.
 
 
 
