@@ -42,12 +42,16 @@
 obj_t            global_object = LevelObject::create();
 std::list<obj_t> global_object_list;
 
+static std::map<std::string, size_t> type_counts;
+
 void add_object(name_t const & name, obj_t newObject)
 {
 	if (newObject == NULL || !newObject->addGlobal) return;
 
 	// Must not have duplicate entries in list...
 	newObject->addGlobal = false;
+
+	newObject->_index = type_counts[newObject->type]++;
 
 	global_object_list.push_back(newObject);
 }
@@ -103,7 +107,6 @@ obj_t get_object(int_s_t objectIndex, std::string const & type)
 		}
 	}
 
-	// TODO: Make functions for converting numbers to std::strings.
 	throw ParsingException("index out of bounds:" + make_string(objectIndex));
 }
 
@@ -111,6 +114,8 @@ int_s_t get_object_index(obj_t oldObject)
 {
 	if (oldObject == NULL)
 		return -1;
+
+	if (oldObject->_index != (size_t)-1) return oldObject->_index;
 
 	int_s_t typeCount = 0;
 

@@ -57,7 +57,7 @@
 
 
 // The initialization list for the constructors are all basically the same.
-#define LevelObject_INIT_LIST(TYPE, DATA) _refCount(0), data(DATA), type(TYPE), addGlobal(true), isBreaked(false), isCompounded(false), isContinued(false), isReturned(false)
+#define LevelObject_INIT_LIST(TYPE, DATA) _index(-1), _refCount(0), data(DATA), type(TYPE), addGlobal(true), isBreaked(false), isCompounded(false), isContinued(false), isReturned(false)
 
 LevelObject::LevelObject() : LevelObject_INIT_LIST(, objmap_t()) {}
 LevelObject::LevelObject(LevelObject const & other) : LevelObject_INIT_LIST(other.type, other.data) {}

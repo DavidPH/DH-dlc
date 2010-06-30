@@ -106,6 +106,7 @@ class LevelObject
 		static obj_t create(std::string const & type, std::string const & data, std::vector<std::string> const & base);
 
 		friend void add_object(name_t const &, obj_t);
+		friend int_s_t get_object_index(obj_t);
 
 		friend std::ostream & operator << (std::ostream& out, const LevelObject& in);
 
@@ -118,6 +119,7 @@ class LevelObject
 		LevelObject(std::string const &, std::string const &);
 		LevelObject(std::string const &, std::string const &, std::vector<std::string> const &);
 
+		size_t _index;
 		size_t _refCount;
 
 		any_t data;
