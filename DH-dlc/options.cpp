@@ -73,10 +73,10 @@ PROCESS_OPTION_DECLARE_int(precision, POINTER_BIT*2)
 	return 2;
 }
 
-PROCESS_OPTION_DEFINE_string(directory,  "")
-PROCESS_OPTION_DEFINE_string(extradata,  "")
-PROCESS_OPTION_DEFINE_string(map_name,   "")
-PROCESS_OPTION_DEFINE_string(script_acs, "SCRIPTS")
+PROCESS_OPTION_DEFINE_string(directory,        "")
+PROCESS_OPTION_DEFINE_string(map_name,         "")
+PROCESS_OPTION_DEFINE_string(script_acs,       "SCRIPTS")
+PROCESS_OPTION_DEFINE_string(script_extradata, "EXTRADAT")
 
 PROCESS_OPTION_DEFINE_string_multi(include)
 
@@ -131,9 +131,10 @@ PROCESS_OPTION_LONG_DECLARE
 	PROCESS_OPTION_HANDLE_LONG_int(error_limit, "error-limit", 12);
 	PROCESS_OPTION_HANDLE_LONG_int(precision,   "precision",    4);
 
-	PROCESS_OPTION_HANDLE_LONG_string(directory,  "directory",   3);
-	PROCESS_OPTION_HANDLE_LONG_string(map_name,   "map-name",    3);
-	PROCESS_OPTION_HANDLE_LONG_string(script_acs, "script-acs", 11);
+	PROCESS_OPTION_HANDLE_LONG_string(directory,  "directory",         3);
+	PROCESS_OPTION_HANDLE_LONG_string(map_name,   "map-name",          3);
+	PROCESS_OPTION_HANDLE_LONG_string(script_acs, "script-acs",       11);
+	PROCESS_OPTION_HANDLE_LONG_string(script_acs, "script-extradata", 17);
 
 	PROCESS_OPTION_HANDLE_LONG_string_multi(include, "include", 3);
 

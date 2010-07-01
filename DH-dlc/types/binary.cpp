@@ -66,6 +66,11 @@ std::string string8_t::encodeBinary()
 
 	return s;
 }
+void string8_t::encodeBinary(std::ostream & out)
+{
+	for (size_t index = 0; index < 8; ++index)
+		out.put(_data[index]);
+}
 
 string8_t & string8_t::operator += (string8_t const & value)
 {
@@ -100,6 +105,11 @@ std::string sword_t::encodeBinary()
 
 	return s;
 }
+void sword_t::encodeBinary(std::ostream & out)
+{
+	out.put((_data     ) & 0xFF);
+	out.put((_data >> 8) & 0xFF);
+}
 
 ubyte_t::ubyte_t() : _data(0) {}
 ubyte_t::ubyte_t(ubyte_t const & value) : _data(value._data) {}
@@ -112,6 +122,10 @@ std::string ubyte_t::encodeBinary()
 	s[0] = _data;
 
 	return s;
+}
+void ubyte_t::encodeBinary(std::ostream & out)
+{
+	out.put(_data & 0xFF);
 }
 
 uword_t::uword_t() : _data(0) {}
@@ -126,6 +140,11 @@ std::string uword_t::encodeBinary()
 	s[1] = (_data >> 8) & 0xFF;
 
 	return s;
+}
+void uword_t::encodeBinary(std::ostream & out)
+{
+	out.put((_data     ) & 0xFF);
+	out.put((_data >> 8) & 0xFF);
 }
 
 

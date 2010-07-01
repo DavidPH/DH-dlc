@@ -507,7 +507,6 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		}
 
 		// # script-acs { data }
-		// convenience command
 		else if (commandName == command_name_script_acs())
 		{
 			std::string nameSCRIPTS(option_script_acs);
@@ -520,8 +519,20 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 			add_script(nameSCRIPTS, st.getData());
 		}
 
+		// # script-extradata { data }
+		else if (commandName == command_name_script_extradata())
+		{
+			std::string nameExtraData(option_script_extradata);
+			if (option_use_file_extensions && nameExtraData.find('.') == std::string::npos)
+				nameExtraData += ".txt";
+
+			for (size_t index = 0; index < st.getBase().size(); ++index)
+				add_script(nameExtraData, parse_string(st.getBase(index)).makeString());
+
+			add_script(nameExtraData, st.getData());
+		}
+
 		// # script-fraggle { data }
-		// convenience command
 		else if (commandName == command_name_script_fraggle())
 		{
 			std::string nameFRAGGLE(option_map_name);

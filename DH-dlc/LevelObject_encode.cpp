@@ -34,6 +34,7 @@
 #include "types.hpp"
 #include "../common/foreach.hpp"
 #include "exceptions/InvalidTypeException.hpp"
+#include "types/binary.hpp"
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"
 #include "types/string_t.hpp"
@@ -78,6 +79,7 @@ static const name_t name_monstercross    ("monstercross");
 static const name_t name_monsteruse      ("monsteruse");
 static const name_t name_offsetx         ("offsetx");
 static const name_t name_offsety         ("offsety");
+static const name_t name_passuse         ("passuse");
 static const name_t name_playercross     ("playercross");
 static const name_t name_playerpush      ("playerpush");
 static const name_t name_playeruse       ("playeruse");
@@ -108,6 +110,31 @@ static const name_t name_wrapmidtex      ("wrapmidtext");
 static const name_t name_x               ("x");
 static const name_t name_y               ("y");
 static const name_t name_zoneboundry     ("zoneboundry");
+
+#define CHECKFLAG(FLAG, VALUE) \
+if (hasObject(FLAG) && to_bool(getObject(FLAG))) \
+	flags |= VALUE; \
+else (void) 0
+
+#define CHECKFLAGNOT(FLAG, VALUE) \
+if (!hasObject(FLAG) || !to_bool(getObject(FLAG))) \
+	flags |= VALUE; \
+else (void) 0
+
+#define CHECKVALUE(VALUE, TYPE, DEFAULT, LENGTH) \
+if (hasObject(VALUE)) \
+	binReturn += getObject(VALUE)->encode(TYPE); \
+else \
+	binReturn.append(DEFAULT, LENGTH)
+
+#define CHECKVALUE1_BINARY(NAME, TYPE) \
+if (hasObject(NAME)) \
+	to_##TYPE(getObject(NAME)).encodeBinary(out); \
+else
+
+#define CHECKVALUE2_BINARY(NAME, TYPE, DEFAULT) \
+CHECKVALUE1_BINARY(NAME, TYPE) \
+	TYPE##_t(DEFAULT).encodeBinary(out)
 
 
 
@@ -241,22 +268,6 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 
 	if (data.getType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("internal error:unknown enum value for 'data.getType()'");
-
-	#define CHECKFLAG(FLAG, VALUE)				\
-	if (hasObject(FLAG) && to_bool(getObject(FLAG)))	\
-		flags |= VALUE;					\
-	else (void) 0
-
-	#define CHECKFLAGNOT(FLAG, VALUE)			\
-	if (!hasObject(FLAG) || !to_bool(getObject(FLAG)))	\
-		flags |= VALUE;					\
-	else (void) 0
-
-	#define CHECKVALUE(VALUE, TYPE, DEFAULT, LENGTH)	\
-	if (hasObject(VALUE))					\
-		binReturn += getObject(VALUE)->encode(TYPE);	\
-	else							\
-		binReturn.append(DEFAULT, LENGTH)
 
 	if (binType == BIN_OBJECT)
 	{
@@ -579,21 +590,123 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 	}
 
 	throw InvalidTypeException("internal error:unknown enum value for 'binType'");
-
-	#undef CHECKFLAG
-	#undef CHECKFLAGNOT
-	#undef CHECKVALUE
 }
 
-std::string LevelObject::encodeExtraData()
+void LevelObject::encodeDoom(std::ostream & out)
+{
+	switch (data.getType())
+	{
+	case any_t::OBJMAP_T: break;
+
+	case any_t::SWORD_T: data.getSWord().encodeBinary(out); return;
+	case any_t::UWORD_T: data.getUWord().encodeBinary(out); return;
+
+	default:
+		throw InvalidTypeException("internal error:unknown data.getType() for Doom output");
+	}
+
+	if (type == type_name_linedef())
+	{
+		CHECKVALUE2_BINARY(name_v1,        uword, -1); // 00-01
+		CHECKVALUE2_BINARY(name_v2,        uword, -1); // 02-03
+		CHECKVALUE1_BINARY(name_type,      uword    )  // 04-05
+		{
+			uword_t flags(0);
+
+			CHECKFLAG(name_blocking,      uword_t(0x0001)); // DOOM
+			CHECKFLAG(name_blockmonsters, uword_t(0x0002)); // DOOM
+			CHECKFLAG(name_twosided,      uword_t(0x0004)); // DOOM
+			CHECKFLAG(name_dontpegtop,    uword_t(0x0008)); // DOOM
+			CHECKFLAG(name_dontpegbottom, uword_t(0x0010)); // DOOM
+			CHECKFLAG(name_secret,        uword_t(0x0020)); // DOOM
+			CHECKFLAG(name_blocksound,    uword_t(0x0040)); // DOOM
+			CHECKFLAG(name_dontdraw,      uword_t(0x0080)); // DOOM
+			CHECKFLAG(name_mapped,        uword_t(0x0100)); // DOOM
+			CHECKFLAG(name_passuse,       uword_t(0x0200)); // BOOM
+
+			flags.encodeBinary(out);
+		}
+		CHECKVALUE2_BINARY(name_id,        uword,  0); // 06-07
+		CHECKVALUE2_BINARY(name_special,   uword,  0); // 08-09
+		CHECKVALUE2_BINARY(name_sidefront, uword, -1); // 10-11
+		CHECKVALUE2_BINARY(name_sideback,  uword, -1); // 12-13
+
+		return;
+	}
+
+	if (type == type_name_sector())
+	{
+		CHECKVALUE2_BINARY(name_heightfloor,    sword,     0); // 00-01
+		CHECKVALUE2_BINARY(name_heightceiling,  sword,     0); // 02-03
+		CHECKVALUE2_BINARY(name_texturefloor,   string8,  ""); // 04-11
+		CHECKVALUE2_BINARY(name_textureceiling, string8,  ""); // 12-19
+		CHECKVALUE2_BINARY(name_lightlevel,     uword,   160); // 20-21
+		CHECKVALUE2_BINARY(name_special,        uword,     0); // 22-23
+		CHECKVALUE2_BINARY(name_id,             uword,     0); // 24-25
+
+		return;
+	}
+
+	if (type == type_name_sidedef())
+	{
+		CHECKVALUE2_BINARY(name_offsetx,       sword,    0); // 00-01
+		CHECKVALUE2_BINARY(name_offsety,       sword,    0); // 02-03
+		CHECKVALUE2_BINARY(name_texturetop,    string8, ""); // 04-11
+		CHECKVALUE2_BINARY(name_texturebottom, string8, ""); // 12-19
+		CHECKVALUE2_BINARY(name_texturemiddle, string8, ""); // 20-27
+		CHECKVALUE2_BINARY(name_sector,        uword,   -1); // 28-29
+
+		return;
+	}
+
+	if (type == type_name_thing())
+	{
+		CHECKVALUE2_BINARY(name_x,     sword, 0); // 00-01
+		CHECKVALUE2_BINARY(name_y,     sword, 0); // 02-03
+		CHECKVALUE2_BINARY(name_angle, uword, 0); // 04-05
+		CHECKVALUE2_BINARY(name_type,  uword, 0); // 06-07
+		CHECKVALUE1_BINARY(name_flags, uword   )  // 08-09
+		{
+			uword_t flags(0);
+
+			CHECKFLAG   (name_skill1, uword_t(0x0001));
+			CHECKFLAG   (name_skill2, uword_t(0x0001));
+			CHECKFLAG   (name_skill3, uword_t(0x0002));
+			CHECKFLAG   (name_skill4, uword_t(0x0004));
+			CHECKFLAG   (name_skill5, uword_t(0x0004));
+			CHECKFLAG   (name_ambush, uword_t(0x0008));
+			CHECKFLAGNOT(name_single, uword_t(0x0010));
+			CHECKFLAGNOT(name_dm,     uword_t(0x0020));
+			CHECKFLAGNOT(name_coop,   uword_t(0x0040));
+			CHECKFLAG   (name_friend, uword_t(0x0080));
+		}
+
+		return;
+	}
+
+	if (type == type_name_vertex())
+	{
+		CHECKVALUE2_BINARY(name_x, sword, 0); // 00-01
+		CHECKVALUE2_BINARY(name_y, sword, 0); // 02-03
+
+		return;
+	}
+
+	throw InvalidTypeException("internal error:unknown type for Doom output");
+}
+
+void LevelObject::encodeExtraData(std::ostream & out)
 {
 	if (data.getType() != any_t::OBJMAP_T)
-		return "";
+		return;
 
 	if (get_lo_type(type) != LO_TYPE_OBJECT)
-		return "";
+		return;
+}
 
-	return "";
+void LevelObject::encodeHeretic(std::ostream & out)
+{
+	return encodeDoom(out);
 }
 
 

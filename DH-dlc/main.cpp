@@ -127,7 +127,12 @@ void usage()
 		#else
 		"  -p, --precision      sets the precision for floats in bits [default: " << (POINTER_BIT) << "]\n"
 		#endif
-		"      --script-acs     sets the output name for ACS scripts [default: SCRIPTS]\n"
+		"\n"
+		"Scripts:\n"
+		"      --script-acs        sets the output name for ACS scripts\n"
+		"                          [default: SCRIPTS]\n"
+		"      --script-extradata  sets the output name for ExtraData scripts\n"
+		"                          [default: EXTRADAT]\n"
 		"\n"
 		"Libraries:\n"
 		"      --no-lib-std          do not automatically include lib-std.ddl\n"
@@ -145,7 +150,6 @@ void usage()
 		"      --do-output-heretic    output files in Heretic format\n"
 		"      --do-output-doom       output files in Doom format\n"
 		"      --do-output-udmf       output files in UDMF format [default]\n"
-		"      --extradata            output ExtraData to specified file\n"
 		"\n"
 		"Debugging:\n"
 		"      --debug       enables debugging messages\n"
@@ -279,36 +283,34 @@ int main(int argc, char** argv)
 
 	if (!option_output_any) return 0;
 
-	if (option_output_doom || option_output_heretic || option_output_hexen || option_output_strife)
+	#define OPENFILE(NAME, EXT) \
+	std::string name##NAME(#NAME); \
+	if (option_use_file_extensions) \
+		name##NAME += EXT; \
+	\
+	std::ofstream file##NAME( \
+		(option_directory + name##NAME).c_str(), \
+		std::ios_base::out | std::ios_base::binary); \
+	\
+	if (!file##NAME) \
+	{ \
+		std::cerr << "unable to open:" << name##NAME << "\n"; \
+		exit(1); \
+	}
+
+	if (option_output_heretic || option_output_hexen || option_output_strife)
 	{
-		#define OPENFILE(NAME)						\
-		std::string name##NAME(#NAME);					\
-		if (option_use_file_extensions)					\
-			name##NAME += ".lmp";					\
-										\
-		std::ofstream file##NAME(					\
-			(option_directory + name##NAME).c_str(),		\
-			std::ios_base::out | std::ios_base::binary);		\
-										\
-		if (!file##NAME)						\
-		{								\
-			std::cerr << "unable to open:" << name##NAME << "\n";	\
-			exit(1);						\
-		}
-
-		OPENFILE(LINEDEFS);
-		OPENFILE(SECTORS);
-		OPENFILE(SIDEDEFS);
-		OPENFILE(THINGS);
-		OPENFILE(VERTEXES);
-
-		#undef OPENFILE
+		OPENFILE(LINEDEFS, ".lmp");
+		OPENFILE(SECTORS,  ".lmp");
+		OPENFILE(SIDEDEFS, ".lmp");
+		OPENFILE(THINGS,   ".lmp");
+		OPENFILE(VERTEXES, ".lmp");
 
 		std::ofstream fileExtraData;
 
 		if (option_output_extradata)
 		{
-			std::string nameExtraData(option_extradata);
+			std::string nameExtraData(option_script_extradata);
 
 			fileExtraData.open((option_directory + nameExtraData).c_str());
 		}
@@ -343,12 +345,7 @@ int main(int argc, char** argv)
 
 				if (option_output_extradata)
 				{
-					std::string stringExtraData(thisObj->encodeExtraData());
-
-					if (!stringExtraData.empty())
-					{
-						fileExtraData << stringExtraData << "\n\n";
-					}
+					thisObj->encodeExtraData(fileExtraData);
 				}
 			}
 			catch (CompilerException& e)
@@ -380,19 +377,51 @@ int main(int argc, char** argv)
 			fileBEHAVIOR.close();
 		}
 	}
+	else if (option_output_doom)
+	{
+		OPENFILE(LINEDEFS, ".lmp");
+		OPENFILE(SECTORS,  ".lmp");
+		OPENFILE(SIDEDEFS, ".lmp");
+		OPENFILE(THINGS,   ".lmp");
+		OPENFILE(VERTEXES, ".lmp");
+
+		FOREACH_T(std::list<obj_t>, it, global_object_list)
+		{
+			obj_t thisObj(*it);
+			std::string thisType(get_lo_type_redirect(thisObj->getType()));
+
+			try
+			{
+				if (thisType == type_name_linedef())
+					thisObj->encodeDoom(fileLINEDEFS);
+
+				else if (thisType == type_name_sector())
+					thisObj->encodeDoom(fileSECTORS);
+
+				else if (thisType == type_name_sidedef())
+					thisObj->encodeDoom(fileSIDEDEFS);
+
+				else if (thisType == type_name_thing())
+					thisObj->encodeDoom(fileTHINGS);
+
+				else if (thisType == type_name_vertex())
+					thisObj->encodeDoom(fileVERTEXES);
+			}
+			catch (CompilerException& e)
+			{
+				std::cerr << thisType << ':' << get_object_index(thisObj) << ':' << e << '\n';
+			}
+		}
+
+		fileLINEDEFS.close();
+		fileSECTORS.close();
+		fileSIDEDEFS.close();
+		fileTHINGS.close();
+		fileVERTEXES.close();
+	}
 	else if (option_output_udmf)
 	{
-		std::string nameTEXTMAP("TEXTMAP");
-		if (option_use_file_extensions)
-			nameTEXTMAP += ".txt";
-
-		std::ofstream fileTEXTMAP((option_directory + nameTEXTMAP).c_str());
-
-		if (!fileTEXTMAP)
-		{
-			std::cerr << "unable to open:" << nameTEXTMAP << "\n";
-			exit(1);
-		}
+		OPENFILE(TEXTMAP, ".txt");
 
 		fileTEXTMAP << "// Compiled by DH-dlc.\n\n";
 
@@ -412,6 +441,38 @@ int main(int argc, char** argv)
 			if (!encString.empty())
 				fileTEXTMAP << encString << "\n\n";
 		}
+	}
+
+	#undef OPENFILE
+
+	if (option_output_extradata)
+	{
+
+		std::ofstream fileExtraData;
+
+		if (option_output_extradata)
+		{
+			std::string nameExtraData(option_script_extradata);
+
+			fileExtraData.open((option_directory + nameExtraData).c_str());
+		}
+
+		FOREACH_T(std::list<obj_t>, it, global_object_list)
+		{
+			obj_t thisObj(*it);
+			std::string thisType(get_lo_type_redirect(thisObj->getType()));
+
+			try
+			{
+				thisObj->encodeExtraData(fileExtraData);
+			}
+			catch (CompilerException& e)
+			{
+				std::cerr << thisType << ':' << get_object_index(thisObj) << ':' << e << '\n';
+			}
+		}
+
+		fileExtraData.close();
 	}
 
 	FOREACH_T(scripts_data_type, it, scripts_data)

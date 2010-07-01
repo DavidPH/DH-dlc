@@ -93,7 +93,11 @@ class LevelObject
 
 		std::string encode(bool=true);
 		std::string encode(LevelObjectBinaryType);
-		std::string encodeExtraData();
+		void encodeDoom     (std::ostream & out);
+		void encodeExtraData(std::ostream & out);
+		void encodeHeretic  (std::ostream & out);
+		void encodeHexen    (std::ostream & out);
+		void encodeStrife   (std::ostream & out);
 
 		any_t const & getData() const {return data;}
 

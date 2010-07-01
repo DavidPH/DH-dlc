@@ -65,9 +65,9 @@ PROCESS_OPTION_EXTERN_int(error_limit);
 PROCESS_OPTION_EXTERN_int(precision);
 
 PROCESS_OPTION_EXTERN_string(directory);
-PROCESS_OPTION_EXTERN_string(extradata);
 PROCESS_OPTION_EXTERN_string(map_name);
 PROCESS_OPTION_EXTERN_string(script_acs);
+PROCESS_OPTION_EXTERN_string(script_extradata);
 
 PROCESS_OPTION_EXTERN_string_multi(include);
 
@@ -166,30 +166,31 @@ NAME_FUNC(command, precision,   "#precision",   "#PRECISION",   "#precision")
 NAME_FUNC(command, typedef,     "#typedef",     "#TYPEDEF",     "#typedef")
 NAME_FUNC(command, typedefnew,  "#typedefnew",  "#TYPEDEFNEW",  "#typedefnew")
 
-NAME_FUNC(command, break,          "#break",          "#BREAK",          "#break")
-NAME_FUNC(command, changetype,     "#changetype",     "#CHANGETYPE",     "#changetype")
-NAME_FUNC(command, compound,       "#compound",       "#COMPOUND",       "#compound")
-NAME_FUNC(command, continue,       "#continue",       "#CONTINUE",       "#continue")
-NAME_FUNC(command, debug,          "#debug",          "#DEBUG",          "#debug")
-NAME_FUNC(command, delete,         "#delete",         "#DELETE",         "#delete")
-NAME_FUNC(command, deletevolatile, "#deletevolatile", "#DELETEVOLATILE", "#deletevolatile")
-NAME_FUNC(command, delete_,        "#delete_",        "#DELETE_",        "#delete_")
-NAME_FUNC(command, do,             "#do",             "#DO",             "#do")
-NAME_FUNC(command, else,           "#else",           "#ELSE",           "#else")
-NAME_FUNC(command, elseifcmp,      "#elseifcmp",      "#ELSEIFCMP",      "#elseifcmp")
-NAME_FUNC(command, elseif,         "#elseif",         "#ELSEIF",         "#elseif")
-NAME_FUNC(command, error,          "#error",          "#ERROR",          "#error")
-NAME_FUNC(command, function,       "#function",       "#FUNCTION",       "#function")
-NAME_FUNC(command, for,            "#for",            "#FOR",            "#for")
-NAME_FUNC(command, ifcmp,          "#ifcmp",          "#IFCMP",          "#ifcmp")
-NAME_FUNC(command, if,             "#if",             "#IF",             "#if")
-NAME_FUNC(command, info,           "#info",           "#INFO",           "#info")
-NAME_FUNC(command, return,         "#return",         "#RETURN",         "#return")
-NAME_FUNC(command, script,         "#script",         "#SCRIPT",         "#script")
-NAME_FUNC(command, script_acs,     "#script-acs",     "#SCRIPT-ACS",     "#script-acs")
-NAME_FUNC(command, script_fraggle, "#script-fraggle", "#SCRIPT-FRAGGLE", "#script-fraggle")
-NAME_FUNC(command, warn,           "#warn",           "#WARN",           "#warn")
-NAME_FUNC(command, while,          "#while",          "#WHILE",          "#while")
+NAME_FUNC(command, break,            "#break",            "#BREAK",            "#break")
+NAME_FUNC(command, changetype,       "#changetype",       "#CHANGETYPE",       "#changetype")
+NAME_FUNC(command, compound,         "#compound",         "#COMPOUND",         "#compound")
+NAME_FUNC(command, continue,         "#continue",         "#CONTINUE",         "#continue")
+NAME_FUNC(command, debug,            "#debug",            "#DEBUG",            "#debug")
+NAME_FUNC(command, delete,           "#delete",           "#DELETE",           "#delete")
+NAME_FUNC(command, deletevolatile,   "#deletevolatile",   "#DELETEVOLATILE",   "#deletevolatile")
+NAME_FUNC(command, delete_,          "#delete_",          "#DELETE_",          "#delete_")
+NAME_FUNC(command, do,               "#do",               "#DO",               "#do")
+NAME_FUNC(command, else,             "#else",             "#ELSE",             "#else")
+NAME_FUNC(command, elseifcmp,        "#elseifcmp",        "#ELSEIFCMP",        "#elseifcmp")
+NAME_FUNC(command, elseif,           "#elseif",           "#ELSEIF",           "#elseif")
+NAME_FUNC(command, error,            "#error",            "#ERROR",            "#error")
+NAME_FUNC(command, function,         "#function",         "#FUNCTION",         "#function")
+NAME_FUNC(command, for,              "#for",              "#FOR",              "#for")
+NAME_FUNC(command, ifcmp,            "#ifcmp",            "#IFCMP",            "#ifcmp")
+NAME_FUNC(command, if,               "#if",               "#IF",               "#if")
+NAME_FUNC(command, info,             "#info",             "#INFO",             "#info")
+NAME_FUNC(command, return,           "#return",           "#RETURN",           "#return")
+NAME_FUNC(command, script,           "#script",           "#SCRIPT",           "#script")
+NAME_FUNC(command, script_acs,       "#script-acs",       "#SCRIPT-ACS",       "#script-acs")
+NAME_FUNC(command, script_extradata, "#script-extradata", "#SCRIPT-EXTRADATA", "#script-extradata")
+NAME_FUNC(command, script_fraggle,   "#script-fraggle",   "#SCRIPT-FRAGGLE",   "#script-fraggle")
+NAME_FUNC(command, warn,             "#warn",             "#WARN",             "#warn")
+NAME_FUNC(command, while,            "#while",            "#WHILE",            "#while")
 
 // compare strings
 NAME_FUNC(cmp, eq, "eq", "EQ", "eq")
