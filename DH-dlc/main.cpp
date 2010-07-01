@@ -298,22 +298,13 @@ int main(int argc, char** argv)
 		exit(1); \
 	}
 
-	if (option_output_heretic || option_output_hexen || option_output_strife)
+	if (option_output_hexen)
 	{
 		OPENFILE(LINEDEFS, ".lmp");
 		OPENFILE(SECTORS,  ".lmp");
 		OPENFILE(SIDEDEFS, ".lmp");
 		OPENFILE(THINGS,   ".lmp");
 		OPENFILE(VERTEXES, ".lmp");
-
-		std::ofstream fileExtraData;
-
-		if (option_output_extradata)
-		{
-			std::string nameExtraData(option_script_extradata);
-
-			fileExtraData.open((option_directory + nameExtraData).c_str());
-		}
 
 		FOREACH_T(std::list<obj_t>, it, global_object_list)
 		{
@@ -323,30 +314,19 @@ int main(int argc, char** argv)
 			try
 			{
 				if (thisType == type_name_linedef())
-				{
-					fileLINEDEFS << thisObj->encode(LINEDEF);
-				}
-				else if (thisType == type_name_sector())
-				{
-					fileSECTORS  << thisObj->encode(SECTOR);
-				}
-				else if (thisType == type_name_sidedef())
-				{
-					fileSIDEDEFS << thisObj->encode(SIDEDEF);
-				}
-				else if (thisType == type_name_thing())
-				{
-					fileTHINGS   << thisObj->encode(THING);
-				}
-				else if (thisType == type_name_vertex())
-				{
-					fileVERTEXES << thisObj->encode(VERTEX);
-				}
+					thisObj->encodeHexen(fileLINEDEFS);
 
-				if (option_output_extradata)
-				{
-					thisObj->encodeExtraData(fileExtraData);
-				}
+				else if (thisType == type_name_sector())
+					thisObj->encodeHexen(fileSECTORS);
+
+				else if (thisType == type_name_sidedef())
+					thisObj->encodeHexen(fileSIDEDEFS);
+
+				else if (thisType == type_name_thing())
+					thisObj->encodeHexen(fileTHINGS);
+
+				else if (thisType == type_name_vertex())
+					thisObj->encodeHexen(fileVERTEXES);
 			}
 			catch (CompilerException& e)
 			{
@@ -359,23 +339,101 @@ int main(int argc, char** argv)
 		fileSIDEDEFS.close();
 		fileTHINGS.close();
 		fileVERTEXES.close();
-		fileExtraData.close();
 
 		// ZDoom requires a BEHAVIOR lump to signify a Hexen map.
 		// TODO: Make this an option.
-		if (option_output_hexen)
+		std::string nameBEHAVIOR("BEHAVIOR");
+		if (option_use_file_extensions)
+			nameBEHAVIOR += ".o";
+
+		// Opened as append so as to not delete existing content, if any.
+		std::ofstream fileBEHAVIOR((option_directory + nameBEHAVIOR).c_str(), std::ios_base::app);
+
+		fileBEHAVIOR.close();
+	}
+	else if (option_output_strife)
+	{
+		OPENFILE(LINEDEFS, ".lmp");
+		OPENFILE(SECTORS,  ".lmp");
+		OPENFILE(SIDEDEFS, ".lmp");
+		OPENFILE(THINGS,   ".lmp");
+		OPENFILE(VERTEXES, ".lmp");
+
+		FOREACH_T(std::list<obj_t>, it, global_object_list)
 		{
-			std::string nameBEHAVIOR("BEHAVIOR");
-			if (option_use_file_extensions)
-				nameBEHAVIOR += ".o";
+			obj_t thisObj(*it);
+			std::string thisType(get_lo_type_redirect(thisObj->getType()));
 
-			// Opened as append so as to not delete existing content, if any.
-			std::ofstream fileBEHAVIOR(
-				(option_directory + nameBEHAVIOR).c_str(),
-				std::ios_base::app);
+			try
+			{
+				if (thisType == type_name_linedef())
+					thisObj->encodeStrife(fileLINEDEFS);
 
-			fileBEHAVIOR.close();
+				else if (thisType == type_name_sector())
+					thisObj->encodeStrife(fileSECTORS);
+
+				else if (thisType == type_name_sidedef())
+					thisObj->encodeStrife(fileSIDEDEFS);
+
+				else if (thisType == type_name_thing())
+					thisObj->encodeStrife(fileTHINGS);
+
+				else if (thisType == type_name_vertex())
+					thisObj->encodeStrife(fileVERTEXES);
+			}
+			catch (CompilerException& e)
+			{
+				std::cerr << thisType << ':' << get_object_index(thisObj) << ':' << e << '\n';
+			}
 		}
+
+		fileLINEDEFS.close();
+		fileSECTORS.close();
+		fileSIDEDEFS.close();
+		fileTHINGS.close();
+		fileVERTEXES.close();
+	}
+	else if (option_output_heretic)
+	{
+		OPENFILE(LINEDEFS, ".lmp");
+		OPENFILE(SECTORS,  ".lmp");
+		OPENFILE(SIDEDEFS, ".lmp");
+		OPENFILE(THINGS,   ".lmp");
+		OPENFILE(VERTEXES, ".lmp");
+
+		FOREACH_T(std::list<obj_t>, it, global_object_list)
+		{
+			obj_t thisObj(*it);
+			std::string thisType(get_lo_type_redirect(thisObj->getType()));
+
+			try
+			{
+				if (thisType == type_name_linedef())
+					thisObj->encodeHeretic(fileLINEDEFS);
+
+				else if (thisType == type_name_sector())
+					thisObj->encodeHeretic(fileSECTORS);
+
+				else if (thisType == type_name_sidedef())
+					thisObj->encodeHeretic(fileSIDEDEFS);
+
+				else if (thisType == type_name_thing())
+					thisObj->encodeHeretic(fileTHINGS);
+
+				else if (thisType == type_name_vertex())
+					thisObj->encodeHeretic(fileVERTEXES);
+			}
+			catch (CompilerException& e)
+			{
+				std::cerr << thisType << ':' << get_object_index(thisObj) << ':' << e << '\n';
+			}
+		}
+
+		fileLINEDEFS.close();
+		fileSECTORS.close();
+		fileSIDEDEFS.close();
+		fileTHINGS.close();
+		fileVERTEXES.close();
 	}
 	else if (option_output_doom)
 	{

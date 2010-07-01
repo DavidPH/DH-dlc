@@ -52,24 +52,6 @@ class SourceToken;
 
 
 
-// for binary encoding
-enum LevelObjectBinaryType
-{
-	BIN_STRING,
-	SSHORT,
-	UBYTE,
-	USHORT,
-
-	BIN_OBJECT,
-	LINEDEF,
-	SECTOR,
-	SIDEDEF,
-	THING,
-	VERTEX
-};
-
-
-
 class LevelObject
 {
 	public:
@@ -92,7 +74,6 @@ class LevelObject
 		void setType(std::string const & type, std::string const & value = "");
 
 		std::string encode(bool=true);
-		std::string encode(LevelObjectBinaryType);
 		void encodeDoom     (std::ostream & out);
 		void encodeExtraData(std::ostream & out);
 		void encodeHeretic  (std::ostream & out);

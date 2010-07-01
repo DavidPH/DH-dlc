@@ -57,15 +57,6 @@ void string8_t::clear()
 		_data[index] = 0;
 }
 
-std::string string8_t::encodeBinary()
-{
-	std::string s(8, 0);
-
-	for (size_t index = 0; index < 8; ++index)
-		s[index] = _data[index];
-
-	return s;
-}
 void string8_t::encodeBinary(std::ostream & out)
 {
 	for (size_t index = 0; index < 8; ++index)
@@ -96,15 +87,6 @@ sword_t::sword_t() : _data(0) {}
 sword_t::sword_t(sword_t const & value) : _data(value._data) {}
 sword_t::sword_t(signed short int value) : _data(value) {}
 
-std::string sword_t::encodeBinary()
-{
-	std::string s(2, 0);
-
-	s[0] = (_data     ) & 0xFF;
-	s[1] = (_data >> 8) & 0xFF;
-
-	return s;
-}
 void sword_t::encodeBinary(std::ostream & out)
 {
 	out.put((_data     ) & 0xFF);
@@ -115,14 +97,6 @@ ubyte_t::ubyte_t() : _data(0) {}
 ubyte_t::ubyte_t(ubyte_t const & value) : _data(value._data) {}
 ubyte_t::ubyte_t(unsigned char value) : _data(value) {}
 
-std::string ubyte_t::encodeBinary()
-{
-	std::string s(1, 0);
-
-	s[0] = _data;
-
-	return s;
-}
 void ubyte_t::encodeBinary(std::ostream & out)
 {
 	out.put(_data & 0xFF);
@@ -132,15 +106,6 @@ uword_t::uword_t() : _data(0) {}
 uword_t::uword_t(uword_t const & value) : _data(value._data) {}
 uword_t::uword_t(unsigned short int value) : _data(value) {}
 
-std::string uword_t::encodeBinary()
-{
-	std::string s(2, 0);
-
-	s[0] = (_data     ) & 0xFF;
-	s[1] = (_data >> 8) & 0xFF;
-
-	return s;
-}
 void uword_t::encodeBinary(std::ostream & out)
 {
 	out.put((_data     ) & 0xFF);
