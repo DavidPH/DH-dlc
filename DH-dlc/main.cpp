@@ -107,8 +107,9 @@ void usage()
 		"The Library options (lib-*) are additive (except where noted).\n"
 		"lib-udmf-strict will replace lib-udmf if both are enabled.\n"
 		"\n"
-		"The Output options (*-out) are mutually exclusive.\n"
+		"The Output options (output-*) are mutually exclusive.\n"
 		"If more than one is selected, the first listed here is used.\n"
+		"Except for output-extradata which is additive for certain outputs.\n"
 		"\n"
 		"Options:\n"
 		"  -h, --help     displays this text and exits\n"
@@ -137,12 +138,14 @@ void usage()
 		"  -C, --no-case-sensitive  reads source files as case insensitive\n"
 		"\n"
 		"Output:\n"
-		"      --no-any-out             disables any output\n"
-		"      --do-hexen-binary-out    output binary files in Hexen format\n"
-		"      --do-strife-binary-out   output binary files in Strife format\n"
-		"      --do-heretic-binary-out  output binary files in Heretic format\n"
-		"      --do-doom-binary-out     output binary files in Doom format\n"
-		"      --do-udmf-text-out       output text files in UDMF format [default]\n"
+		"      --no-output-any        disables any output\n"
+		"      --do-output-extradata  output files in ExtraData format\n"
+		"      --do-output-hexen      output files in Hexen format\n"
+		"      --do-output-strife     output files in Strife format\n"
+		"      --do-output-heretic    output files in Heretic format\n"
+		"      --do-output-doom       output files in Doom format\n"
+		"      --do-output-udmf       output files in UDMF format [default]\n"
+		"      --extradata            output ExtraData to specified file\n"
 		"\n"
 		"Debugging:\n"
 		"      --debug       enables debugging messages\n"
@@ -171,8 +174,7 @@ int main(int argc, char** argv)
 	if (option_arg.size() == 1 && option_arg[0] == "-")
 	{
 		if (option_error_limit_default) option_error_limit = 0;
-		if (option_interactive_default) option_interactive = true;
-		if (option_out_any_default)     option_out_any     = false;
+		if (option_output_any_default)  option_output_any  = false;
 
 		if (option_directory_default)
 		{
@@ -275,9 +277,9 @@ int main(int argc, char** argv)
 
 
 
-	if (!option_out_any) return 0;
+	if (!option_output_any) return 0;
 
-	if (option_out_binary_doom || option_out_binary_heretic || option_out_binary_hexen || option_out_binary_strife)
+	if (option_output_doom || option_output_heretic || option_output_hexen || option_output_strife)
 	{
 		#define OPENFILE(NAME)						\
 		std::string name##NAME(#NAME);					\
@@ -302,6 +304,15 @@ int main(int argc, char** argv)
 
 		#undef OPENFILE
 
+		std::ofstream fileExtraData;
+
+		if (option_output_extradata)
+		{
+			std::string nameExtraData(option_extradata);
+
+			fileExtraData.open((option_directory + nameExtraData).c_str());
+		}
+
 		FOREACH_T(std::list<obj_t>, it, global_object_list)
 		{
 			obj_t thisObj(*it);
@@ -310,15 +321,35 @@ int main(int argc, char** argv)
 			try
 			{
 				if (thisType == type_name_linedef())
+				{
 					fileLINEDEFS << thisObj->encode(LINEDEF);
+				}
 				else if (thisType == type_name_sector())
+				{
 					fileSECTORS  << thisObj->encode(SECTOR);
+				}
 				else if (thisType == type_name_sidedef())
+				{
 					fileSIDEDEFS << thisObj->encode(SIDEDEF);
+				}
 				else if (thisType == type_name_thing())
+				{
 					fileTHINGS   << thisObj->encode(THING);
+				}
 				else if (thisType == type_name_vertex())
+				{
 					fileVERTEXES << thisObj->encode(VERTEX);
+				}
+
+				if (option_output_extradata)
+				{
+					std::string stringExtraData(thisObj->encodeExtraData());
+
+					if (!stringExtraData.empty())
+					{
+						fileExtraData << stringExtraData << "\n\n";
+					}
+				}
 			}
 			catch (CompilerException& e)
 			{
@@ -331,10 +362,11 @@ int main(int argc, char** argv)
 		fileSIDEDEFS.close();
 		fileTHINGS.close();
 		fileVERTEXES.close();
+		fileExtraData.close();
 
 		// ZDoom requires a BEHAVIOR lump to signify a Hexen map.
 		// TODO: Make this an option.
-		if (option_out_binary_hexen)
+		if (option_output_hexen)
 		{
 			std::string nameBEHAVIOR("BEHAVIOR");
 			if (option_use_file_extensions)
@@ -348,7 +380,7 @@ int main(int argc, char** argv)
 			fileBEHAVIOR.close();
 		}
 	}
-	else if (option_out_text_udmf)
+	else if (option_output_udmf)
 	{
 		std::string nameTEXTMAP("TEXTMAP");
 		if (option_use_file_extensions)

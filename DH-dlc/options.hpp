@@ -44,18 +44,17 @@ PROCESS_OPTION_EXTERN_bool(case_upper);
 
 PROCESS_OPTION_EXTERN_bool(force_default_types);
 
-PROCESS_OPTION_EXTERN_bool(interactive);
-
 PROCESS_OPTION_EXTERN_bool(lib_std);
 PROCESS_OPTION_EXTERN_bool(lib_udmf);
 PROCESS_OPTION_EXTERN_bool(lib_udmf_strict);
 
-PROCESS_OPTION_EXTERN_bool(out_any);
-PROCESS_OPTION_EXTERN_bool(out_binary_doom);
-PROCESS_OPTION_EXTERN_bool(out_binary_heretic);
-PROCESS_OPTION_EXTERN_bool(out_binary_hexen);
-PROCESS_OPTION_EXTERN_bool(out_binary_strife);
-PROCESS_OPTION_EXTERN_bool(out_text_udmf);
+PROCESS_OPTION_EXTERN_bool(output_any);
+PROCESS_OPTION_EXTERN_bool(output_doom);
+PROCESS_OPTION_EXTERN_bool(output_extradata);
+PROCESS_OPTION_EXTERN_bool(output_heretic);
+PROCESS_OPTION_EXTERN_bool(output_hexen);
+PROCESS_OPTION_EXTERN_bool(output_strife);
+PROCESS_OPTION_EXTERN_bool(output_udmf);
 
 PROCESS_OPTION_EXTERN_bool(strict_strings);
 PROCESS_OPTION_EXTERN_bool(strict_types);
@@ -66,6 +65,7 @@ PROCESS_OPTION_EXTERN_int(error_limit);
 PROCESS_OPTION_EXTERN_int(precision);
 
 PROCESS_OPTION_EXTERN_string(directory);
+PROCESS_OPTION_EXTERN_string(extradata);
 PROCESS_OPTION_EXTERN_string(map_name);
 PROCESS_OPTION_EXTERN_string(script_acs);
 

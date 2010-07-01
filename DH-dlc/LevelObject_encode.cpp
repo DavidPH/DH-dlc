@@ -272,7 +272,7 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 
 	if (binType == LINEDEF)
 	{
-		if (option_out_binary_hexen)
+		if (option_output_hexen)
 		{
 			binReturn.reserve(16);
 
@@ -468,7 +468,7 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 
 	if (binType == THING)
 	{
-		if (option_out_binary_hexen)
+		if (option_output_hexen)
 		{
 			binReturn.reserve(20);
 
@@ -482,7 +482,7 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 			// 12-13
 			if (hasObject(name_flags))
 				binReturn += getObject(name_flags)->encode(USHORT);
-			if (option_out_binary_hexen)
+			if (option_output_hexen)
 			{
 				int flags = 0;
 
@@ -526,7 +526,7 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 			// 8-9
 			if (hasObject(name_flags))
 				binReturn += getObject(name_flags)->encode(USHORT);
-			else if (option_out_binary_strife)
+			else if (option_output_strife)
 			{
 				int flags = 0;
 
@@ -583,6 +583,17 @@ std::string LevelObject::encode(LevelObjectBinaryType binType)
 	#undef CHECKFLAG
 	#undef CHECKFLAGNOT
 	#undef CHECKVALUE
+}
+
+std::string LevelObject::encodeExtraData()
+{
+	if (data.getType() != any_t::OBJMAP_T)
+		return "";
+
+	if (get_lo_type(type) != LO_TYPE_OBJECT)
+		return "";
+
+	return "";
 }
 
 
