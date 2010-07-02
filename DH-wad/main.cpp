@@ -134,7 +134,7 @@ int main(int argc, char** argv)
 
 	if (option_explicit)
 	{
-		for (size_t index = 0; index+1 < option_arg.size(); ++index)
+		for (size_t index = 0; index+1 < option_arg.size(); index += 2)
 		{
 			std::string const & nameFile = option_arg[index+0];
 			std::string const & nameLump = option_arg[index+1];
