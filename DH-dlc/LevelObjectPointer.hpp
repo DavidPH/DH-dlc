@@ -43,10 +43,8 @@ class LevelObjectPointer
 
 		bool isLastPointer() const;
 
-		LevelObject       * operator -> ();
-		LevelObject const * operator -> () const;
-		LevelObject       & operator *  ();
-		LevelObject const & operator *  () const;
+		LevelObject * operator -> () const;
+		LevelObject & operator *  () const;
 
 		bool operator == (LevelObjectPointer const &) const;
 
@@ -78,10 +76,8 @@ inline bool LevelObjectPointer::isLastPointer() const
 	else    return true;
 }
 
-inline LevelObject       * LevelObjectPointer::operator -> ()       {return  _p;}
-inline LevelObject const * LevelObjectPointer::operator -> () const {return  _p;}
-inline LevelObject       & LevelObjectPointer::operator *  ()       {return *_p;}
-inline LevelObject const & LevelObjectPointer::operator *  () const {return *_p;}
+inline LevelObject * LevelObjectPointer::operator -> () const {return  _p;}
+inline LevelObject & LevelObjectPointer::operator *  () const {return *_p;}
 
 inline bool LevelObjectPointer::operator == (const LevelObjectPointer & other) const
 {
