@@ -57,75 +57,76 @@
 
 
 // The initialization list for the constructors are all basically the same.
-#define LevelObject_INIT_LIST(TYPE, DATA) _index(-1), _refCount(0), data(DATA), type(TYPE), addGlobal(true), isBreaked(false), isCompounded(false), isContinued(false), isReturned(false)
+#define LevelObject_INIT_LIST(TYPE, DATA) _index(-1), _refCount(0), _data(DATA), _type(TYPE), _addGlobal(true), _isBreaked(false), _isCompounded(false), _isContinued(false), _isReturned(false)
 
 LevelObject::LevelObject() : LevelObject_INIT_LIST(, objmap_t()) {}
-LevelObject::LevelObject(LevelObject const & other) : LevelObject_INIT_LIST(other.type, other.data) {}
+LevelObject::LevelObject(LevelObject const & other) : LevelObject_INIT_LIST(other._type, other._data) {}
 LevelObject::LevelObject(std::string const & type) : LevelObject_INIT_LIST(type, false)
 {
-	     if (type == type_name_bool())       data = bool_t(0);
+	     if (_type == type_name_bool())       _data = bool_t(0);
 
-	else if (type == type_name_shortint())   data = int_s_t(0);
-	else if (type == type_name_int())        data = int_t(int_s_t(0));
-	else if (type == type_name_longint())    data = int_l_t(0);
+	else if (_type == type_name_shortint())   _data = int_s_t(0);
+	else if (_type == type_name_int())        _data = int_t(int_s_t(0));
+	else if (_type == type_name_longint())    _data = int_l_t(0);
 
-	else if (type == type_name_shortfloat()) data = real_s_t(0);
-	else if (type == type_name_float())      data = real_t(0);
-	else if (type == type_name_longfloat())  data = real_l_t(0);
+	else if (_type == type_name_shortfloat()) _data = real_s_t(0);
+	else if (_type == type_name_float())      _data = real_t(0);
+	else if (_type == type_name_longfloat())  _data = real_l_t(0);
 
-	else if (type == type_name_string())     data = string_t("");
-	else if (type == type_name_string8())    data = string8_t("");
+	else if (_type == type_name_string())     _data = string_t("");
+	else if (_type == type_name_string8())    _data = string8_t("");
 
-	else if (type == type_name_sword())      data = sword_t(0);
+	else if (_type == type_name_sword())      _data = sword_t(0);
 
-	else if (type == type_name_ubyte())      data = ubyte_t(0);
+	else if (_type == type_name_ubyte())      _data = ubyte_t(0);
 
-	else if (type == type_name_uword())      data = uword_t(0);
+	else if (_type == type_name_uword())      _data = uword_t(0);
 
-	else                                     data = objmap_t();
+	else                                      _data = objmap_t();
 }
+LevelObject::LevelObject(std::string const & type, any_t const & data) : LevelObject_INIT_LIST(type, data) {}
 LevelObject::LevelObject(std::string const & type, std::string const & value) : LevelObject_INIT_LIST(type, false)
 {
-	     if (type == type_name_bool())       data = parse_bool(value);
+	     if (_type == type_name_bool())       _data = parse_bool(value);
 
-	else if (type == type_name_shortint())   data = parse_int_s(value);
-	else if (type == type_name_int())        data = parse_int(value);
-	else if (type == type_name_longint())    data = parse_int_l(value);
+	else if (_type == type_name_shortint())   _data = parse_int_s(value);
+	else if (_type == type_name_int())        _data = parse_int(value);
+	else if (_type == type_name_longint())    _data = parse_int_l(value);
 
-	else if (type == type_name_shortfloat()) data = parse_real_s(value);
-	else if (type == type_name_float())      data = parse_real(value);
-	else if (type == type_name_longfloat())  data = parse_real_l(value);
+	else if (_type == type_name_shortfloat()) _data = parse_real_s(value);
+	else if (_type == type_name_float())      _data = parse_real(value);
+	else if (_type == type_name_longfloat())  _data = parse_real_l(value);
 
-	else if (type == type_name_string())     data = parse_string(value);
-	else if (type == type_name_string8())    data = parse_string8(value);
+	else if (_type == type_name_string())     _data = parse_string(value);
+	else if (_type == type_name_string8())    _data = parse_string8(value);
 
-	else if (type == type_name_sword())      data = parse_sword(value);
+	else if (_type == type_name_sword())      _data = parse_sword(value);
 
-	else if (type == type_name_ubyte())      data = parse_ubyte(value);
+	else if (_type == type_name_ubyte())      _data = parse_ubyte(value);
 
-	else if (type == type_name_uword())      data = parse_uword(value);
+	else if (_type == type_name_uword())      _data = parse_uword(value);
 
-	else                                     data = objmap_t();
+	else                                      _data = objmap_t();
 }
 LevelObject::LevelObject(std::string const & type, std::string const & data, std::vector<std::string> const & base) : LevelObject_INIT_LIST(type, objmap_t())
 {
-	++this->_refCount;
+	++_refCount;
 
 	for (size_t index = 0; index < base.size(); ++index)
-		this->addBase(base[index]);
+		addBase(base[index]);
 
-	this->addData(data);
+	addData(data);
 
 	// (data.size() != 0), so that we don't compound if no keys have been set.
 	// Used to be (this->dataObject.size() != 0), but this would cause derived
 	// compound objects to be compounded even if they were no different.
-	if ((get_lo_type(this->type) == LO_TYPE_COMPOUNDOBJECT) && (!this->isCompounded && data.size() != 0))
+	if ((get_lo_type(_type) == LO_TYPE_COMPOUNDOBJECT) && (!_isCompounded && data.size() != 0))
 	{
-		this->addData(get_compound_object(this->type), this->type);
-		this->isCompounded = true;
+		addData(get_compound_object(_type), _type);
+		_isCompounded = true;
 	}
 
-	--this->_refCount;
+	--_refCount;
 }
 
 LevelObject::~LevelObject() {}
@@ -140,6 +141,10 @@ obj_t LevelObject::create(std::string const & type)
 {
 	return new LevelObject(type);
 }
+obj_t LevelObject::create(std::string const & type, any_t const & data)
+{
+	return new LevelObject(type, data);
+}
 obj_t LevelObject::create(std::string const & type, std::string const & value)
 {
 	return new LevelObject(type, value);
@@ -153,9 +158,7 @@ obj_t LevelObject::create(std::string const & type, std::string const & data, st
 
 obj_t LevelObject::getObject(name_t const & name)
 {
-	//std::cerr << "LevelObject::getObject('" << name << "')\n";
-
-	if (this->data.getType() != any_t::OBJMAP_T)
+	if (_data.getType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
 
 	if (name.size() != 1)
@@ -164,18 +167,15 @@ obj_t LevelObject::getObject(name_t const & name)
 			return global_object->getObject(name.getRest());
 
 		if (name.getString() == misc_name_this())
-			return this->getObject(name.getRest());
+			return getObject(name.getRest());
 
-		return this->getObject(name.getFirst())->getObject(name.getRest());
+		return getObject(name.getFirst())->getObject(name.getRest());
 	}
 
-	objmap_t::iterator elemIterator = this->data.getObjMap().find(name);
+	objmap_t::iterator elemIterator = _data.getObjMap().find(name);
 
-	if (elemIterator == this->data.getObjMap().end())
+	if (elemIterator == _data.getObjMap().end())
 	{
-		//FOREACH_T(objmap_t, it, this->data.getObjMap())
-		//	std::cerr << "  " << it->first << '\n';
-
 		throw NoSuchElementException(name.getString());
 	}
 
@@ -184,7 +184,7 @@ obj_t LevelObject::getObject(name_t const & name)
 
 bool LevelObject::hasObject(name_t const & name)
 {
-	if (this->data.getType() != any_t::OBJMAP_T)
+	if (_data.getType() != any_t::OBJMAP_T)
 		return false;
 
 	if (name.size() != 1)
@@ -193,17 +193,17 @@ bool LevelObject::hasObject(name_t const & name)
 			return global_object->hasObject(name.getRest());
 
 		if (name.getString() == misc_name_this())
-			return this->hasObject(name.getRest());
+			return hasObject(name.getRest());
 
-		if (!this->hasObject(name.getFirst()))
+		if (!hasObject(name.getFirst()))
 			return false;
 
-		return this->getObject(name.getFirst())->hasObject(name.getRest());
+		return getObject(name.getFirst())->hasObject(name.getRest());
 	}
 
-	objmap_t::iterator elemIterator = this->data.getObjMap().find(name);
+	objmap_t::iterator elemIterator = _data.getObjMap().find(name);
 
-	if (elemIterator == this->data.getObjMap().end())
+	if (elemIterator == _data.getObjMap().end())
 		return false;
 
 	return true;
@@ -213,40 +213,47 @@ bool LevelObject::hasObject(name_t const & name)
 
 std::string const & LevelObject::getType() const
 {
-	return type;
+	return _type;
 }
 
 
 
 void LevelObject::setType(std::string const & newType, std::string const & value)
 {
-	if (this->type.empty())
+	if (_type.empty())
 		throw InvalidTypeException("cannot change type");
 
-	this->type = newType;
+	_type = newType;
 
-	     if (type == type_name_bool())       data = parse_bool(value);
+	     if (_type == type_name_bool())       _data = parse_bool(value);
 
-	else if (type == type_name_shortint())   data = parse_int_s(value);
-	else if (type == type_name_int())        data = parse_int(value);
-	else if (type == type_name_longint())    data = parse_int_l(value);
+	else if (_type == type_name_shortint())   _data = parse_int_s(value);
+	else if (_type == type_name_int())        _data = parse_int(value);
+	else if (_type == type_name_longint())    _data = parse_int_l(value);
 
-	else if (type == type_name_shortfloat()) data = parse_real_s(value);
-	else if (type == type_name_float())      data = parse_real(value);
-	else if (type == type_name_longfloat())  data = parse_real_l(value);
+	else if (_type == type_name_shortfloat()) _data = parse_real_s(value);
+	else if (_type == type_name_float())      _data = parse_real(value);
+	else if (_type == type_name_longfloat())  _data = parse_real_l(value);
 
-	else if (type == type_name_string())     data = parse_string(value);
+	else if (_type == type_name_string())     _data = parse_string(value);
+	else if (_type == type_name_string8())    _data = parse_string8(value);
 
-	else if (data.getType() != any_t::OBJMAP_T) data = to_obj(data)->data.getObjMap();
+	else if (_type == type_name_sword())      _data = parse_sword(value);
+
+	else if (_type == type_name_ubyte())      _data = parse_ubyte(value);
+
+	else if (_type == type_name_uword())      _data = parse_uword(value);
+
+	else if (_data.getType() != any_t::OBJMAP_T) _data = to_obj(_data)->_data.getObjMap();
 }
 
 
 
 std::ostream & LevelObject::printOn (std::ostream & out, int indent) const
 {
-	out << '[' << this->getType() << ']';
+	out << '[' << getType() << ']';
 
-	if (this->data.getType() == any_t::OBJMAP_T)
+	if (_data.getType() == any_t::OBJMAP_T)
 	{
 		out << '\n';
 
@@ -254,7 +261,7 @@ std::ostream & LevelObject::printOn (std::ostream & out, int indent) const
 
 		out << "{\n";
 
-		FOREACH_T_CONST(objmap_t, it, this->data.getObjMap())
+		FOREACH_T_CONST(objmap_t, it, _data.getObjMap())
 		{
 			for (int i = indent + 1; i; --i) out << "  ";
 
@@ -267,7 +274,7 @@ std::ostream & LevelObject::printOn (std::ostream & out, int indent) const
 		out << '}';
 	}
 	else
-		out << ' ' << make_string(this->data) << ';';
+		out << ' ' << make_string(_data) << ';';
 
 	out << '\n';
 
@@ -278,8 +285,8 @@ std::ostream & LevelObject::printOn (std::ostream & out, int indent) const
 
 LevelObject & LevelObject::operator = (LevelObject const & other)
 {
-	this->data = other.data;
-	this->type = other.type;
+	_data = other._data;
+	_type = other._type;
 
 	return *this;
 }
@@ -290,8 +297,8 @@ std::ostream & operator << (std::ostream & out, LevelObject const & in)
 {
 	out << '[' << in.getType() << ']';
 
-	if (in.data.getType() != any_t::OBJMAP_T)
-		out << ' ' << make_string(in.data);
+	if (in._data.getType() != any_t::OBJMAP_T)
+		out << ' ' << make_string(in._data);
 
 	return out;
 }

@@ -42,11 +42,11 @@
 #ifndef LEVELOBJECT_H
 #define LEVELOBJECT_H
 
-#include <ostream>
-#include <vector>
-
 #include "LevelObjectData.hpp"
 #include "types.hpp"
+
+#include <ostream>
+#include <vector>
 
 class SourceToken;
 
@@ -80,7 +80,7 @@ class LevelObject
 		void encodeHexen    (std::ostream & out);
 		void encodeStrife   (std::ostream & out);
 
-		any_t const & getData() const {return data;}
+		any_t const & getData() const {return _data;}
 
 		std::ostream& printOn(std::ostream&, int depth = 0) const;
 
@@ -88,6 +88,7 @@ class LevelObject
 
 		static obj_t create();
 		static obj_t create(std::string const & type);
+		static obj_t create(std::string const & type, any_t const & data);
 		static obj_t create(std::string const & type, std::string const & value);
 		static obj_t create(std::string const & type, std::string const & data, std::vector<std::string> const & base);
 
@@ -102,21 +103,22 @@ class LevelObject
 		LevelObject();
 		LevelObject(LevelObject const &);
 		LevelObject(std::string const &);
+		LevelObject(std::string const &, any_t const &);
 		LevelObject(std::string const &, std::string const &);
 		LevelObject(std::string const &, std::string const &, std::vector<std::string> const &);
 
 		size_t _index;
 		size_t _refCount;
 
-		any_t data;
+		any_t _data;
 
-		std::string type;
+		std::string _type;
 
-		unsigned addGlobal    : 1;
-		unsigned isBreaked    : 1; // #break
-		unsigned isCompounded : 1; // #compound
-		unsigned isContinued  : 1; // #continue
-		unsigned isReturned   : 1; // #return
+		unsigned _addGlobal    : 1;
+		unsigned _isBreaked    : 1; // #break
+		unsigned _isCompounded : 1; // #compound
+		unsigned _isContinued  : 1; // #continue
+		unsigned _isReturned   : 1; // #return
 };
 
 

@@ -152,7 +152,7 @@ CHECKVALUE1_BINARY(NAME, TYPE) \
 
 std::string LevelObject::encode(bool topLevel)
 {
-	switch (data.getType())
+	switch (_data.getType())
 	{
 		case any_t::BOOL_T:
 
@@ -166,21 +166,21 @@ std::string LevelObject::encode(bool topLevel)
 			if (topLevel)
 				return "";
 
-			return make_string(data);
+			return make_string(_data);
 
 		case any_t::OBJMAP_T:
 		{
 			// TODO: LO_TYPE_INLINE handling.
-			if (get_lo_type(type) != LO_TYPE_OBJECT)
+			if (get_lo_type(_type) != LO_TYPE_OBJECT)
 				return "";
 
 			std::ostringstream oss;
 
 			if (topLevel)
 			{
-				oss << type << " // " << get_object_index(this) << "\n{\n";
+				oss << _type << " // " << get_object_index(this) << "\n{\n";
 
-				FOREACH_T(objmap_t, it, data.getObjMap())
+				FOREACH_T(objmap_t, it, _data.getObjMap())
 					oss << '\t' << it->first << '=' << it->second->encode(false) << ";\n";
 
 				oss << "}";
@@ -199,7 +199,7 @@ std::string LevelObject::encode(bool topLevel)
 				return "";
 
 			std::ostringstream oss;
-			std::istringstream iss(data.getString().makeString());
+			std::istringstream iss(_data.getString().makeString());
 
 			oss.put('"');
 
@@ -231,19 +231,19 @@ std::string LevelObject::encode(bool topLevel)
 
 void LevelObject::encodeDoom(std::ostream & out)
 {
-	switch (data.getType())
+	switch (_data.getType())
 	{
 	case any_t::OBJMAP_T: break;
 
-	case any_t::STRING8_T: data.getString8().encodeBinary(out); return;
-	case any_t::SWORD_T:   data.getSWord().encodeBinary(out);   return;
-	case any_t::UWORD_T:   data.getUWord().encodeBinary(out);   return;
+	case any_t::STRING8_T: _data.getString8().encodeBinary(out); return;
+	case any_t::SWORD_T:   _data.getSWord().encodeBinary(out);   return;
+	case any_t::UWORD_T:   _data.getUWord().encodeBinary(out);   return;
 
 	default:
 		throw InvalidTypeException("internal error:unknown data.getType() for Doom output");
 	}
 
-	if (type == type_name_linedef())
+	if (_type == type_name_linedef())
 	{
 		uword_t v1;        // 00-01
 		uword_t v2;        // 02-03
@@ -298,7 +298,7 @@ void LevelObject::encodeDoom(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_sector())
+	if (_type == type_name_sector())
 	{
 		CHECKVALUE2_BINARY(name_heightfloor,    sword,     0); // 00-01
 		CHECKVALUE2_BINARY(name_heightceiling,  sword,     0); // 02-03
@@ -311,7 +311,7 @@ void LevelObject::encodeDoom(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_sidedef())
+	if (_type == type_name_sidedef())
 	{
 		CHECKVALUE2_BINARY(name_offsetx,       sword,    0); // 00-01
 		CHECKVALUE2_BINARY(name_offsety,       sword,    0); // 02-03
@@ -323,7 +323,7 @@ void LevelObject::encodeDoom(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_thing())
+	if (_type == type_name_thing())
 	{
 		sword_t x;     // 00-01
 		sword_t y;     // 02-03
@@ -372,7 +372,7 @@ void LevelObject::encodeDoom(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_vertex())
+	if (_type == type_name_vertex())
 	{
 		CHECKVALUE2_BINARY(name_x, sword, 0); // 00-01
 		CHECKVALUE2_BINARY(name_y, sword, 0); // 02-03
@@ -385,10 +385,10 @@ void LevelObject::encodeDoom(std::ostream & out)
 
 void LevelObject::encodeExtraData(std::ostream & out)
 {
-	if (data.getType() != any_t::OBJMAP_T)
+	if (_data.getType() != any_t::OBJMAP_T)
 		return;
 
-	if (type == type_name_linedef())
+	if (_type == type_name_linedef())
 	{
 		int_l_t special = to_int_l(getObject(name_special));
 
@@ -404,7 +404,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 
 			out << "\tspecial ";
 
-			if (extradata_special->data.getType() == any_t::STRING_T)
+			if (extradata_special->_data.getType() == any_t::STRING_T)
 				out << to_string(extradata_special);
 			else
 				out << to_int_l(extradata_special);
@@ -421,7 +421,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 
 			out << "\textflags ";
 
-			if (extradata_flags->data.getType() == any_t::STRING_T)
+			if (extradata_flags->_data.getType() == any_t::STRING_T)
 				out << to_string(extradata_flags);
 			else
 				out << to_int_l(extradata_flags);
@@ -514,7 +514,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_thing())
+	if (_type == type_name_thing())
 	{
 		int_l_t type = to_int_l(getObject(name_type));
 
@@ -530,7 +530,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 
 			out << "\ttype ";
 
-			if (extradata_type->data.getType() == any_t::STRING_T)
+			if (extradata_type->_data.getType() == any_t::STRING_T)
 				out << to_string(extradata_type);
 			else
 				out << to_int_l(extradata_type);
@@ -544,7 +544,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 
 			out << "\toptions ";
 
-			if (extradata_flags->data.getType() == any_t::STRING_T)
+			if (extradata_flags->_data.getType() == any_t::STRING_T)
 				out << to_string(extradata_flags);
 			else
 				out << to_int_l(extradata_flags);
@@ -640,19 +640,19 @@ void LevelObject::encodeExtraData(std::ostream & out)
 
 void LevelObject::encodeHeretic(std::ostream & out)
 {
-	switch (data.getType())
+	switch (_data.getType())
 	{
 	case any_t::OBJMAP_T: break;
 
-	case any_t::STRING8_T: data.getString8().encodeBinary(out); return;
-	case any_t::SWORD_T:   data.getSWord().encodeBinary(out);   return;
-	case any_t::UWORD_T:   data.getUWord().encodeBinary(out);   return;
+	case any_t::STRING8_T: _data.getString8().encodeBinary(out); return;
+	case any_t::SWORD_T:   _data.getSWord().encodeBinary(out);   return;
+	case any_t::UWORD_T:   _data.getUWord().encodeBinary(out);   return;
 
 	default:
 		throw InvalidTypeException("internal error:unknown data.getType() for Heretic output");
 	}
 
-	if (type == type_name_linedef())
+	if (_type == type_name_linedef())
 	{
 		CHECKVALUE2_BINARY(name_v1,        uword, -1); // 00-01
 		CHECKVALUE2_BINARY(name_v2,        uword, -1); // 02-03
@@ -681,7 +681,7 @@ void LevelObject::encodeHeretic(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_sector())
+	if (_type == type_name_sector())
 	{
 		CHECKVALUE2_BINARY(name_heightfloor,    sword,     0); // 00-01
 		CHECKVALUE2_BINARY(name_heightceiling,  sword,     0); // 02-03
@@ -694,7 +694,7 @@ void LevelObject::encodeHeretic(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_sidedef())
+	if (_type == type_name_sidedef())
 	{
 		CHECKVALUE2_BINARY(name_offsetx,       sword,    0); // 00-01
 		CHECKVALUE2_BINARY(name_offsety,       sword,    0); // 02-03
@@ -706,7 +706,7 @@ void LevelObject::encodeHeretic(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_thing())
+	if (_type == type_name_thing())
 	{
 		CHECKVALUE2_BINARY(name_x,     sword, 0); // 00-01
 		CHECKVALUE2_BINARY(name_y,     sword, 0); // 02-03
@@ -733,7 +733,7 @@ void LevelObject::encodeHeretic(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_vertex())
+	if (_type == type_name_vertex())
 	{
 		CHECKVALUE2_BINARY(name_x, sword, 0); // 00-01
 		CHECKVALUE2_BINARY(name_y, sword, 0); // 02-03
@@ -746,20 +746,20 @@ void LevelObject::encodeHeretic(std::ostream & out)
 
 void LevelObject::encodeHexen(std::ostream & out)
 {
-	switch (data.getType())
+	switch (_data.getType())
 	{
 	case any_t::OBJMAP_T: break;
 
-	case any_t::STRING8_T: data.getString8().encodeBinary(out); return;
-	case any_t::SWORD_T:   data.getSWord().encodeBinary(out);   return;
-	case any_t::UBYTE_T:   data.getUByte().encodeBinary(out);   return;
-	case any_t::UWORD_T:   data.getUWord().encodeBinary(out);   return;
+	case any_t::STRING8_T: _data.getString8().encodeBinary(out); return;
+	case any_t::SWORD_T:   _data.getSWord().encodeBinary(out);   return;
+	case any_t::UBYTE_T:   _data.getUByte().encodeBinary(out);   return;
+	case any_t::UWORD_T:   _data.getUWord().encodeBinary(out);   return;
 
 	default:
 		throw InvalidTypeException("internal error:unknown data.getType() for Hexen output");
 	}
 
-	if (type == type_name_linedef())
+	if (_type == type_name_linedef())
 	{
 		uword_t v1;        // 00-01
 		uword_t v2;        // 02-03
@@ -886,7 +886,7 @@ void LevelObject::encodeHexen(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_sector())
+	if (_type == type_name_sector())
 	{
 		CHECKVALUE2_BINARY(name_heightfloor,    sword,     0); // 00-01
 		CHECKVALUE2_BINARY(name_heightceiling,  sword,     0); // 02-03
@@ -899,7 +899,7 @@ void LevelObject::encodeHexen(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_sidedef())
+	if (_type == type_name_sidedef())
 	{
 		CHECKVALUE2_BINARY(name_offsetx,       sword,    0); // 00-01
 		CHECKVALUE2_BINARY(name_offsety,       sword,    0); // 02-03
@@ -911,7 +911,7 @@ void LevelObject::encodeHexen(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_thing())
+	if (_type == type_name_thing())
 	{
 		CHECKVALUE2_BINARY(name_id,      uword,  0); // 00-01
 		CHECKVALUE2_BINARY(name_x,       sword,  0); // 02-03
@@ -949,7 +949,7 @@ void LevelObject::encodeHexen(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_vertex())
+	if (_type == type_name_vertex())
 	{
 		CHECKVALUE2_BINARY(name_x, sword, 0); // 00-01
 		CHECKVALUE2_BINARY(name_y, sword, 0); // 02-03
@@ -962,19 +962,19 @@ void LevelObject::encodeHexen(std::ostream & out)
 
 void LevelObject::encodeStrife(std::ostream & out)
 {
-	switch (data.getType())
+	switch (_data.getType())
 	{
 	case any_t::OBJMAP_T: break;
 
-	case any_t::STRING8_T: data.getString8().encodeBinary(out); return;
-	case any_t::SWORD_T:   data.getSWord().encodeBinary(out);   return;
-	case any_t::UWORD_T:   data.getUWord().encodeBinary(out);   return;
+	case any_t::STRING8_T: _data.getString8().encodeBinary(out); return;
+	case any_t::SWORD_T:   _data.getSWord().encodeBinary(out);   return;
+	case any_t::UWORD_T:   _data.getUWord().encodeBinary(out);   return;
 
 	default:
 		throw InvalidTypeException("internal error:unknown data.getType() for Strife output");
 	}
 
-	if (type == type_name_linedef())
+	if (_type == type_name_linedef())
 	{
 		CHECKVALUE2_BINARY(name_v1,        uword, -1); // 00-01
 		CHECKVALUE2_BINARY(name_v2,        uword, -1); // 02-03
@@ -1004,7 +1004,7 @@ void LevelObject::encodeStrife(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_sector())
+	if (_type == type_name_sector())
 	{
 		CHECKVALUE2_BINARY(name_heightfloor,    sword,     0); // 00-01
 		CHECKVALUE2_BINARY(name_heightceiling,  sword,     0); // 02-03
@@ -1017,7 +1017,7 @@ void LevelObject::encodeStrife(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_sidedef())
+	if (_type == type_name_sidedef())
 	{
 		CHECKVALUE2_BINARY(name_offsetx,       sword,    0); // 00-01
 		CHECKVALUE2_BINARY(name_offsety,       sword,    0); // 02-03
@@ -1029,7 +1029,7 @@ void LevelObject::encodeStrife(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_thing())
+	if (_type == type_name_thing())
 	{
 		CHECKVALUE2_BINARY(name_x,     sword, 0); // 00-01
 		CHECKVALUE2_BINARY(name_y,     sword, 0); // 02-03
@@ -1055,7 +1055,7 @@ void LevelObject::encodeStrife(std::ostream & out)
 		return;
 	}
 
-	if (type == type_name_vertex())
+	if (_type == type_name_vertex())
 	{
 		CHECKVALUE2_BINARY(name_x, sword, 0); // 00-01
 		CHECKVALUE2_BINARY(name_y, sword, 0); // 02-03

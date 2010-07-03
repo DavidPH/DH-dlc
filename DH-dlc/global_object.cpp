@@ -46,12 +46,12 @@ static std::map<std::string, size_t> type_counts;
 
 void add_object(name_t const & name, obj_t newObject)
 {
-	if (newObject == NULL || !newObject->addGlobal) return;
+	if (newObject == NULL || !newObject->_addGlobal) return;
 
 	// Must not have duplicate entries in list...
-	newObject->addGlobal = false;
+	newObject->_addGlobal = false;
 
-	newObject->_index = type_counts[newObject->type]++;
+	newObject->_index = type_counts[newObject->_type]++;
 
 	global_object_list.push_back(newObject);
 }

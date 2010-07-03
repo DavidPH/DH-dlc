@@ -64,15 +64,15 @@
 
 void LevelObject::addBase(std::string const & base)
 {
-	if (this->data.getType() != any_t::OBJMAP_T)
+	if (_data.getType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
 
 	obj_t other = get_object(name_t(base));
 
-	if (other->data.getType() != any_t::OBJMAP_T)
+	if (other->_data.getType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
 
-	this->data.getObjMap().insert(other->data.getObjMap().begin(), other->data.getObjMap().end());
+	_data.getObjMap().insert(other->_data.getObjMap().begin(), other->_data.getObjMap().end());
 }
 
 void LevelObject::addData(std::string const & data, std::string const & name)
@@ -85,14 +85,14 @@ void LevelObject::addData(std::string const & data, std::string const & name)
 
 	while (ss)
 	{
-		if (this->isBreaked || this->isContinued || this->isReturned)
+		if (_isBreaked || _isContinued || _isReturned)
 			return;
 
 		try
 		{
 			st.clear();
 			ss >> st;
-			this->addObject(name_t(st.getName()), st);
+			addObject(name_t(st.getName()), st);
 		}
 		catch (CompilerException& e)
 		{
@@ -118,7 +118,7 @@ bool LevelObject::addDataIf(std::string const & data, std::string const & value1
 	if (value1.empty() && value2.empty() && opString.empty())
 	{
 		last_if_result = true;
-		this->addData(data);
+		addData(data);
 		last_if_result = true;
 		return true;
 	}
@@ -126,7 +126,7 @@ bool LevelObject::addDataIf(std::string const & data, std::string const & value1
 	int cmpResult;
 
 	if (type.empty())
-		cmpResult = cmp( get_object(name_t(value1))->data, get_object(name_t(value2))->data );
+		cmpResult = cmp( get_object(name_t(value1))->_data, get_object(name_t(value2))->_data );
 
 	else if (type == type_name_bool())
 		cmpResult = cmp( parse_bool(value1), parse_bool(value2) );
@@ -189,7 +189,7 @@ bool LevelObject::addDataIf(std::string const & data, std::vector<std::string> c
 	if (value.empty() && opString.empty())
 	{
 		last_if_result = true;
-		this->addData(data);
+		addData(data);
 		last_if_result = true;
 		return true;
 	}
@@ -286,14 +286,14 @@ bool LevelObject::addDataIf(std::string const & data, std::vector<std::string> c
 	}
 
 	last_if_result = true;
-	this->addData(data);
+	addData(data);
 	last_if_result = true;
 	return true;
 }
 
 void LevelObject::addObject(name_t const & name, obj_t newObject)
 {
-	if (this->data.getType() != any_t::OBJMAP_T)
+	if (_data.getType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("cannot assign key to non-object");
 
 	if (newObject == NULL)
@@ -304,13 +304,13 @@ void LevelObject::addObject(name_t const & name, obj_t newObject)
 		if (name.getString() == misc_name_global())
 			return global_object->addObject(name.getRest(), newObject);
 
-		return this->getObject(name.getFirst())->addObject(name.getRest(), newObject);
+		return getObject(name.getFirst())->addObject(name.getRest(), newObject);
 	}
 
 	add_object(name, newObject);
 
 	if (!name.empty())
-		this->data.getObjMap()[name] = newObject;
+		_data.getObjMap()[name] = newObject;
 }
 void LevelObject::addObject(name_t const & name, SourceToken const & st)
 {
@@ -319,7 +319,7 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 
 	if (name.empty() && st.getType().empty() && st.getBase().empty() && st.getValue().empty())
 	{
-		this->addData(st.getData());
+		addData(st.getData());
 		return;
 	}
 
@@ -330,28 +330,28 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 
 		// # break
 		if (commandName == command_name_break())
-			this->isBreaked = true;
+			_isBreaked = true;
 
 		// # change type : TYPE : [VALUE]
 		// VALUE is used when changing to a value type
 		else if (commandName == command_name_changetype())
-			this->setType(st.getBase(0), st.getBase(1));
+			setType(st.getBase(0), st.getBase(1));
 
 		// # compound : [TYPE]
 		else if (commandName == command_name_compound())
 		{
 			if (!st.getBase(0).empty())
-				this->addData(get_compound_object(st.getBase(0)), get_lo_type_redirect(st.getBase(0)));
+				addData(get_compound_object(st.getBase(0)), get_lo_type_redirect(st.getBase(0)));
 
 			else
-				this->addData(get_compound_object(this->type), this->type);
+				addData(get_compound_object(_type), _type);
 
-			this->isCompounded = true;
+			_isCompounded = true;
 		}
 
 		// # continue
 		else if (commandName == command_name_continue())
-			this->isContinued = true;
+			_isContinued = true;
 
 		// # debug : message
 		else if (commandName == command_name_debug())
@@ -360,22 +360,22 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		// # delete : KEY
 		// removes KEY from this object
 		// this DOES NOT prevent objects from being output
-		else if (commandName == command_name_delete() && this->data.getType() == any_t::OBJMAP_T)
+		else if (commandName == command_name_delete() && _data.getType() == any_t::OBJMAP_T)
 		{
-			if (this->hasObject(name_t(st.getBase(0))))
-				this->data.getObjMap().erase(name_t(st.getBase(0)));
+			if (hasObject(name_t(st.getBase(0))))
+				_data.getObjMap().erase(name_t(st.getBase(0)));
 
 			clean_objects();
 		}
 
 		// # delete volatile
 		// removes KEYs that have volatile names
-		else if (commandName == command_name_deletevolatile() && this->data.getType() == any_t::OBJMAP_T)
+		else if (commandName == command_name_deletevolatile() && _data.getType() == any_t::OBJMAP_T)
 		{
-			FOREACH_T(objmap_t, it, this->data.getObjMap())
+			FOREACH_T(objmap_t, it, _data.getObjMap())
 			{
 				if (it->first.isVolatile())
-					this->data.getObjMap().erase(it->first);
+					_data.getObjMap().erase(it->first);
 			}
 
 			clean_objects();
@@ -383,14 +383,14 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 
 		// # delete _
 		// removes KEYs that start with _ but not with __
-		else if (commandName == command_name_delete_() && this->data.getType() == any_t::OBJMAP_T)
+		else if (commandName == command_name_delete_() && _data.getType() == any_t::OBJMAP_T)
 		{
-			FOREACH_T(objmap_t, it, this->data.getObjMap())
+			FOREACH_T(objmap_t, it, _data.getObjMap())
 			{
 				std::string itName = it->first.getString();
 
 				if (itName.size() > 1 && itName[0] == '_' && itName[1] != '_')
-					this->data.getObjMap().erase(it->first);
+					_data.getObjMap().erase(it->first);
 			}
 
 			clean_objects();
@@ -401,17 +401,17 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		{
 			do
 			{
-				this->addData(st.getData());
+				addData(st.getData());
 
-				if (this->isContinued)
+				if (_isContinued)
 				{
-					this->isContinued = false;
+					_isContinued = false;
 					continue;
 				}
 
-				if (this->isBreaked)
+				if (_isBreaked)
 				{
-					this->isBreaked = false;
+					_isBreaked = false;
 					break;
 				}
 			}
@@ -420,15 +420,15 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 
 		// # else { data }
 		else if (commandName == command_name_else())
-			this->addDataIf(st.getData(), "", "", "", "", true);
+			addDataIf(st.getData(), "", "", "", "", true);
 
 		// # else if cmp : value1 : op : value2 : [type] { data }
 		else if (commandName == command_name_elseifcmp())
-			this->addDataIf(st.getData(), st.getBase(0), st.getBase(2), st.getBase(1), st.getBase(3), true);
+			addDataIf(st.getData(), st.getBase(0), st.getBase(2), st.getBase(1), st.getBase(3), true);
 
 		// # else if* : name... { data }
 		else if (commandName.substr(0, 7) == command_name_elseif())
-			this->addDataIf(st.getData(), st.getBase(), commandName.substr(7), true);
+			addDataIf(st.getData(), st.getBase(), commandName.substr(7), true);
 
 		// # error : message
 		// prints message and counts towards error-limit
@@ -451,37 +451,37 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 			obj_t forStopObj = LevelObject::create(forType, forStop);
 			obj_t forStepObj = LevelObject::create(forType, forStep);
 
-			this->addObject(forName, forIterObj);
+			addObject(forName, forIterObj);
 
-			while (forIterObj->data < forStopObj->data)
+			while (forIterObj->_data < forStopObj->_data)
 			{
-				this->addData(st.getData());
+				addData(st.getData());
 
-				forIterObj->data += forStepObj->data;
+				forIterObj->_data += forStepObj->_data;
 
-				if (this->isContinued)
+				if (_isContinued)
 				{
-					this->isContinued = false;
+					_isContinued = false;
 					continue;
 				}
 
-				if (this->isBreaked)
+				if (_isBreaked)
 				{
-					this->isBreaked = false;
+					_isBreaked = false;
 					break;
 				}
 			}
 
-			this->data.getObjMap().erase(forName);
+			_data.getObjMap().erase(forName);
 		}
 
 		// # if cmp : value1 : op : value2 : [type] { data }
 		else if (commandName == command_name_ifcmp())
-			this->addDataIf(st.getData(), st.getBase(0), st.getBase(2), st.getBase(1), st.getBase(3));
+			addDataIf(st.getData(), st.getBase(0), st.getBase(2), st.getBase(1), st.getBase(3));
 
 		// # if* : name... { data }
 		else if (commandName.substr(0, 3) == command_name_if())
-			this->addDataIf(st.getData(), st.getBase(), commandName.substr(3));
+			addDataIf(st.getData(), st.getBase(), commandName.substr(3));
 
 		// # info : message
 		else if (commandName == command_name_info())
@@ -489,12 +489,12 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 
 		// # return : VALUE
 		// Used to return a value from a function.
-		else if (commandName == command_name_return() && this->data.getType() == any_t::OBJMAP_T)
+		else if (commandName == command_name_return() && _data.getType() == any_t::OBJMAP_T)
 		{
 			obj_t returnType  = getObject(name_t(".return_type"));
 			obj_t returnValue = create(to_string(returnType).makeString(), st.getBase(0));
 			addObject(name_t(".return_value"), returnValue);
-			isReturned = 1;
+			_isReturned = 1;
 		}
 
 		// # script : FILENAME { data }
@@ -554,17 +554,17 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		{
 			while (parse_bool(st.getBase(0)))
 			{
-				this->addData(st.getData());
+				addData(st.getData());
 
-				if (this->isContinued)
+				if (_isContinued)
 				{
-					this->isContinued = false;
+					_isContinued = false;
 					continue;
 				}
 
-				if (this->isBreaked)
+				if (_isBreaked)
 				{
-					this->isBreaked = false;
+					_isBreaked = false;
 					break;
 				}
 			}
@@ -581,10 +581,10 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		if (name.getString() == misc_name_global())
 			return global_object->addObject(name.getRest(), st);
 
-		return this->getObject(name.getFirst())->addObject(name.getRest(), st);
+		return getObject(name.getFirst())->addObject(name.getRest(), st);
 	}
 
-	if (this->data.getType() != any_t::OBJMAP_T)
+	if (_data.getType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("cannot assign key to non-object");
 
 	std::string newType = st.getType();
@@ -592,17 +592,17 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 	if (newType.empty())
 	{
 		if (!st.getBase(0).empty())
-			newType = get_object(name_t(st.getBase(0)))->type;
-		else if (this->hasObject(name))
-			newType = this->getObject(name)->type;
+			newType = get_object(name_t(st.getBase(0)))->_type;
+		else if (hasObject(name))
+			newType = getObject(name)->_type;
 		else if (has_object(name_t(st.getValue())))
-			newType = get_object(name_t(st.getValue()))->type;
+			newType = get_object(name_t(st.getValue()))->_type;
 		else
-			newType = get_default_type(name.getString(), this->type);
+			newType = get_default_type(name.getString(), _type);
 	}
 
-	if (option_force_default_types && has_default_type(name.getString(), this->type) && newType != get_default_type(name.getString(), this->type))
-		throw InvalidTypeException("force-default-types:" + newType + " for " + name.getString() + " in " + this->type);
+	if (option_force_default_types && has_default_type(name.getString(), _type) && newType != get_default_type(name.getString(), _type))
+		throw InvalidTypeException("force-default-types:" + newType + " for " + name.getString() + " in " + _type);
 
 	obj_t newObject;
 
@@ -628,7 +628,7 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		throw InvalidTypeException(newType + " is not a type");
 	}
 
-	this->addObject(name, newObject);
+	addObject(name, newObject);
 }
 
 
