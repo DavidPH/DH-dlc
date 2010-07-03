@@ -332,15 +332,15 @@ T parse__function(std::string const & opString, std::vector<std::string> const &
 	{
 		obj_t funcObj = LevelObject::create();
 
-		obj_t returnType = LevelObject::create(type_name_string(), "$"+std::string(Tname));
-		funcObj->addObject(name_t(".return_type"), returnType);
+		obj_t returnType = LevelObject::create(type_name_string(), string_t(Tname));
+		funcObj->addObject(name_t::name_return_type, returnType);
 
-		obj_t argcObj = LevelObject::create(type_name_shortint(), make_string(args.size()));
+		obj_t argcObj = LevelObject::create(type_name_shortint(), int_s_t(args.size()));
 		funcObj->addObject(name_t(key_name_argc()), argcObj);
 
 		for (int_s_t index = 0; (size_t)index < args.size(); ++index)
 		{
-			obj_t argObj = LevelObject::create(type_name_string(), "$"+args[index]);
+			obj_t argObj = LevelObject::create(type_name_string(), string_t(args[index]));
 
 			name_t argName(std::string(key_name_arg()) + make_string(index));
 
@@ -349,7 +349,7 @@ T parse__function(std::string const & opString, std::vector<std::string> const &
 
 		funcObj->addData(get_function(Tname, opString));
 
-		obj_t returnValue = funcObj->getObject(name_t(".return_value"));
+		obj_t returnValue = funcObj->getObject(name_t::name_return_value);
 		return Tconv(returnValue);
 	}
 

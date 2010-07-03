@@ -33,6 +33,11 @@ static std::string parse_name(std::string const & value);
 
 
 
+LevelObjectName const LevelObjectName::name_return_value(".return_value");
+LevelObjectName const LevelObjectName::name_return_type(".return_type");
+
+
+
 LevelObjectName::LevelObjectName() {}
 LevelObjectName::LevelObjectName(LevelObjectName const & other, size_t count)
 {

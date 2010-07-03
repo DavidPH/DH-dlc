@@ -68,6 +68,12 @@ class LevelObjectName
 
 		friend std::ostream & operator << (std::ostream &, LevelObjectName const &);
 
+
+
+		// Internally used names.
+		static LevelObjectName const name_return_value;
+		static LevelObjectName const name_return_type;
+
 	private:
 		/*
 			Only for internal use. Does not initialize to anything.

@@ -491,9 +491,9 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		// Used to return a value from a function.
 		else if (commandName == command_name_return() && _data.getType() == any_t::OBJMAP_T)
 		{
-			obj_t returnType  = getObject(name_t(".return_type"));
+			obj_t returnType  = getObject(name_t::name_return_type);
 			obj_t returnValue = create(to_string(returnType).makeString(), st.getBase(0));
-			addObject(name_t(".return_value"), returnValue);
+			addObject(name_t::name_return_value, returnValue);
 			_isReturned = 1;
 		}
 
