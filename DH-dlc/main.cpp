@@ -505,14 +505,14 @@ int main(int argc, char** argv)
 
 	if (option_output_extradata)
 	{
+		std::string nameExtraData(option_script_extradata);
 
-		std::ofstream fileExtraData;
+		std::ofstream fileExtraData((option_directory + nameExtraData).c_str());
 
-		if (option_output_extradata)
+		if (!fileExtraData)
 		{
-			std::string nameExtraData(option_script_extradata);
-
-			fileExtraData.open((option_directory + nameExtraData).c_str());
+			std::cerr << "unable to open:" << nameExtraData << '\n';
+			return 1;
 		}
 
 		FOREACH_T(std::list<obj_t>, it, global_object_list)

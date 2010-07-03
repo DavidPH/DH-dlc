@@ -413,13 +413,13 @@ void LevelObject::encodeExtraData(std::ostream & out)
 		}
 
 		if (hasObject(name_extradata_tag))
-			out << "tag " << to_int_l(getObject(name_extradata_tag)) << '\n';
+			out << "\ttag " << to_int_l(getObject(name_extradata_tag)) << '\n';
 
 		if (hasObject(name_extradata_flags))
 		{
 			obj_t extradata_flags = getObject(name_extradata_flags);
 
-			out << "\toptions ";
+			out << "\textflags ";
 
 			if (extradata_flags->data.getType() == any_t::STRING_T)
 				out << to_string(extradata_flags);
@@ -430,7 +430,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 		}
 		else
 		{
-			out << "\toptions 0";
+			out << "\textflags 0";
 
 			if (hasObject(name_monstercross) && to_bool(getObject(name_monstercross)))
 				out << "|CROSS";
@@ -472,7 +472,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 			out << "\n";
 		}
 
-		out << "args {";
+		out << "\targs {";
 
 		if (hasObject(name_arg0))
 			out << to_int_l(getObject(name_arg0));
@@ -580,19 +580,19 @@ void LevelObject::encodeExtraData(std::ostream & out)
 			if (!hasObject(name_coop) || !to_bool(getObject(name_coop)))
 				out << "|NOTCOOP";
 
-			if (!hasObject(name_friend) || !to_bool(getObject(name_friend)))
+			if (hasObject(name_friend) && to_bool(getObject(name_friend)))
 				out << "|FRIEND";
 
-			if (!hasObject(name_dormant) || !to_bool(getObject(name_dormant)))
+			if (hasObject(name_dormant) && to_bool(getObject(name_dormant)))
 				out << "|DORMANT";
 
 			out << "\n";
 		}
 
 		if (hasObject(name_id))
-			out << "tid " << to_int_l(getObject(name_id)) << '\n';
+			out << "\ttid " << to_int_l(getObject(name_id)) << '\n';
 
-		out << "args {";
+		out << "\targs {";
 
 		if (hasObject(name_arg0))
 			out << to_int_l(getObject(name_arg0));
@@ -630,7 +630,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 		out << "}\n";
 
 		if (hasObject(name_height))
-			out << "tid " << to_int_l(getObject(name_height)) << '\n';
+			out << "\theight " << to_int_l(getObject(name_height)) << '\n';
 
 		out << "}\n\n";
 
