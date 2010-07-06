@@ -25,116 +25,126 @@
 #include "types.hpp"
 #include "exceptions/SyntaxException.hpp"
 
-SourceStream::SourceStream(std::istream& is) :
-	lastData(-2), thisData(-2), nextData(-2),
-	in(&is),
+SourceStream::SourceStream(std::istream & in, SourceType type) :
+	_lastData(-2), _thisData(-2), _nextData(-2),
+	_in(&in),
 
-	countLine(1),
+	_countLine(1),
 
-	depthBrace(0),
-	depthComment(0),
+	_depthBrace(0),
+	_depthComment(0),
 
-	doStrip(true),
-	doStripAuto(true),
+	_doStrip(true),
+	_doStripAuto(true),
+	_doStripQuote(true),
 
-	inComment(false),
-	inQuote(false),
-	inQuote2(false)
-{}
+	_inComment(false),
+	_inQuote(false),
+	_inQuote2(false)
+{
+	switch (type)
+	{
+	case ST_NORMAL:
+		break;
+
+	case ST_DHLX:
+		break;
+	}
+}
 
 int SourceStream::get()
 {
 	while (true)
 	{
-		thisData = nextData != -2 ? nextData : in->get();
-		nextData = in->get();
+		_thisData = _nextData != -2 ? _nextData : _in->get();
+		_nextData = _in->get();
 
 		// \n end of line
-		if (thisData == '\n')
+		if (_thisData == '\n')
 		{
-			inComment = false;
-			++countLine;
+			_inComment = false;
+			++_countLine;
 		}
 
 		// { brace open
-		if (thisData == '{' && !isInComment() && !isInQuote())
-			++depthBrace;
+		if (_thisData == '{' && !isInComment() && !isInQuote())
+			++_depthBrace;
 
 		// } brace close
-		if (thisData == '}' && !isInComment() && !isInQuote())
-			--depthBrace;
+		if (_thisData == '}' && !isInComment() && !isInQuote())
+			--_depthBrace;
 
 		// " quote open/close
-		if (thisData == '"' && !isInComment() && !inQuote2)
+		if (_thisData == '"' && !isInComment() && !_inQuote2)
 		{
-			if (inQuote && lastData != '\\')
-				inQuote = false;
+			if (_inQuote && _lastData != '\\')
+				_inQuote = false;
 			else
-				inQuote = true;
+				_inQuote = true;
 		}
 
 		// ' quote open/close
-		if (thisData == '\'' && !isInComment() && !inQuote)
+		if (_thisData == '\'' && !isInComment() && !_inQuote)
 		{
-			if (inQuote2 && lastData != '\\')
-				inQuote2 = false;
+			if (_inQuote2 && _lastData != '\\')
+				_inQuote2 = false;
 			else
-				inQuote2 = true;
+				_inQuote2 = true;
 		}
 
 		// /? comment start
-		if (thisData == '/' && lastData != '*' && !isInQuote())
+		if (_thisData == '/' && _lastData != '*' && !isInQuote())
 		{
-			if (nextData == '/' && depthComment == 0)
-				inComment = true;
+			if (_nextData == '/' && _depthComment == 0)
+				_inComment = true;
 
-			else if (nextData == '*' && !inComment)
-				++depthComment;
+			else if (_nextData == '*' && !_inComment)
+				++_depthComment;
 		}
 
 		// */ multi-line comment end
-		if (thisData == '*' && nextData == '/' && lastData != '/' && !isInQuote() && !inComment)
-			--depthComment;
+		if (_thisData == '*' && _nextData == '/' && _lastData != '/' && !isInQuote() && !_inComment)
+			--_depthComment;
 
-		int lastData = this->lastData;
-		this->lastData = thisData;
+		int lastData = _lastData;
+		_lastData = _thisData;
 
-		if (!doStrip)
-			return thisData;
+		if (!_doStrip)
+			return _thisData;
 
 		// StripAuto stops stripping inside braces.
-		if (doStripAuto && depthBrace != 0)
-			return thisData;
+		if (_doStripAuto && _depthBrace != 0)
+			return _thisData;
 
 		// Comments are stripped.
 		if (isInComment())
 			continue;
 
 		// End of multi-line comments are stripped, unless quoted.
-		if (((thisData == '*' && nextData == '/') || (lastData == '*' && thisData == '/')) && !isInQuote())
+		if (((_thisData == '*' && _nextData == '/') || (lastData == '*' && _thisData == '/')) && !isInQuote())
 			continue;
 
 		// Unquoted whitespace is stripped.
-		if (!isInQuote() && isspace(thisData))
+		if (!isInQuote() && isspace(_thisData))
 			continue;
 
 		// Quotes are stripped (if escaped, they won't reach here)
-		if (thisData == '"' || thisData == '\'')
+		if ((_thisData == '"' || _thisData == '\'') && _doStripQuote)
 			continue;
 
 		// Escape sequence (only if quoted)
-		if (isInQuote() && thisData == '\\')
+		if (isInQuote() && _thisData == '\\')
 		{
-			int nextData = this->nextData;
-			this->lastData = -2;
-			this->nextData = -2;
+			int nextData = _nextData;
+			_lastData = -2;
+			_nextData = -2;
 
 			switch (nextData)
 			{
 				case 'r': return '\r';
 				case 'n': return '\n';
 				case 't': return '\t';
-				case '\n': ++countLine;
+				case '\n': ++_countLine;
 				case '\\':
 				case '\'':
 				case '"': return nextData;
@@ -146,9 +156,9 @@ int SourceStream::get()
 
 		// For compiling TEXTMAP lumps and for people who like it.
 		if (!option_case_sensitive && !isInQuote())
-			return option_case_upper ? toupper(thisData) : tolower(thisData);
+			return option_case_upper ? toupper(_thisData) : tolower(_thisData);
 
-		return thisData;
+		return _thisData;
 	}
 }
 
@@ -156,10 +166,10 @@ std::string SourceStream::getbrace()
 {
 	std::string newString;
 
-	if (depthBrace == 0)
+	if (_depthBrace == 0)
 		return newString;
 
-	int targetDepthBrace = depthBrace-1;
+	int targetDepthBrace = _depthBrace-1;
 
 	while (true)
 	{
@@ -167,7 +177,7 @@ std::string SourceStream::getbrace()
 
 		if (nextChar == -1) throw SyntaxException("unexpected end of data");
 
-		if (depthBrace == targetDepthBrace)
+		if (_depthBrace == targetDepthBrace)
 			break;
 
 		newString += (char) nextChar;
