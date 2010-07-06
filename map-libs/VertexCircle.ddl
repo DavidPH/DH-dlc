@@ -3,17 +3,20 @@
 	Creates a circle of VERTEXes around a center point.
 
 	Required keys:
-		radius: Radius of circle.
-		steps: Number of VERTEXes to create.
-		x, y: Center of circle.
+		[float] radius: Radius of circle.
+		[float] steps: Number of VERTEXes to create.
+		[float] x, y: Center of circle.
+
+	Required libraries:
+		VertexOffset
 
 	Optional keys:
-		start: Start angle. (Default: 0)
-		stop Stop angle. (Default: 360)
+		[float] start: Start angle. (Default: 0)
+		[float] stop: Stop angle. (Default: 360)
 
 	Output keys:
-		v[steps+1]: Array of VERTEXes in a circle starting with 0 and
-			ending with steps. v[steps] is v[0].
+		[VERTEX] v[steps+1]: Array of VERTEXes in a circle starting with
+			0 and ending with steps. v[steps] is v[0].
 */
 
 #include:"VertexOffset.ddl";
