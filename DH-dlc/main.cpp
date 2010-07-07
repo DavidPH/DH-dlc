@@ -275,8 +275,13 @@ int main(int argc, char** argv)
 		std::cerr << "global=";
 		global_object->printOn(std::cerr);
 
-		FOREACH_T(std::list<obj_t>, it, global_object_list)
-			(*it)->printOn(std::cerr);
+		FOREACH_T(global_object_map_t, mapIt, global_object_map)
+		{
+			FOREACH_T(global_object_list_t, listIt, mapIt->second)
+			{
+				(*listIt)->printOn(std::cerr);
+			}
+		}
 	}
 
 
@@ -306,32 +311,26 @@ int main(int argc, char** argv)
 		OPENFILE(THINGS,   ".lmp");
 		OPENFILE(VERTEXES, ".lmp");
 
-		FOREACH_T(std::list<obj_t>, it, global_object_list)
+		try
 		{
-			obj_t thisObj(*it);
-			std::string thisType(get_lo_type_redirect(thisObj->getType()));
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_linedef()])
+				(*it)->encodeHexen(fileLINEDEFS);
 
-			try
-			{
-				if (thisType == type_name_linedef())
-					thisObj->encodeHexen(fileLINEDEFS);
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sector()])
+				(*it)->encodeHexen(fileSECTORS);
 
-				else if (thisType == type_name_sector())
-					thisObj->encodeHexen(fileSECTORS);
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sidedef()])
+				(*it)->encodeHexen(fileSIDEDEFS);
 
-				else if (thisType == type_name_sidedef())
-					thisObj->encodeHexen(fileSIDEDEFS);
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_thing()])
+				(*it)->encodeHexen(fileTHINGS);
 
-				else if (thisType == type_name_thing())
-					thisObj->encodeHexen(fileTHINGS);
-
-				else if (thisType == type_name_vertex())
-					thisObj->encodeHexen(fileVERTEXES);
-			}
-			catch (CompilerException& e)
-			{
-				std::cerr << thisType << ':' << get_object_index(thisObj) << ':' << e << '\n';
-			}
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_vertex()])
+				(*it)->encodeHexen(fileVERTEXES);
+		}
+		catch (CompilerException & e)
+		{
+			std::cerr << e << '\n';
 		}
 
 		fileLINEDEFS.close();
@@ -359,32 +358,26 @@ int main(int argc, char** argv)
 		OPENFILE(THINGS,   ".lmp");
 		OPENFILE(VERTEXES, ".lmp");
 
-		FOREACH_T(std::list<obj_t>, it, global_object_list)
+		try
 		{
-			obj_t thisObj(*it);
-			std::string thisType(get_lo_type_redirect(thisObj->getType()));
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_linedef()])
+				(*it)->encodeStrife(fileLINEDEFS);
 
-			try
-			{
-				if (thisType == type_name_linedef())
-					thisObj->encodeStrife(fileLINEDEFS);
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sector()])
+				(*it)->encodeStrife(fileSECTORS);
 
-				else if (thisType == type_name_sector())
-					thisObj->encodeStrife(fileSECTORS);
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sidedef()])
+				(*it)->encodeStrife(fileSIDEDEFS);
 
-				else if (thisType == type_name_sidedef())
-					thisObj->encodeStrife(fileSIDEDEFS);
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_thing()])
+				(*it)->encodeStrife(fileTHINGS);
 
-				else if (thisType == type_name_thing())
-					thisObj->encodeStrife(fileTHINGS);
-
-				else if (thisType == type_name_vertex())
-					thisObj->encodeStrife(fileVERTEXES);
-			}
-			catch (CompilerException& e)
-			{
-				std::cerr << thisType << ':' << get_object_index(thisObj) << ':' << e << '\n';
-			}
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_vertex()])
+				(*it)->encodeStrife(fileVERTEXES);
+		}
+		catch (CompilerException & e)
+		{
+			std::cerr << e << '\n';
 		}
 
 		fileLINEDEFS.close();
@@ -401,32 +394,26 @@ int main(int argc, char** argv)
 		OPENFILE(THINGS,   ".lmp");
 		OPENFILE(VERTEXES, ".lmp");
 
-		FOREACH_T(std::list<obj_t>, it, global_object_list)
+		try
 		{
-			obj_t thisObj(*it);
-			std::string thisType(get_lo_type_redirect(thisObj->getType()));
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_linedef()])
+				(*it)->encodeHeretic(fileLINEDEFS);
 
-			try
-			{
-				if (thisType == type_name_linedef())
-					thisObj->encodeHeretic(fileLINEDEFS);
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sector()])
+				(*it)->encodeHeretic(fileSECTORS);
 
-				else if (thisType == type_name_sector())
-					thisObj->encodeHeretic(fileSECTORS);
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sidedef()])
+				(*it)->encodeHeretic(fileSIDEDEFS);
 
-				else if (thisType == type_name_sidedef())
-					thisObj->encodeHeretic(fileSIDEDEFS);
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_thing()])
+				(*it)->encodeHeretic(fileTHINGS);
 
-				else if (thisType == type_name_thing())
-					thisObj->encodeHeretic(fileTHINGS);
-
-				else if (thisType == type_name_vertex())
-					thisObj->encodeHeretic(fileVERTEXES);
-			}
-			catch (CompilerException& e)
-			{
-				std::cerr << thisType << ':' << get_object_index(thisObj) << ':' << e << '\n';
-			}
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_vertex()])
+				(*it)->encodeHeretic(fileVERTEXES);
+		}
+		catch (CompilerException & e)
+		{
+			std::cerr << e << '\n';
 		}
 
 		fileLINEDEFS.close();
@@ -443,32 +430,26 @@ int main(int argc, char** argv)
 		OPENFILE(THINGS,   ".lmp");
 		OPENFILE(VERTEXES, ".lmp");
 
-		FOREACH_T(std::list<obj_t>, it, global_object_list)
+		try
 		{
-			obj_t thisObj(*it);
-			std::string thisType(get_lo_type_redirect(thisObj->getType()));
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_linedef()])
+				(*it)->encodeDoom(fileLINEDEFS);
 
-			try
-			{
-				if (thisType == type_name_linedef())
-					thisObj->encodeDoom(fileLINEDEFS);
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sector()])
+				(*it)->encodeDoom(fileSECTORS);
 
-				else if (thisType == type_name_sector())
-					thisObj->encodeDoom(fileSECTORS);
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sidedef()])
+				(*it)->encodeDoom(fileSIDEDEFS);
 
-				else if (thisType == type_name_sidedef())
-					thisObj->encodeDoom(fileSIDEDEFS);
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_thing()])
+				(*it)->encodeDoom(fileTHINGS);
 
-				else if (thisType == type_name_thing())
-					thisObj->encodeDoom(fileTHINGS);
-
-				else if (thisType == type_name_vertex())
-					thisObj->encodeDoom(fileVERTEXES);
-			}
-			catch (CompilerException& e)
-			{
-				std::cerr << thisType << ':' << get_object_index(thisObj) << ':' << e << '\n';
-			}
+			FOREACH_T(global_object_list_t, it, global_object_map[type_name_vertex()])
+				(*it)->encodeDoom(fileVERTEXES);
+		}
+		catch (CompilerException & e)
+		{
+			std::cerr << e << '\n';
 		}
 
 		fileLINEDEFS.close();
@@ -492,12 +473,22 @@ int main(int argc, char** argv)
 				fileTEXTMAP << "namespace = " << namespaceObj->encode(false) << ";\n\n";
 		}
 
-		FOREACH_T(std::list<obj_t>, it, global_object_list)
+		try
 		{
-			std::string encString((*it)->encode());
+			FOREACH_T(global_object_map_t, mapIt, global_object_map)
+			{
+				FOREACH_T(global_object_list_t, listIt, mapIt->second)
+				{
+					std::string encString((*listIt)->encode());
 
-			if (!encString.empty())
-				fileTEXTMAP << encString << "\n\n";
+					if (!encString.empty())
+						fileTEXTMAP << encString << "\n\n";
+				}
+			}
+		}
+		catch (CompilerException & e)
+		{
+			std::cerr << e << '\n';
 		}
 	}
 
@@ -515,18 +506,21 @@ int main(int argc, char** argv)
 			return 1;
 		}
 
-		FOREACH_T(std::list<obj_t>, it, global_object_list)
+		FOREACH_T(global_object_map_t, mapIt, global_object_map)
 		{
-			obj_t thisObj(*it);
-			std::string thisType(get_lo_type_redirect(thisObj->getType()));
+			FOREACH_T(global_object_list_t, listIt, mapIt->second)
+			{
+				obj_t thisObj(*listIt);
+				std::string thisType(get_lo_type_redirect(thisObj->getType()));
 
-			try
-			{
-				thisObj->encodeExtraData(fileExtraData);
-			}
-			catch (CompilerException& e)
-			{
-				std::cerr << thisType << ':' << get_object_index(thisObj) << ':' << e << '\n';
+				try
+				{
+					thisObj->encodeExtraData(fileExtraData);
+				}
+				catch (CompilerException& e)
+				{
+					std::cerr << thisType << ':' << get_object_index(thisObj) << ':' << e << '\n';
+				}
 			}
 		}
 

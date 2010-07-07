@@ -118,6 +118,8 @@ std::string make_string(T const & in)
 {
 	std::ostringstream oss;
 
+	oss.precision(255);
+
 	oss << in;
 
 	return oss.str();

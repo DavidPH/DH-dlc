@@ -94,6 +94,7 @@ class LevelObject
 
 		friend void add_object(name_t const &, obj_t);
 		friend int_s_t get_object_index(obj_t);
+		friend bool rem_object(obj_t);
 
 		friend std::ostream & operator << (std::ostream& out, const LevelObject& in);
 
