@@ -231,17 +231,7 @@ std::string LevelObject::encode(bool topLevel)
 
 void LevelObject::encodeDoom(std::ostream & out)
 {
-	switch (_data.getType())
-	{
-	case any_t::OBJMAP_T: break;
-
-	case any_t::STRING8_T: _data.getString8().encodeBinary(out); return;
-	case any_t::SWORD_T:   _data.getSWord().encodeBinary(out);   return;
-	case any_t::UWORD_T:   _data.getUWord().encodeBinary(out);   return;
-
-	default:
-		throw InvalidTypeException("internal error:unknown data.getType() for Doom output");
-	}
+	if (_data.getType() != any_t::OBJMAP_T) return;
 
 	if (_type == type_name_linedef())
 	{
@@ -379,8 +369,6 @@ void LevelObject::encodeDoom(std::ostream & out)
 
 		return;
 	}
-
-	throw InvalidTypeException("internal error:unknown type for Doom output");
 }
 
 void LevelObject::encodeExtraData(std::ostream & out)
@@ -640,17 +628,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 
 void LevelObject::encodeHeretic(std::ostream & out)
 {
-	switch (_data.getType())
-	{
-	case any_t::OBJMAP_T: break;
-
-	case any_t::STRING8_T: _data.getString8().encodeBinary(out); return;
-	case any_t::SWORD_T:   _data.getSWord().encodeBinary(out);   return;
-	case any_t::UWORD_T:   _data.getUWord().encodeBinary(out);   return;
-
-	default:
-		throw InvalidTypeException("internal error:unknown data.getType() for Heretic output");
-	}
+	if (_data.getType() != any_t::OBJMAP_T) return;
 
 	if (_type == type_name_linedef())
 	{
@@ -740,24 +718,11 @@ void LevelObject::encodeHeretic(std::ostream & out)
 
 		return;
 	}
-
-	throw InvalidTypeException("internal error:unknown type for Heretic output");
 }
 
 void LevelObject::encodeHexen(std::ostream & out)
 {
-	switch (_data.getType())
-	{
-	case any_t::OBJMAP_T: break;
-
-	case any_t::STRING8_T: _data.getString8().encodeBinary(out); return;
-	case any_t::SWORD_T:   _data.getSWord().encodeBinary(out);   return;
-	case any_t::UBYTE_T:   _data.getUByte().encodeBinary(out);   return;
-	case any_t::UWORD_T:   _data.getUWord().encodeBinary(out);   return;
-
-	default:
-		throw InvalidTypeException("internal error:unknown data.getType() for Hexen output");
-	}
+	if (_data.getType() != any_t::OBJMAP_T) return;
 
 	if (_type == type_name_linedef())
 	{
@@ -956,23 +921,11 @@ void LevelObject::encodeHexen(std::ostream & out)
 
 		return;
 	}
-
-	throw InvalidTypeException("internal error:unknown type for Hexen output");
 }
 
 void LevelObject::encodeStrife(std::ostream & out)
 {
-	switch (_data.getType())
-	{
-	case any_t::OBJMAP_T: break;
-
-	case any_t::STRING8_T: _data.getString8().encodeBinary(out); return;
-	case any_t::SWORD_T:   _data.getSWord().encodeBinary(out);   return;
-	case any_t::UWORD_T:   _data.getUWord().encodeBinary(out);   return;
-
-	default:
-		throw InvalidTypeException("internal error:unknown data.getType() for Strife output");
-	}
+	if (_data.getType() != any_t::OBJMAP_T) return;
 
 	if (_type == type_name_linedef())
 	{
@@ -1062,8 +1015,6 @@ void LevelObject::encodeStrife(std::ostream & out)
 
 		return;
 	}
-
-	throw InvalidTypeException("internal error:unknown type for Strife output");
 }
 
 
