@@ -121,6 +121,8 @@ int_s_t get_object_index(obj_t oldObject)
 
 	if (oldObject->_index != (size_t)-1) return oldObject->_index;
 
+	throw CompilerException("object has no index set");
+
 	int_s_t typeCount = 0;
 
 	FOREACH_T(global_object_list_t, it, global_object_map[oldObject->getType()])
@@ -144,22 +146,35 @@ bool has_object(name_t const & name)
 
 	return global_object->hasObject(name);
 }
-
+#include <iostream>
 bool rem_object(obj_t oldObject)
 {
-	global_object_list_t & typeList = global_object_map[oldObject->getType()];
+	bool removed = false;
 
-	FOREACH_T(global_object_list_t, it, typeList)
+	size_t index = 0;
+
+	global_object_list_t & objectList = global_object_map[oldObject->getType()];
+
+	FOREACH_T(global_object_list_t, it, objectList)
 	{
 		if (oldObject == *it)
 		{
-			typeList.erase(it);
+			objectList.erase(it--);
 
-			return true;
+			--index;
+
+			removed = true;
 		}
+
+		if (removed)
+			(*it)->_index = index;
+
+		++index;
 	}
 
-	return false;
+	oldObject->_index = -1;
+
+	return removed;
 }
 
 

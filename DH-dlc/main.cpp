@@ -473,15 +473,22 @@ int main(int argc, char** argv)
 				fileTEXTMAP << "namespace = " << namespaceObj->encode(false) << ";\n\n";
 		}
 
-		FOREACH_T(global_object_map_t, mapIt, global_object_map)
+		try
 		{
-			FOREACH_T(global_object_list_t, listIt, mapIt->second)
+			FOREACH_T(global_object_map_t, mapIt, global_object_map)
 			{
-				std::string encString((*listIt)->encode());
+				FOREACH_T(global_object_list_t, listIt, mapIt->second)
+				{
+					std::string encString((*listIt)->encode());
 
-				if (!encString.empty())
-					fileTEXTMAP << encString << "\n\n";
+					if (!encString.empty())
+						fileTEXTMAP << encString << "\n\n";
+				}
 			}
+		}
+		catch (CompilerException & e)
+		{
+			std::cerr << e << '\n';
 		}
 	}
 

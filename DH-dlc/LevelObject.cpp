@@ -223,7 +223,7 @@ void LevelObject::setType(std::string const & newType, std::string const & value
 	if (_type.empty())
 		throw InvalidTypeException("cannot change type");
 
-	_addGlobal = rem_object(this);
+	_addGlobal = rem_object(this) || _addGlobal;
 
 	_type = newType;
 
