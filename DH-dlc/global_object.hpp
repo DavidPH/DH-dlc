@@ -52,6 +52,13 @@ int_s_t get_object_index(obj_t);
 
 bool has_object(name_t const &);
 
+/*
+	Removes an object from global_object_map.
+
+	Returns true if the object was there to be removed.
+*/
+bool rem_object(obj_t);
+
 
 
 extern bool last_if_result;

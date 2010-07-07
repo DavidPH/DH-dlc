@@ -145,6 +145,23 @@ bool has_object(name_t const & name)
 	return global_object->hasObject(name);
 }
 
+bool rem_object(obj_t oldObject)
+{
+	global_object_list_t & typeList = global_object_map[oldObject->getType()];
+
+	FOREACH_T(global_object_list_t, it, typeList)
+	{
+		if (oldObject == *it)
+		{
+			typeList.erase(it);
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
 
 
 bool last_if_result = true;

@@ -223,6 +223,8 @@ void LevelObject::setType(std::string const & newType, std::string const & value
 	if (_type.empty())
 		throw InvalidTypeException("cannot change type");
 
+	_addGlobal = rem_object(this);
+
 	_type = newType;
 
 	     if (_type == type_name_bool())       _data = parse_bool(value);
@@ -245,6 +247,8 @@ void LevelObject::setType(std::string const & newType, std::string const & value
 	else if (_type == type_name_uword())      _data = parse_uword(value);
 
 	else if (_data.getType() != any_t::OBJMAP_T) _data = to_obj(_data)->_data.getObjMap();
+
+	add_object(name_t(""), this);
 }
 
 
