@@ -27,6 +27,7 @@
 
 SourceStream::SourceStream(std::istream & in, SourceType type) :
 	_lastData(-2), _thisData(-2), _nextData(-2),
+	_ungetData(-2),
 	_in(&in),
 
 	_countLine(1),
@@ -36,11 +37,16 @@ SourceStream::SourceStream(std::istream & in, SourceType type) :
 
 	_doStrip(true),
 	_doStripAuto(true),
+	_doStripComment(true),
 	_doStripQuote(true),
+	_doStripWhitespace(true),
+
+	_doCompressWhitespace(false),
 
 	_inComment(false),
 	_inQuote(false),
-	_inQuote2(false)
+	_inQuote2(false),
+	_inWhitespace(false)
 {
 	switch (type)
 	{
@@ -48,12 +54,23 @@ SourceStream::SourceStream(std::istream & in, SourceType type) :
 		break;
 
 	case ST_DHLX:
+		_doStripQuote = false;
+		_doStripWhitespace = false;
+
+		_doCompressWhitespace = true;
 		break;
 	}
 }
 
 int SourceStream::get()
 {
+	if (_ungetData != -2)
+	{
+		int c = _ungetData;
+		_ungetData = -2;
+		return c;
+	}
+
 	while (true)
 	{
 		_thisData = _nextData != -2 ? _nextData : _in->get();
@@ -106,8 +123,12 @@ int SourceStream::get()
 		if (_thisData == '*' && _nextData == '/' && _lastData != '/' && !isInQuote() && !_inComment)
 			--_depthComment;
 
+		// whitespace
+		_inWhitespaceLast = _inWhitespace;
+		_inWhitespace     = isspace(_thisData);
+
 		int lastData = _lastData;
-		_lastData = _thisData;
+		   _lastData = _thisData;
 
 		if (!_doStrip)
 			return _thisData;
@@ -117,19 +138,28 @@ int SourceStream::get()
 			return _thisData;
 
 		// Comments are stripped.
-		if (isInComment())
+		if (_doStripComment && isInComment())
 			continue;
 
 		// End of multi-line comments are stripped, unless quoted.
-		if (((_thisData == '*' && _nextData == '/') || (lastData == '*' && _thisData == '/')) && !isInQuote())
+		if (_doStripComment && ((_thisData == '*' && _nextData == '/') || (lastData == '*' && _thisData == '/')) && !isInQuote())
 			continue;
 
 		// Unquoted whitespace is stripped.
-		if (!isInQuote() && isspace(_thisData))
+		if (_doStripWhitespace && _inWhitespace && !isInQuote())
 			continue;
 
+		if (_doCompressWhitespace && _inWhitespace)
+		{
+			// Compressing only returns the first whitespace...
+			if (_inWhitespaceLast)
+				continue;
+			// ...as a space.
+			return ' ';
+		}
+
 		// Quotes are stripped (if escaped, they won't reach here)
-		if ((_thisData == '"' || _thisData == '\'') && _doStripQuote)
+		if (_doStripQuote && (_thisData == '"' || _thisData == '\''))
 			continue;
 
 		// Escape sequence (only if quoted)
@@ -160,6 +190,11 @@ int SourceStream::get()
 
 		return _thisData;
 	}
+}
+
+void SourceStream::unget(int c)
+{
+	_ungetData = c;
 }
 
 std::string SourceStream::getbrace()

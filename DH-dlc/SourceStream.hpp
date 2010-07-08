@@ -42,6 +42,7 @@ class SourceStream
 		SourceStream(std::istream & in, SourceType type = ST_NORMAL);
 
 		int get();
+		void unget(int c);
 		std::string getbrace();
 
 		int getBraceDepth() const;
@@ -57,6 +58,7 @@ class SourceStream
 
 	private:
 		int _lastData, _thisData, _nextData;
+		int _ungetData;
 		std::istream * _in;
 
 		int _countLine;
@@ -64,13 +66,19 @@ class SourceStream
 		int _depthBrace;   // { }
 		int _depthComment; // /* */
 
-		unsigned _doStrip      : 1;
-		unsigned _doStripAuto  : 1;
-		unsigned _doStripQuote : 1;
+		unsigned _doStrip           : 1;
+		unsigned _doStripAuto       : 1;
+		unsigned _doStripComment    : 1;
+		unsigned _doStripQuote      : 1;
+		unsigned _doStripWhitespace : 1;
 
-		unsigned _inComment : 1; // //
-		unsigned _inQuote   : 1; // "
-		unsigned _inQuote2  : 1; // '
+		unsigned _doCompressWhitespace : 1;
+
+		unsigned _inComment        : 1; // //
+		unsigned _inQuote          : 1; // "
+		unsigned _inQuote2         : 1; // '
+		unsigned _inWhitespace     : 1;
+		unsigned _inWhitespaceLast : 1;
 };
 
 
