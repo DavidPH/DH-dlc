@@ -39,8 +39,8 @@
 	[float] y = (y1 + y2) / 2;
 
 	# delete : x1;
-	# delete : y2;
-	# delete : x1;
+	# delete : y1;
+	# delete : x2;
 	# delete : y2;
 
 	# change type : VERTEX;

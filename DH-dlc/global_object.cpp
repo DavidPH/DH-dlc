@@ -39,8 +39,8 @@
 
 
 
-obj_t            global_object = LevelObject::create();
-std::list<obj_t> global_object_list;
+obj_t               global_object = LevelObject::create();
+global_object_map_t global_object_map;
 
 static std::map<std::string, size_t> type_counts;
 
@@ -51,21 +51,28 @@ void add_object(name_t const & name, obj_t newObject)
 	// Must not have duplicate entries in list...
 	newObject->_addGlobal = false;
 
-	newObject->_index = type_counts[newObject->_type]++;
+	global_object_list_t & typeList = global_object_map[newObject->getType()];
 
-	global_object_list.push_back(newObject);
+	newObject->_index = typeList.size();
+
+	typeList.push_back(newObject);
 }
 
 void clean_objects()
 {
-	FOREACH_T(std::list<obj_t>, it, global_object_list)
+	FOREACH_T(global_object_map_t, mapIt, global_object_map)
 	{
-		if (it->isLastPointer() && (get_lo_type((*it)->getType()) == LO_TYPE_VALUE))
+		if (get_lo_type(mapIt->first) != LO_TYPE_VALUE) continue;
+
+		FOREACH_T(global_object_list_t, listIt, mapIt->second)
 		{
-			// Erasing the element invalidates it, must reset.
-			// Post-decrementing works because the new value is
-			// fetched before the erase.
-			global_object_list.erase(it--);
+			if (listIt->isLastPointer())
+			{
+				// Erasing the element invalidates it, must reset.
+				// Post-decrementing works because the new value
+				// is fetched before the erase.
+				mapIt->second.erase(listIt--);
+			}
 		}
 	}
 }
@@ -96,15 +103,12 @@ obj_t get_object(int_s_t objectIndex, std::string const & type)
 
 	int_s_t typeCount = 0;
 
-	FOREACH_T(std::list<obj_t>, it, global_object_list)
+	FOREACH_T(global_object_list_t, it, global_object_map[type])
 	{
-		if ((*it)->getType() == type)
-		{
-			if (typeCount == objectIndex)
-				return *it;
+		if (typeCount == objectIndex)
+			return *it;
 
-			++typeCount;
-		}
+		++typeCount;
 	}
 
 	throw ParsingException("index out of bounds:" + make_string(objectIndex));
@@ -117,15 +121,16 @@ int_s_t get_object_index(obj_t oldObject)
 
 	if (oldObject->_index != (size_t)-1) return oldObject->_index;
 
+	throw CompilerException("object has no index set");
+
 	int_s_t typeCount = 0;
 
-	FOREACH_T(std::list<obj_t>, it, global_object_list)
+	FOREACH_T(global_object_list_t, it, global_object_map[oldObject->getType()])
 	{
 		if (oldObject == *it)
 			return typeCount;
 
-		if ((*it)->getType() == oldObject->getType())
-			++typeCount;
+		++typeCount;
 	}
 
 	return -1;
@@ -140,6 +145,36 @@ bool has_object(name_t const & name)
 	}
 
 	return global_object->hasObject(name);
+}
+#include <iostream>
+bool rem_object(obj_t oldObject)
+{
+	bool removed = false;
+
+	size_t index = 0;
+
+	global_object_list_t & objectList = global_object_map[oldObject->getType()];
+
+	FOREACH_T(global_object_list_t, it, objectList)
+	{
+		if (oldObject == *it)
+		{
+			objectList.erase(it--);
+
+			--index;
+
+			removed = true;
+		}
+
+		if (removed)
+			(*it)->_index = index;
+
+		++index;
+	}
+
+	oldObject->_index = -1;
+
+	return removed;
 }
 
 

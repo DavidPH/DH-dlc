@@ -25,16 +25,20 @@
 #ifndef GLOBAL_OBJECT_H
 #define GLOBAL_OBJECT_H
 
-#include <list>
-#include <string>
-
 #include "LevelObjectPointer.hpp"
 #include "types.hpp"
 
+#include <list>
+#include <map>
+#include <string>
 
 
-extern obj_t            global_object;
-extern std::list<obj_t> global_object_list;
+
+typedef std::list<obj_t> global_object_list_t;
+typedef std::map<std::string, global_object_list_t> global_object_map_t;
+
+extern obj_t               global_object;
+extern global_object_map_t global_object_map;
 
 void add_object(name_t const &, obj_t);
 
@@ -47,6 +51,13 @@ obj_t get_object(int_s_t, std::string const &);
 int_s_t get_object_index(obj_t);
 
 bool has_object(name_t const &);
+
+/*
+	Removes an object from global_object_map.
+
+	Returns true if the object was there to be removed.
+*/
+bool rem_object(obj_t);
 
 
 
