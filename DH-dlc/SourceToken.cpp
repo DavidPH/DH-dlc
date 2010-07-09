@@ -298,12 +298,12 @@ SourceToken::SourceToken(SourceStream& in) : type(), name(), value(), data(), ba
 
 std::ostream& operator << (std::ostream& out, const SourceToken& in)
 {
-	out << "[" << in.type << "] " << in.name;
+	out << "[" << in.getType() << "] " << in.getName();
 
-	for (size_t index = 0; index < in.base.size(); ++index)
-		out << " : " << in.base[index];
+	for (size_t index = 0; index < in.getBase().size(); ++index)
+		out << " : " << in.getBase()[index];
 
-	out << " = " << in.value << " {" << in.data << "}";
+	out << " = " << in.getValue() << " {" << in.getData() << "}";
 
 	return out;
 }

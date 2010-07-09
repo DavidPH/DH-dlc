@@ -51,8 +51,6 @@ class SourceToken
 		std::vector<std::string> const & getBase() const;
 		std::string const & getBase(size_t, std::string const & = "") const;
 
-		friend std::ostream & operator << (std::ostream &, SourceToken const &);
-
 	private:
 		std::string type, name, value, data;
 		std::vector<std::string> base;
@@ -69,8 +67,8 @@ class SourceTokenDHLX
 			TT_NUMBER,
 			TT_STRING,
 
-			TT_OP_AND            // &
-			TT_OP_AND2           // &&
+			TT_OP_AND,           // &
+			TT_OP_AND2,          // &&
 			TT_OP_BRACE_C,       // }
 			TT_OP_BRACE_O,       // {
 			TT_OP_BRACKET_C,     // ]
@@ -88,13 +86,13 @@ class SourceTokenDHLX
 			TT_OP_EQUALS,        // =
 			TT_OP_HASH,          // #
 			TT_OP_MINUS,         // -
-			TT_OP_PIPE           // |
-			TT_OP_PIPE2          // ||
+			TT_OP_PIPE,          // |
+			TT_OP_PIPE2,         // ||
 			TT_OP_PARENTHESIS_C, // )
 			TT_OP_PARENTHESIS_O, // (
 			TT_OP_PLUS,          // +
-			TT_OP_SHIFT_LEFT     // <<
-			TT_OP_SHIFT_RIGHT    // >>
+			TT_OP_SHIFT_LEFT,    // <<
+			TT_OP_SHIFT_RIGHT,   // >>
 		};
 
 		explicit SourceTokenDHLX();
