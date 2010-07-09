@@ -296,6 +296,240 @@ SourceToken::SourceToken(SourceStream& in) : type(), name(), value(), data(), ba
 
 
 
+SourceTokenDHLX::SourceTokenDHLX() : _data(), _type(TT_NONE) {}
+SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
+{
+	int nextChar = in.get();
+
+	// Discard any whitespace before token.
+	if (nextChar == ' ') nextChar = in.get();
+
+	switch (nextChar)
+	{
+	case -1: _type = TT_EOF; return;
+
+	case '}': _type = TT_OP_BRACE_C;       return;
+	case '{': _type = TT_OP_BRACE_O;       return;
+	case ']': _type = TT_OP_BRACKET_C;     return;
+	case '[': _type = TT_OP_BRACKET_O;     return;
+	case ',': _type = TT_OP_COMMA;         return;
+	case '#': _type = TT_OP_HASH;          return;
+	case ')': _type = TT_OP_PARENTHESIS_C; return;
+	case '(': _type = TT_OP_PARENTHESIS_O; return;
+
+	case '&':
+		nextChar = in.get();
+
+		if (nextChar == '=') _type = TT_OP_AND_EQUALS; return;
+		if (nextChar == '&')
+		{
+			nextChar = in.get();
+
+			if (nextChar == '=') _type = TT_OP_AND2_EQUALS; return;
+
+			in.unget(nextChar);
+
+			_type = TT_OP_AND2; return;
+		}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_AND; return;
+
+	case '*':
+		nextChar = in.get();
+
+		if (nextChar == '=') _type = TT_OP_ASTERIX_EQUALS; return;
+
+		in.unget(nextChar);
+
+		_type = TT_OP_ASTERIX; return;
+
+	case '=':
+		nextChar = in.get();
+
+		if (nextChar == '=') _type = TT_OP_CMP_EQ; return;
+
+		in.unget(nextChar);
+
+		_type = TT_OP_EQUALS; return;
+
+	case '>':
+		nextChar = in.get();
+
+		if (nextChar == '=') _type = TT_OP_CMP_GE; return;
+		if (nextChar == '>')
+		{
+			nextChar = in.get();
+
+			if (nextChar == '=') _type = TT_OP_SHIFT_RIGHT_EQUALS; return;
+
+			in.unget(nextChar);
+
+			_type = TT_OP_SHIFT_RIGHT; return;
+		}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_CMP_GT; return;
+
+	case '<':
+		nextChar = in.get();
+
+		if (nextChar == '=') _type = TT_OP_CMP_LE; return;
+		if (nextChar == '<')
+		{
+			nextChar = in.get();
+
+			if (nextChar == '=') _type = TT_OP_SHIFT_LEFT_EQUALS; return;
+
+			in.unget(nextChar);
+
+			_type = TT_OP_SHIFT_LEFT; return;
+		}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_CMP_LT; return;
+
+	case '-':
+		nextChar = in.get();
+
+		if (nextChar == '=') _type = TT_OP_MINUS_EQUALS; return;
+		if (nextChar == '-') _type = TT_OP_MINUS2;       return;
+
+		in.unget(nextChar);
+
+		_type = TT_OP_MINUS; return;
+
+	case '!':
+		nextChar = in.get();
+
+		if (nextChar == '=') _type = TT_OP_CMP_NE; return;
+
+		in.unget(nextChar);
+
+		_type = TT_OP_NOT; return;
+
+	case '|':
+		nextChar = in.get();
+
+		if (nextChar == '=') _type = TT_OP_PIPE_EQUALS; return;
+		if (nextChar == '|')
+		{
+			nextChar = in.get();
+
+			if (nextChar == '=') _type = TT_OP_PIPE2_EQUALS; return;
+
+			in.unget(nextChar);
+
+			_type = TT_OP_PIPE2; return;
+		}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_PIPE; return;
+
+	case '+':
+		nextChar = in.get();
+
+		if (nextChar == '=') _type = TT_OP_PLUS_EQUALS; return;
+		if (nextChar == '+') _type = TT_OP_PLUS2;       return;
+
+		in.unget(nextChar);
+
+		_type = TT_OP_PLUS; return;
+
+	case '/':
+		nextChar = in.get();
+
+		if (nextChar == '=') _type = TT_OP_SLASH_EQUALS; return;
+
+		in.unget(nextChar);
+
+		_type = TT_OP_SLASH; return;
+	}
+
+	if (isalpha(nextChar) || nextChar == '_')
+	{
+		_type = TT_IDENTIFIER;
+
+		while (isalnum(nextChar) || nextChar == '_')
+		{
+			_data += (char)nextChar;
+
+			nextChar = in.get();
+		}
+
+		in.unget(nextChar);
+
+		return;
+	}
+
+	if (isdigit(nextChar))
+	{
+		_type = TT_NUMBER;
+
+		bool foundDot   (false);
+		bool foundPlus  (false);
+		bool foundZero  (nextChar == '0');
+		bool foundPrefix(!foundZero);
+
+		while (true)
+		{
+			_data += (char)nextChar;
+
+			nextChar = in.get();
+
+			if (!foundPrefix)
+			{
+				// Can only find prefix at start.
+				foundPrefix = true;
+
+				if (nextChar == 'D' || nextChar == 'd') continue;
+				if (nextChar == 'O' || nextChar == 'o') continue;
+				if (nextChar == 'X' || nextChar == 'x') continue;
+			}
+
+			if (isxdigit(nextChar)) continue;
+
+			if (!foundDot && nextChar == '.')
+			{
+				foundDot = true;
+				continue;
+			}
+
+			if (!foundPlus && (nextChar == '+' || nextChar == '-'))
+			{
+				foundPlus = true;
+				continue;
+			}
+
+			break;
+		}
+
+		in.unget(nextChar);
+
+		return;
+	}
+
+	if (nextChar == '"')
+	{
+		_type = TT_STRING;
+
+		while (in.isInQuote())
+		{
+			_data += (char)nextChar;
+
+			nextChar = in.get();
+		}
+
+		return;
+	}
+}
+
+
+
 std::ostream& operator << (std::ostream& out, const SourceToken& in)
 {
 	out << "[" << in.getType() << "] " << in.getName();

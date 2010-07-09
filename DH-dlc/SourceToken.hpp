@@ -67,32 +67,44 @@ class SourceTokenDHLX
 			TT_NUMBER,
 			TT_STRING,
 
-			TT_OP_AND,           // &
-			TT_OP_AND2,          // &&
-			TT_OP_BRACE_C,       // }
-			TT_OP_BRACE_O,       // {
-			TT_OP_BRACKET_C,     // ]
-			TT_OP_BRACKET_O,     // [
-			TT_OP_CMP_EQ,        // ==
-			TT_OP_CMP_GE,        // >=
-			TT_OP_CMP_GT,        // >
-			TT_OP_CMP_LE,        // <=
-			TT_OP_CMP_LT,        // <
-			TT_OP_CMP_NE,        // !=
-			TT_OP_COMMA,         // ,
-			TT_OP_COMMENT,       // //
-			TT_OP_COMMENT_C,     // */
-			TT_OP_COMMENT_O,     // /*
-			TT_OP_EQUALS,        // =
-			TT_OP_HASH,          // #
-			TT_OP_MINUS,         // -
-			TT_OP_PIPE,          // |
-			TT_OP_PIPE2,         // ||
-			TT_OP_PARENTHESIS_C, // )
-			TT_OP_PARENTHESIS_O, // (
-			TT_OP_PLUS,          // +
-			TT_OP_SHIFT_LEFT,    // <<
-			TT_OP_SHIFT_RIGHT,   // >>
+			TT_OP_AND,                // &
+			TT_OP_AND_EQUALS,         // &=
+			TT_OP_AND2,               // &&
+			TT_OP_AND2_EQUALS,        // &&=
+			TT_OP_ASTERIX,            // *
+			TT_OP_ASTERIX_EQUALS,     // *=
+			TT_OP_BRACE_C,            // }
+			TT_OP_BRACE_O,            // {
+			TT_OP_BRACKET_C,          // ]
+			TT_OP_BRACKET_O,          // [
+			TT_OP_CMP_EQ,             // ==
+			TT_OP_CMP_GE,             // >=
+			TT_OP_CMP_GT,             // >
+			TT_OP_CMP_LE,             // <=
+			TT_OP_CMP_LT,             // <
+			TT_OP_CMP_NE,             // !=
+			TT_OP_COMMA,              // ,
+			TT_OP_EQUALS,             // =
+			TT_OP_HASH,               // #
+			TT_OP_MINUS,              // -
+			TT_OP_MINUS_EQUALS,       // -=
+			TT_OP_MINUS2,             // --
+			TT_OP_NOT,                // !
+			TT_OP_PIPE,               // |
+			TT_OP_PIPE_EQUALS,        // |=
+			TT_OP_PIPE2,              // ||
+			TT_OP_PIPE2_EQUALS,       // ||=
+			TT_OP_PARENTHESIS_C,      // )
+			TT_OP_PARENTHESIS_O,      // (
+			TT_OP_PLUS,               // +
+			TT_OP_PLUS_EQUALS,        // +=
+			TT_OP_PLUS2,              // ++
+			TT_OP_SHIFT_LEFT,         // <<
+			TT_OP_SHIFT_LEFT_EQUALS,  // <<=
+			TT_OP_SHIFT_RIGHT,        // >>
+			TT_OP_SHIFT_RIGHT_EQUALS, // >>=
+			TT_OP_SLASH,              // /
+			TT_OP_SLASH_EQUALS,       // /=
 		};
 
 		explicit SourceTokenDHLX();
