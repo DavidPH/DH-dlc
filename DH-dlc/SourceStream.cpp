@@ -54,7 +54,8 @@ SourceStream::SourceStream(std::istream & in, SourceType type) :
 		break;
 
 	case ST_DHLX:
-		_doStripQuote = false;
+		_doStripAuto       = false;
+		_doStripQuote      = false;
 		_doStripWhitespace = false;
 
 		_doCompressWhitespace = true;
@@ -206,6 +207,10 @@ std::string SourceStream::getbrace()
 
 	int targetDepthBrace = _depthBrace-1;
 
+	// Need to stop stripping in braces for this function.
+	bool doStripAuto = _doStripAuto;
+	_doStripAuto = true;
+
 	while (true)
 	{
 		int nextChar = get();
@@ -217,6 +222,9 @@ std::string SourceStream::getbrace()
 
 		newString += (char) nextChar;
 	}
+
+	// Restore configuration.
+	_doStripAuto = doStripAuto;
 
 	return newString;
 }
