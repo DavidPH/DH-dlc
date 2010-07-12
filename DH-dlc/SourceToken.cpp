@@ -528,9 +528,18 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	}
 }
 
+std::string const & SourceTokenDHLX::getData() const
+{
+	return _data;
+}
+SourceTokenDHLX::TokenType SourceTokenDHLX::getType() const
+{
+	return _type;
+}
 
 
-std::ostream& operator << (std::ostream& out, const SourceToken& in)
+
+std::ostream & operator << (std::ostream & out, SourceToken const & in)
 {
 	out << "[" << in.getType() << "] " << in.getName();
 
@@ -541,10 +550,23 @@ std::ostream& operator << (std::ostream& out, const SourceToken& in)
 
 	return out;
 }
+std::ostream & operator << (std::ostream & out, SourceTokenDHLX const & in)
+{
+	return out << "SourceTokenDHLX(" << "data=(" << in.getData() << ')' << ',' << "type=(" << in.getType() << ')' << ')';
+}
 
-SourceStream& operator >> (SourceStream& in, SourceToken& out)
+SourceStream & operator >> (SourceStream & in, SourceToken & out)
 {
 	out = SourceToken(in);
+
+	if (option_debug_token)
+		std::cerr << out << "\n";
+
+	return in;
+}
+SourceStream & operator >> (SourceStream & in, SourceTokenDHLX & out)
+{
+	out = SourceTokenDHLX(in);
 
 	if (option_debug_token)
 		std::cerr << out << "\n";

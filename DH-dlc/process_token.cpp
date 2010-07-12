@@ -36,7 +36,7 @@
 
 
 
-void process_token(SourceToken st) throw(CompilerException)
+void process_token(SourceToken st)
 {
 	if (st.empty())
 		return;
@@ -118,6 +118,11 @@ void process_token(SourceToken st) throw(CompilerException)
 	}
 
 	global_object->addObject(name_t(st.getName()), st);
+}
+
+void process_token(SourceTokenDHLX st)
+{
+
 }
 
 

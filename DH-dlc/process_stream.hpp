@@ -24,16 +24,17 @@
 #ifndef PROCESS_STREAM_H
 #define PROCESS_STREAM_H
 
-#include <string>
-
 #include "SourceStream.hpp"
+
+#include <string>
 
 
 
 /*
 	Filename is purely for logging purposes.
 */
-void process_stream(SourceStream & ss, std::string const & filename = "");
+template <class TokenClass>
+extern void process_stream(SourceStream & ss, std::string const & filename = "");
 
 
 

@@ -1,5 +1,5 @@
 /*
-    Copyright 2009 David Hill
+    Copyright 2009, 2010 David Hill
 
     This file is part of DH-dlc.
 
@@ -25,7 +25,8 @@
 
 
 
-void process_token(SourceToken) throw(CompilerException);
+void process_token(SourceToken);
+void process_token(SourceTokenDHLX);
 
 
 
