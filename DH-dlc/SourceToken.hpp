@@ -83,6 +83,7 @@ class SourceTokenDHLX
 			TT_OP_CMP_LE,             // <=
 			TT_OP_CMP_LT,             // <
 			TT_OP_CMP_NE,             // !=
+			TT_OP_COLON,              // :
 			TT_OP_COMMA,              // ,
 			TT_OP_EQUALS,             // =
 			TT_OP_HASH,               // #
@@ -99,6 +100,7 @@ class SourceTokenDHLX
 			TT_OP_PLUS,               // +
 			TT_OP_PLUS_EQUALS,        // +=
 			TT_OP_PLUS2,              // ++
+			TT_OP_SEMICOLON,          // ;
 			TT_OP_SHIFT_LEFT,         // <<
 			TT_OP_SHIFT_LEFT_EQUALS,  // <<=
 			TT_OP_SHIFT_RIGHT,        // >>
@@ -120,8 +122,9 @@ class SourceTokenDHLX
 
 
 
-std::ostream & operator << (std::ostream & out, SourceToken     const & in);
-std::ostream & operator << (std::ostream & out, SourceTokenDHLX const & in);
+std::ostream & operator << (std::ostream & out, SourceToken        const & in);
+std::ostream & operator << (std::ostream & out, SourceTokenDHLX    const & in);
+std::ostream & operator << (std::ostream & out, SourceTokenDHLX::TokenType in);
 
 SourceStream & operator >> (SourceStream & in, SourceToken     & out);
 SourceStream & operator >> (SourceStream & in, SourceTokenDHLX & out);

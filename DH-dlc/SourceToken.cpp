@@ -312,20 +312,22 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	case '{': _type = TT_OP_BRACE_O;       return;
 	case ']': _type = TT_OP_BRACKET_C;     return;
 	case '[': _type = TT_OP_BRACKET_O;     return;
+	case ':': _type = TT_OP_COLON;         return;
 	case ',': _type = TT_OP_COMMA;         return;
 	case '#': _type = TT_OP_HASH;          return;
 	case ')': _type = TT_OP_PARENTHESIS_C; return;
 	case '(': _type = TT_OP_PARENTHESIS_O; return;
+	case ';': _type = TT_OP_SEMICOLON;     return;
 
 	case '&':
 		nextChar = in.get();
 
-		if (nextChar == '=') _type = TT_OP_AND_EQUALS; return;
+		if (nextChar == '=') {_type = TT_OP_AND_EQUALS; return;}
 		if (nextChar == '&')
 		{
 			nextChar = in.get();
 
-			if (nextChar == '=') _type = TT_OP_AND2_EQUALS; return;
+			if (nextChar == '=') {_type = TT_OP_AND2_EQUALS; return;}
 
 			in.unget(nextChar);
 
@@ -339,7 +341,7 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	case '*':
 		nextChar = in.get();
 
-		if (nextChar == '=') _type = TT_OP_ASTERIX_EQUALS; return;
+		if (nextChar == '=') {_type = TT_OP_ASTERIX_EQUALS; return;}
 
 		in.unget(nextChar);
 
@@ -348,7 +350,7 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	case '=':
 		nextChar = in.get();
 
-		if (nextChar == '=') _type = TT_OP_CMP_EQ; return;
+		if (nextChar == '=') {_type = TT_OP_CMP_EQ; return;}
 
 		in.unget(nextChar);
 
@@ -357,12 +359,12 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	case '>':
 		nextChar = in.get();
 
-		if (nextChar == '=') _type = TT_OP_CMP_GE; return;
+		if (nextChar == '=') {_type = TT_OP_CMP_GE; return;}
 		if (nextChar == '>')
 		{
 			nextChar = in.get();
 
-			if (nextChar == '=') _type = TT_OP_SHIFT_RIGHT_EQUALS; return;
+			if (nextChar == '=') {_type = TT_OP_SHIFT_RIGHT_EQUALS; return;}
 
 			in.unget(nextChar);
 
@@ -376,12 +378,12 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	case '<':
 		nextChar = in.get();
 
-		if (nextChar == '=') _type = TT_OP_CMP_LE; return;
+		if (nextChar == '=') {_type = TT_OP_CMP_LE; return;}
 		if (nextChar == '<')
 		{
 			nextChar = in.get();
 
-			if (nextChar == '=') _type = TT_OP_SHIFT_LEFT_EQUALS; return;
+			if (nextChar == '=') {_type = TT_OP_SHIFT_LEFT_EQUALS; return;}
 
 			in.unget(nextChar);
 
@@ -395,8 +397,8 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	case '-':
 		nextChar = in.get();
 
-		if (nextChar == '=') _type = TT_OP_MINUS_EQUALS; return;
-		if (nextChar == '-') _type = TT_OP_MINUS2;       return;
+		if (nextChar == '=') {_type = TT_OP_MINUS_EQUALS; return;}
+		if (nextChar == '-') {_type = TT_OP_MINUS2;       return;}
 
 		in.unget(nextChar);
 
@@ -405,7 +407,7 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	case '!':
 		nextChar = in.get();
 
-		if (nextChar == '=') _type = TT_OP_CMP_NE; return;
+		if (nextChar == '=') {_type = TT_OP_CMP_NE; return;}
 
 		in.unget(nextChar);
 
@@ -414,12 +416,12 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	case '|':
 		nextChar = in.get();
 
-		if (nextChar == '=') _type = TT_OP_PIPE_EQUALS; return;
+		if (nextChar == '=') {_type = TT_OP_PIPE_EQUALS; return;}
 		if (nextChar == '|')
 		{
 			nextChar = in.get();
 
-			if (nextChar == '=') _type = TT_OP_PIPE2_EQUALS; return;
+			if (nextChar == '=') {_type = TT_OP_PIPE2_EQUALS; return;}
 
 			in.unget(nextChar);
 
@@ -433,8 +435,8 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	case '+':
 		nextChar = in.get();
 
-		if (nextChar == '=') _type = TT_OP_PLUS_EQUALS; return;
-		if (nextChar == '+') _type = TT_OP_PLUS2;       return;
+		if (nextChar == '=') {_type = TT_OP_PLUS_EQUALS; return;}
+		if (nextChar == '+') {_type = TT_OP_PLUS2;       return;}
 
 		in.unget(nextChar);
 
@@ -443,7 +445,7 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	case '/':
 		nextChar = in.get();
 
-		if (nextChar == '=') _type = TT_OP_SLASH_EQUALS; return;
+		if (nextChar == '=') {_type = TT_OP_SLASH_EQUALS; return;}
 
 		in.unget(nextChar);
 
@@ -517,6 +519,8 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	{
 		_type = TT_STRING;
 
+		nextChar = in.get();
+
 		while (in.isInQuote())
 		{
 			_data += (char)nextChar;
@@ -553,6 +557,61 @@ std::ostream & operator << (std::ostream & out, SourceToken const & in)
 std::ostream & operator << (std::ostream & out, SourceTokenDHLX const & in)
 {
 	return out << "SourceTokenDHLX(" << "data=(" << in.getData() << ')' << ',' << "type=(" << in.getType() << ')' << ')';
+}
+std::ostream & operator << (std::ostream & out, SourceTokenDHLX::TokenType in)
+{
+	switch (in)
+	{
+		case SourceTokenDHLX::TT_NONE: return out << "TT_NONE";
+		case SourceTokenDHLX::TT_EOF:  return out << "TT_EOF";
+
+		case SourceTokenDHLX::TT_IDENTIFIER: return out << "TT_IDENTIFIER";
+		case SourceTokenDHLX::TT_NUMBER:     return out << "TT_NUMBER";
+		case SourceTokenDHLX::TT_STRING:     return out << "TT_STRING";
+
+		case SourceTokenDHLX::TT_OP_AND:                return out << "TT_OP_AND";
+		case SourceTokenDHLX::TT_OP_AND_EQUALS:         return out << "TT_OP_AND_EQUALS";
+		case SourceTokenDHLX::TT_OP_AND2:               return out << "TT_OP_AND2";
+		case SourceTokenDHLX::TT_OP_AND2_EQUALS:        return out << "TT_OP_AND2_EQUALS";
+		case SourceTokenDHLX::TT_OP_ASTERIX:            return out << "TT_OP_ASTERIX";
+		case SourceTokenDHLX::TT_OP_ASTERIX_EQUALS:     return out << "TT_OP_ASTERIX_EQUALS";
+		case SourceTokenDHLX::TT_OP_BRACE_C:            return out << "TT_OP_BRACE_C";
+		case SourceTokenDHLX::TT_OP_BRACE_O:            return out << "TT_OP_BRACE_O";
+		case SourceTokenDHLX::TT_OP_BRACKET_C:          return out << "TT_OP_BRACKET_C";
+		case SourceTokenDHLX::TT_OP_BRACKET_O:          return out << "TT_OP_BRACKET_O";
+		case SourceTokenDHLX::TT_OP_CMP_EQ:             return out << "TT_OP_CMP_EQ";
+		case SourceTokenDHLX::TT_OP_CMP_GE:             return out << "TT_OP_CMP_GE";
+		case SourceTokenDHLX::TT_OP_CMP_GT:             return out << "TT_OP_CMP_GT";
+		case SourceTokenDHLX::TT_OP_CMP_LE:             return out << "TT_OP_CMP_LE";
+		case SourceTokenDHLX::TT_OP_CMP_LT:             return out << "TT_OP_CMP_LT";
+		case SourceTokenDHLX::TT_OP_CMP_NE:             return out << "TT_OP_CMP_NE";
+		case SourceTokenDHLX::TT_OP_COLON:              return out << "TT_OP_COLON";
+		case SourceTokenDHLX::TT_OP_COMMA:              return out << "TT_OP_COMMA";
+		case SourceTokenDHLX::TT_OP_EQUALS:             return out << "TT_OP_EQUALS";
+		case SourceTokenDHLX::TT_OP_HASH:               return out << "TT_OP_HASH";
+		case SourceTokenDHLX::TT_OP_MINUS:              return out << "TT_OP_MINUS";
+		case SourceTokenDHLX::TT_OP_MINUS_EQUALS:       return out << "TT_OP_MINUS_EQUALS";
+		case SourceTokenDHLX::TT_OP_MINUS2:             return out << "TT_OP_MINUS2";
+		case SourceTokenDHLX::TT_OP_NOT:                return out << "TT_OP_NOT";
+		case SourceTokenDHLX::TT_OP_PIPE:               return out << "TT_OP_PIPE";
+		case SourceTokenDHLX::TT_OP_PIPE_EQUALS:        return out << "TT_OP_PIPE_EQUALS";
+		case SourceTokenDHLX::TT_OP_PIPE2:              return out << "TT_OP_PIPE2";
+		case SourceTokenDHLX::TT_OP_PIPE2_EQUALS:       return out << "TT_OP_PIPE2_EQUALS";
+		case SourceTokenDHLX::TT_OP_PARENTHESIS_C:      return out << "TT_OP_PARENTHESIS_C";
+		case SourceTokenDHLX::TT_OP_PARENTHESIS_O:      return out << "TT_OP_PARENTHESIS_O";
+		case SourceTokenDHLX::TT_OP_PLUS:               return out << "TT_OP_PLUS";
+		case SourceTokenDHLX::TT_OP_PLUS_EQUALS:        return out << "TT_OP_PLUS_EQUALS";
+		case SourceTokenDHLX::TT_OP_PLUS2:              return out << "TT_OP_PLUS2";
+		case SourceTokenDHLX::TT_OP_SEMICOLON:          return out << "TT_OP_SEMICOLON";
+		case SourceTokenDHLX::TT_OP_SHIFT_LEFT:         return out << "TT_OP_SHIFT_LEFT";
+		case SourceTokenDHLX::TT_OP_SHIFT_LEFT_EQUALS:  return out << "TT_OP_SHIFT_LEFT_EQUALS";
+		case SourceTokenDHLX::TT_OP_SHIFT_RIGHT:        return out << "TT_OP_SHIFT_RIGHT";
+		case SourceTokenDHLX::TT_OP_SHIFT_RIGHT_EQUALS: return out << "TT_OP_SHIFT_RIGHT_EQUALS";
+		case SourceTokenDHLX::TT_OP_SLASH:              return out << "TT_OP_SLASH";
+		case SourceTokenDHLX::TT_OP_SLASH_EQUALS:       return out << "TT_OP_SLASH_EQUALS";
+	}
+
+	return out << int(in);
 }
 
 SourceStream & operator >> (SourceStream & in, SourceToken & out)
