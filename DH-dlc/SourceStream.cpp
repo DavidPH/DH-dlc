@@ -46,7 +46,8 @@ SourceStream::SourceStream(std::istream & in, SourceType type) :
 	_inComment(false),
 	_inQuote(false),
 	_inQuote2(false),
-	_inWhitespace(false)
+	_inWhitespace(false),
+	_inWhitespaceLast(false)
 {
 	switch (type)
 	{
@@ -126,7 +127,7 @@ int SourceStream::get()
 
 		// whitespace
 		_inWhitespaceLast = _inWhitespace;
-		_inWhitespace     = isspace(_thisData);
+		_inWhitespace     = isspace(_thisData) != 0;
 
 		int lastData = _lastData;
 		   _lastData = _thisData;
