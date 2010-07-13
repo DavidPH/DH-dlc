@@ -253,6 +253,7 @@ add_executable(DH-dlc
 	process_stream.cpp
 	process_token.cpp
 	scripts.cpp
+	SourceScanner.cpp
 	SourceStream.cpp
 	SourceToken.cpp
 	types.cpp

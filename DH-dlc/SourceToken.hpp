@@ -35,6 +35,8 @@
 class SourceToken
 {
 	public:
+		typedef std::string TokenType;
+
 		explicit SourceToken();
 		explicit SourceToken(SourceStream & in);
 
