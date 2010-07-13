@@ -84,6 +84,7 @@ void usage()
 		"      --iwad       outputs an IWAD instead of a PWAD\n"
 		"  -m, --map        processes the specified directory as a map\n"
 		"  -o, --output     sets the output directory\n"
+		"  -u, --unwad      writes out directory instead of a wad\n"
 	;
 }
 
@@ -188,31 +189,38 @@ int main(int argc, char** argv)
 		}
 	}
 
-	std::ofstream fileWAD(option_output.c_str(), std::ios_base::out | std::ios_base::binary);
+	if (option_unwad)
+	{
 
-	fileWAD << (option_iwad ? "IWAD" : "PWAD");
+	}
+	else
+	{
+		std::ofstream fileWAD(option_output.c_str(), std::ios_base::out | std::ios_base::binary);
 
-	// lump count
-	uint32_t lumpCount = lump_list.size();
+		fileWAD << (option_iwad ? "IWAD" : "PWAD");
 
-	fileWAD << char((lumpCount >>  0) & 0xFF);
-	fileWAD << char((lumpCount >>  8) & 0xFF);
-	fileWAD << char((lumpCount >> 16) & 0xFF);
-	fileWAD << char((lumpCount >> 24) & 0xFF);
+		// lump count
+		uint32_t lumpCount = lump_list.size();
 
-	// first lump header index
-	uint32_t lumpHeadIndex = get_lump_list_length()+12;
+		fileWAD << char((lumpCount >>  0) & 0xFF);
+		fileWAD << char((lumpCount >>  8) & 0xFF);
+		fileWAD << char((lumpCount >> 16) & 0xFF);
+		fileWAD << char((lumpCount >> 24) & 0xFF);
 
-	fileWAD << char((lumpHeadIndex >>  0) & 0xFF);
-	fileWAD << char((lumpHeadIndex >>  8) & 0xFF);
-	fileWAD << char((lumpHeadIndex >> 16) & 0xFF);
-	fileWAD << char((lumpHeadIndex >> 24) & 0xFF);
+		// first lump header index
+		uint32_t lumpHeadIndex = get_lump_list_length()+12;
 
-	FOREACH_T(std::list<Lump>, it, lump_list)
-		fileWAD << it->encodeBody();
+		fileWAD << char((lumpHeadIndex >>  0) & 0xFF);
+		fileWAD << char((lumpHeadIndex >>  8) & 0xFF);
+		fileWAD << char((lumpHeadIndex >> 16) & 0xFF);
+		fileWAD << char((lumpHeadIndex >> 24) & 0xFF);
 
-	FOREACH_T(std::list<Lump>, it, lump_list)
-		fileWAD << it->encodeHead();
+		FOREACH_T(std::list<Lump>, it, lump_list)
+			fileWAD << it->encodeBody();
+
+		FOREACH_T(std::list<Lump>, it, lump_list)
+			fileWAD << it->encodeHead();
+	}
 }
 
 

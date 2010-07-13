@@ -35,6 +35,7 @@
 
 PROCESS_OPTION_DEFINE_bool(explicit, false)
 PROCESS_OPTION_DEFINE_bool(iwad,     false)
+PROCESS_OPTION_DEFINE_bool(unwad,    false)
 
 PROCESS_OPTION_DEFINE_string(output, "")
 
@@ -59,6 +60,7 @@ PROCESS_OPTION_LONG_DECLARE
 
 	PROCESS_OPTION_HANDLE_LONG_bool(explicit, "explicit", 8);
 	PROCESS_OPTION_HANDLE_LONG_bool(iwad,     "iwad",     4);
+	PROCESS_OPTION_HANDLE_LONG_bool(unwad,    "unwad",    5);
 
 	PROCESS_OPTION_HANDLE_LONG_string(output, "output", 3);
 
