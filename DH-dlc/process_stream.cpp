@@ -42,7 +42,7 @@ void process_stream(SourceStream & ss, std::string const & filename)
 		try
 		{
 			ss >> st;
-			process_token(st);
+			process_token(st, ss);
 		}
 		catch (CompilerException& e)
 		{

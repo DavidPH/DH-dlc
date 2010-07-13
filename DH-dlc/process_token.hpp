@@ -25,8 +25,8 @@
 
 
 
-void process_token(SourceToken);
-void process_token(SourceTokenDHLX);
+void process_token(SourceToken     const & st, SourceStream & ss);
+void process_token(SourceTokenDHLX const & st, SourceStream & ss);
 
 
 

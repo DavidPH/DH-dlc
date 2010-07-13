@@ -33,10 +33,11 @@
 #include "process_file.hpp"
 #include "SourceToken.hpp"
 #include "exceptions/CompilerException.hpp"
+#include "exceptions/SyntaxException.hpp"
 
 
 
-void process_token(SourceToken st)
+void process_token(SourceToken const & st, SourceStream & ss)
 {
 	if (st.empty())
 		return;
@@ -120,9 +121,40 @@ void process_token(SourceToken st)
 	global_object->addObject(name_t(st.getName()), st);
 }
 
-void process_token(SourceTokenDHLX st)
+void process_token(SourceTokenDHLX const & st, SourceStream & ss)
 {
+	if ((st.getType() == SourceTokenDHLX::TT_EOF) || (st.getType() == SourceTokenDHLX::TT_NONE))
+		return;
 
+	if (st.getType() == SourceTokenDHLX::TT_OP_HASH)
+	{
+		SourceTokenDHLX commandToken(ss);
+
+		if (commandToken.getType() != SourceTokenDHLX::TT_IDENTIFIER)
+			throw SyntaxException("expected TT_IDENTIFIER after TT_OP_HASH got " + make_string(commandToken.getType()));
+
+		std::string commandString('#' + commandToken.getData());
+
+		if (commandString == command_name_include())
+		{
+			SourceTokenDHLX arg0(ss);
+
+			if (arg0.getType() == SourceTokenDHLX::TT_OP_COLON)
+				ss >> arg0;
+
+			if (arg0.getType() != SourceTokenDHLX::TT_STRING)
+				throw SyntaxException("expected TT_STRING got " + make_string(arg0.getType()));
+
+			SourceTokenDHLX arge(ss);
+
+			if (arge.getType() != SourceTokenDHLX::TT_OP_SEMICOLON)
+				throw SyntaxException("expected TT_OP_SEMICOLON got " + make_string(arge.getType()));
+
+			process_file(arg0.getData());
+
+			return;
+		}
+	}
 }
 
 
