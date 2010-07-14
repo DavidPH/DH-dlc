@@ -34,6 +34,9 @@ class Lump
 		std::string encodeBody() const;
 		std::string encodeHead() const;
 
+		std::string getData() const;
+		std::string getName() const;
+
 		uint32_t length() const;
 
 	private:

@@ -41,6 +41,7 @@ PROCESS_OPTION_DEFINE_string(output, "")
 
 PROCESS_OPTION_DEFINE_string_multi(directory)
 PROCESS_OPTION_DEFINE_string_multi(map)
+PROCESS_OPTION_DEFINE_string_multi(wad)
 
 
 
@@ -64,8 +65,9 @@ PROCESS_OPTION_LONG_DECLARE
 
 	PROCESS_OPTION_HANDLE_LONG_string(output, "output", 3);
 
-	PROCESS_OPTION_HANDLE_LONG_string_multi(map,       "map",       3);
 	PROCESS_OPTION_HANDLE_LONG_string_multi(directory, "directory", 3);
+	PROCESS_OPTION_HANDLE_LONG_string_multi(map,       "map",       3);
+	PROCESS_OPTION_HANDLE_LONG_string_multi(wad,       "wad",       3);
 
 	PROCESS_OPTION_HANDLE_LONG_UNKNOWN();
 }
@@ -82,8 +84,9 @@ PROCESS_OPTION_SHORT_DECLARE
 
 	PROCESS_OPTION_HANDLE_SHORT_string(output, 'o');
 
-	PROCESS_OPTION_HANDLE_SHORT_string_multi(map,       'm');
 	PROCESS_OPTION_HANDLE_SHORT_string_multi(directory, 'd');
+	PROCESS_OPTION_HANDLE_SHORT_string_multi(map,       'm');
+	PROCESS_OPTION_HANDLE_SHORT_string_multi(wad,       'w');
 
 	PROCESS_OPTION_HANDLE_SHORT_UNKNOWN();
 }

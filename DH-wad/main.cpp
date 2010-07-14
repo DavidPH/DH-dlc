@@ -85,6 +85,7 @@ void usage()
 		"  -m, --map        processes the specified directory as a map\n"
 		"  -o, --output     sets the output directory\n"
 		"  -u, --unwad      writes out directory instead of a wad\n"
+		"  -w, --wad        read the specified file as a wad file and add its lumps\n"
 	;
 }
 
@@ -187,11 +188,92 @@ int main(int argc, char** argv)
 
 			process_map(base.c_str(), name.c_str());
 		}
+
+		FOREACH_T(string_multi_opt_t, it, option_wad)
+		{
+			if (it->empty()) continue;
+
+			process_file_wad(*it);
+		}
 	}
 
 	if (option_unwad)
 	{
+		std::string dirBase(option_output);
 
+		if ((dirBase.size() != 0) && (dirBase[dirBase.size()-1] != PATHSEP))
+			dirBase += PATHSEP;
+
+		std::string dirSub;
+
+		FOREACH_T(std::list<Lump>, lumpIt, lump_list)
+		{
+			if (dirSub.empty())
+			{
+				if (lumpIt->getName() == "A_START")
+					dirSub = std::string("A_START") + PATHSEP;
+
+				else if (lumpIt->getName() == "FF_START")
+					dirSub = std::string("FF_START") + PATHSEP;
+
+				else if (lumpIt->getName() == "HI_START")
+					dirSub = std::string("HI_START") + PATHSEP;
+
+				else if (lumpIt->getName() == "S_START")
+					dirSub = std::string("SS_START") + PATHSEP;
+
+				else if (lumpIt->getName() == "SS_START")
+					dirSub = std::string("SS_START") + PATHSEP;
+
+				else if (lumpIt->getName() == "TX_START")
+					dirSub = std::string("TX_START") + PATHSEP;
+				else
+				{
+					std::list<Lump>::iterator lumpIt2 = lumpIt;
+					++lumpIt2;
+
+					if (lumpIt2->getName() == "TEXTMAP")
+						dirSub = lumpIt->getName() + PATHSEP;
+					else if (lumpIt2->getName() == "THINGS")
+						dirSub = lumpIt->getName() + PATHSEP;
+				}
+			}
+
+			std::ofstream lumpStream((dirBase+dirSub+lumpIt->getName()).c_str(), std::ios_base::out | std::ios_base::binary);
+
+			if (!lumpStream)
+			{
+				std::cerr << "Unable to open:" << (dirBase+dirSub+lumpIt->getName()) << '\n';
+
+				return 1;
+			}
+
+			lumpStream << lumpIt->getData();
+
+			if (!dirSub.empty())
+			{
+				if (lumpIt->getName() == "A_END")
+					dirSub.clear();
+
+				else if (lumpIt->getName() == "FF_END")
+					dirSub.clear();
+
+				else if (lumpIt->getName() == "HI_END")
+					dirSub.clear();
+
+				else if (lumpIt->getName() == "S_END")
+					dirSub.clear();
+
+				else if (lumpIt->getName() == "SS_END")
+					dirSub.clear();
+
+				else if (lumpIt->getName() == "TX_END")
+					dirSub.clear();
+
+				else if (lumpIt->getName() == "ENDMAP")
+					dirSub.clear();
+			}
+		}
 	}
 	else
 	{
