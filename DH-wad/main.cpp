@@ -84,6 +84,8 @@ void usage()
 		"      --iwad       outputs an IWAD instead of a PWAD\n"
 		"  -m, --map        processes the specified directory as a map\n"
 		"  -o, --output     sets the output directory\n"
+		"  -u, --unwad      writes out directory instead of a wad\n"
+		"  -w, --wad        read the specified file as a wad file and add its lumps\n"
 	;
 }
 
@@ -186,33 +188,145 @@ int main(int argc, char** argv)
 
 			process_map(base.c_str(), name.c_str());
 		}
+
+		FOREACH_T(string_multi_opt_t, it, option_wad)
+		{
+			if (it->empty()) continue;
+
+			process_file_wad(*it);
+		}
 	}
 
-	std::ofstream fileWAD(option_output.c_str(), std::ios_base::out | std::ios_base::binary);
+	if (option_unwad)
+	{
+		std::string dirBase(option_output);
 
-	fileWAD << (option_iwad ? "IWAD" : "PWAD");
+		if ((dirBase.size() != 0) && (dirBase[dirBase.size()-1] != PATHSEP))
+			dirBase += PATHSEP;
 
-	// lump count
-	uint32_t lumpCount = lump_list.size();
+		std::string dirSub;
 
-	fileWAD << char((lumpCount >>  0) & 0xFF);
-	fileWAD << char((lumpCount >>  8) & 0xFF);
-	fileWAD << char((lumpCount >> 16) & 0xFF);
-	fileWAD << char((lumpCount >> 24) & 0xFF);
+		FOREACH_T(std::list<Lump>, lumpIt, lump_list)
+		{
+			std::string lumpData(lumpIt->getData());
+			std::string lumpName(lumpIt->getName());
 
-	// first lump header index
-	uint32_t lumpHeadIndex = get_lump_list_length()+12;
+			if (dirSub.empty())
+			{
+				     if (lumpName == "A_START")
+					dirSub = lumpName + PATHSEP;
 
-	fileWAD << char((lumpHeadIndex >>  0) & 0xFF);
-	fileWAD << char((lumpHeadIndex >>  8) & 0xFF);
-	fileWAD << char((lumpHeadIndex >> 16) & 0xFF);
-	fileWAD << char((lumpHeadIndex >> 24) & 0xFF);
+				else if (lumpName == "F_START")
+					dirSub = lumpName + PATHSEP;
 
-	FOREACH_T(std::list<Lump>, it, lump_list)
-		fileWAD << it->encodeBody();
+				else if (lumpName == "FF_START")
+					dirSub = lumpName + PATHSEP;
 
-	FOREACH_T(std::list<Lump>, it, lump_list)
-		fileWAD << it->encodeHead();
+				else if (lumpName == "HI_START")
+					dirSub = lumpName + PATHSEP;
+
+				else if (lumpName == "P_START")
+					dirSub = lumpName + PATHSEP;
+
+				else if (lumpName == "S_START")
+					dirSub = lumpName + PATHSEP;
+
+				else if (lumpName == "SS_START")
+					dirSub = lumpName + PATHSEP;
+
+				else if (lumpName == "TX_START")
+					dirSub = lumpName + PATHSEP;
+				else
+				{
+					std::list<Lump>::iterator lumpIt2 = lumpIt;
+					++lumpIt2;
+
+					if (lumpIt2 == lump_list.end())
+						;
+
+					else if (lumpIt2->getName() == "TEXTMAP")
+						dirSub = lumpName + PATHSEP;
+
+					else if (lumpIt2->getName() == "THINGS")
+						dirSub = lumpName + PATHSEP;
+				}
+			}
+
+			if (!lumpData.empty())
+			{
+				std::ofstream lumpStream((dirBase+dirSub+lumpName).c_str(), std::ios_base::out | std::ios_base::binary);
+
+				if (!lumpStream)
+				{
+					std::cerr << "Unable to open:" << (dirBase+dirSub+lumpName) << '\n';
+
+					return 1;
+				}
+
+				lumpStream << lumpData;
+
+				lumpStream.close();
+			}
+
+			if (!dirSub.empty())
+			{
+				     if (lumpName == "A_END")
+					dirSub.clear();
+
+				else if (lumpName == "F_END")
+					dirSub.clear();
+
+				else if (lumpName == "FF_END")
+					dirSub.clear();
+
+				else if (lumpName == "HI_END")
+					dirSub.clear();
+
+				else if (lumpName == "P_END")
+					dirSub.clear();
+
+				else if (lumpName == "S_END")
+					dirSub.clear();
+
+				else if (lumpName == "SS_END")
+					dirSub.clear();
+
+				else if (lumpName == "TX_END")
+					dirSub.clear();
+
+				else if (lumpName == "ENDMAP")
+					dirSub.clear();
+			}
+		}
+	}
+	else
+	{
+		std::ofstream fileWAD(option_output.c_str(), std::ios_base::out | std::ios_base::binary);
+
+		fileWAD << (option_iwad ? "IWAD" : "PWAD");
+
+		// lump count
+		uint32_t lumpCount = lump_list.size();
+
+		fileWAD << char((lumpCount >>  0) & 0xFF);
+		fileWAD << char((lumpCount >>  8) & 0xFF);
+		fileWAD << char((lumpCount >> 16) & 0xFF);
+		fileWAD << char((lumpCount >> 24) & 0xFF);
+
+		// first lump header index
+		uint32_t lumpHeadIndex = get_lump_list_length()+12;
+
+		fileWAD << char((lumpHeadIndex >>  0) & 0xFF);
+		fileWAD << char((lumpHeadIndex >>  8) & 0xFF);
+		fileWAD << char((lumpHeadIndex >> 16) & 0xFF);
+		fileWAD << char((lumpHeadIndex >> 24) & 0xFF);
+
+		FOREACH_T(std::list<Lump>, it, lump_list)
+			fileWAD << it->encodeBody();
+
+		FOREACH_T(std::list<Lump>, it, lump_list)
+			fileWAD << it->encodeHead();
+	}
 }
 
 
