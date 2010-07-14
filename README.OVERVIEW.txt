@@ -167,8 +167,11 @@ probably remain, but even still.
 
 Certain directory names are handled specially:
 	A  | A_START  | ACS
+	F  | F_START  | flat
 	FF | FF_START | flats
 	HI | HI_START | hires
+	P  | P_START  | patches
+	S  | S_START  | sprite
 	SS | SS_START | sprites
 	TX | TX_START | textures
 		The files in these directories will be placed within the
