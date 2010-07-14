@@ -86,5 +86,50 @@ bool process_file(std::string const & nameDir, std::string const & nameFile, std
 	return true;
 }
 
+void process_file_wad(std::string const & wadName)
+{
+	std::ifstream wadStream(wadName.c_str(), std::ios_base::in | std::ios_base::binary | std::ios_base::ate);
+
+	if (!wadStream) return;
+
+	size_t wadSize = wadStream.tellg();
+	wadStream.seekg(0);
+
+	std::string wadData;
+	wadData.reserve(wadSize);
+
+	char wadChar;
+	while (wadStream.get(wadChar))
+		wadData += wadChar;
+
+	if (wadSize != wadData.size())
+		return;
+
+	if (wadSize < 12) return;
+
+	if (((wadData[0] != 'P') && (wadData[0] != 'I')) || (wadData[1] != 'W') || (wadData[2] != 'A') || (wadData[3] != 'D'))
+		return;
+
+	uint32_t lumpCount = (wadData[4] << 0) + (wadData[5] << 8) + (wadData[ 6] << 16) + (wadData[ 7] << 24);
+	uint32_t lumpIndex = (wadData[8] << 0) + (wadData[9] << 8) + (wadData[10] << 16) + (wadData[11] << 24);
+
+	while (lumpCount)
+	{
+		if ((lumpIndex+16) >= wadSize) return;
+
+		uint32_t lumpStart  = (wadData[lumpIndex+0] << 0) + (wadData[lumpIndex+1] << 8) + (wadData[lumpIndex+2] << 16) + (wadData[lumpIndex+3] << 24);
+		uint32_t lumpLength = (wadData[lumpIndex+4] << 0) + (wadData[lumpIndex+5] << 8) + (wadData[lumpIndex+6] << 16) + (wadData[lumpIndex+7] << 24);
+
+		std::string lumpName(wadData, lumpIndex+8, 8);
+
+		std::string lumpData(wadData, lumpStart, lumpLength);
+
+		lump_list.push_back(Lump(lumpData, lumpName));
+
+		lumpIndex += 16;
+		lumpCount -=  1;
+	}
+}
+
 
 

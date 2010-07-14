@@ -38,6 +38,10 @@
 	If nameLump is empty, use nameFile.
 */
 bool process_file(std::string const & nameDir, std::string const & nameFile, std::string const & nameLump, bool addAlways = false);
+/*
+	Adds all of the lumps from the specified wad file.
+*/
+void process_file_wad(std::string const & wadName);
 
 
 
