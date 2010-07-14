@@ -74,7 +74,7 @@ std::string Lump::getData() const
 }
 std::string Lump::getName() const
 {
-	return _lumpName;
+	return std::string(_lumpName.c_str());
 }
 
 
