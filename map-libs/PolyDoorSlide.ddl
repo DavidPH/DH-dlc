@@ -34,8 +34,8 @@
 		[VERTEX] v[4] (Default: line[2].v2)
 
 		[int] door_delay (Default: 70)
-		[float] door_flange (Default: 1/256)
-		[int] door_sound (Default: 1)
+		[float] door_flange (Default: global.DOOR_FLANGE or 1/256)
+		[int] door_sound (Default: global.DOOR_SOUND or 1)
 		[int] door_speed (Default: 16)
 
 		[string] texture_door (Default: "DOOR2_4")
@@ -137,7 +137,9 @@
 
 
 	# if exists local : door_delay  {_doorDelay = door_delay;}
+	# if exists       : DOOR_FLANGE {_flange    = DOOR_FLANGE;}
 	# if exists local : door_flange {_flange    = door_flange;}
+	# if exists       : DOOR_SOUND  {_doorSound = DOOR_SOUND;}
 	# if exists local : door_sound  {_doorSound = door_sound;}
 	# if exists local : door_speed  {_doorSpeed = door_speed;}
 
@@ -147,8 +149,11 @@
 
 
 
-	[SECTOR] sector0 : sector1
+	[SECTOR] sector0
 	{
+		heightceiling = sector1.heightceiling;
+		heightfloor   = sector1.heightfloor;
+
 		textureceiling = _textureTrak;
 		texturefloor   = _textureTrak;
 	}
