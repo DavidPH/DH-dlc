@@ -210,8 +210,11 @@ int main(int argc, char** argv)
 		{
 			if (dirSub.empty())
 			{
-				if (lumpIt->getName() == "A_START")
+				     if (lumpIt->getName() == "A_START")
 					dirSub = std::string("A_START") + PATHSEP;
+
+				else if (lumpIt->getName() == "F_START")
+					dirSub = std::string("F_START") + PATHSEP;
 
 				else if (lumpIt->getName() == "FF_START")
 					dirSub = std::string("FF_START") + PATHSEP;
@@ -219,8 +222,11 @@ int main(int argc, char** argv)
 				else if (lumpIt->getName() == "HI_START")
 					dirSub = std::string("HI_START") + PATHSEP;
 
+				else if (lumpIt->getName() == "P_START")
+					dirSub = std::string("P_START") + PATHSEP;
+
 				else if (lumpIt->getName() == "S_START")
-					dirSub = std::string("SS_START") + PATHSEP;
+					dirSub = std::string("S_START") + PATHSEP;
 
 				else if (lumpIt->getName() == "SS_START")
 					dirSub = std::string("SS_START") + PATHSEP;
@@ -232,8 +238,12 @@ int main(int argc, char** argv)
 					std::list<Lump>::iterator lumpIt2 = lumpIt;
 					++lumpIt2;
 
-					if (lumpIt2->getName() == "TEXTMAP")
+					if (lumpIt2 == lump_list.end())
+						;
+
+					else if (lumpIt2->getName() == "TEXTMAP")
 						dirSub = lumpIt->getName() + PATHSEP;
+
 					else if (lumpIt2->getName() == "THINGS")
 						dirSub = lumpIt->getName() + PATHSEP;
 				}
@@ -250,15 +260,23 @@ int main(int argc, char** argv)
 
 			lumpStream << lumpIt->getData();
 
+			lumpStream.close();
+
 			if (!dirSub.empty())
 			{
-				if (lumpIt->getName() == "A_END")
+				     if (lumpIt->getName() == "A_END")
+					dirSub.clear();
+
+				else if (lumpIt->getName() == "F_END")
 					dirSub.clear();
 
 				else if (lumpIt->getName() == "FF_END")
 					dirSub.clear();
 
 				else if (lumpIt->getName() == "HI_END")
+					dirSub.clear();
+
+				else if (lumpIt->getName() == "P_END")
 					dirSub.clear();
 
 				else if (lumpIt->getName() == "S_END")
