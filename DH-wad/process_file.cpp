@@ -121,34 +121,53 @@ void process_file_wad(std::string const & wadName)
 		return;
 	}
 
-	if (((wadData[0] != 'P') && (wadData[0] != 'I')) || (wadData[1] != 'W') || (wadData[2] != 'A') || (wadData[3] != 'D'))
+	if (((wadData[0] != 'I') && (wadData[0] != 'P')) || (wadData[1] != 'W') || (wadData[2] != 'A') || (wadData[3] != 'D'))
 	{
 		std::cerr << "not a wad:" << wadName << '\n';
 		return;
 	}
 
-	uint32_t lumpCount = (wadData[4] << 0) + (wadData[5] << 8) + (wadData[ 6] << 16) + (wadData[ 7] << 24);
-	uint32_t lumpIndex = (wadData[8] << 0) + (wadData[9] << 8) + (wadData[10] << 16) + (wadData[11] << 24);
+	// Without the first cast, a value >127 may be interpreted as signed.
+	uint32_t headCount(0);
+	headCount += uint32_t((unsigned char)wadData[ 4]) <<  0;
+	headCount += uint32_t((unsigned char)wadData[ 5]) <<  8;
+	headCount += uint32_t((unsigned char)wadData[ 6]) << 16;
+	headCount += uint32_t((unsigned char)wadData[ 7]) << 24;
 
-	while (lumpCount)
+	uint32_t headIndex(0);
+	headIndex += uint32_t((unsigned char)wadData[ 8]) <<  0;
+	headIndex += uint32_t((unsigned char)wadData[ 9]) <<  8;
+	headIndex += uint32_t((unsigned char)wadData[10]) << 16;
+	headIndex += uint32_t((unsigned char)wadData[11]) << 24;
+
+	while (headCount != 0)
 	{
-		if ((lumpIndex+16) >= wadSize)
+		if ((headIndex+16) > wadSize)
 		{
-			std::cerr << "invalid lump index:" << wadName << ':' << lumpIndex << '\n';
+			std::cerr << "invalid head index:" << wadName << ':' << headIndex << ':' << wadSize << ':' << headCount << '\n';
 			return;
 		}
 
-		uint32_t lumpStart  = (wadData[lumpIndex+0] << 0) + (wadData[lumpIndex+1] << 8) + (wadData[lumpIndex+2] << 16) + (wadData[lumpIndex+3] << 24);
-		uint32_t lumpLength = (wadData[lumpIndex+4] << 0) + (wadData[lumpIndex+5] << 8) + (wadData[lumpIndex+6] << 16) + (wadData[lumpIndex+7] << 24);
+		uint32_t lumpStart(0);
+		lumpStart  += uint32_t((unsigned char)wadData[headIndex + 0]) <<  0;
+		lumpStart  += uint32_t((unsigned char)wadData[headIndex + 1]) <<  8;
+		lumpStart  += uint32_t((unsigned char)wadData[headIndex + 2]) << 16;
+		lumpStart  += uint32_t((unsigned char)wadData[headIndex + 3]) << 24;
 
-		std::string lumpName(wadData, lumpIndex+8, 8);
+		uint32_t lumpLength(0);
+		lumpLength += uint32_t((unsigned char)wadData[headIndex + 4]) <<  0;
+		lumpLength += uint32_t((unsigned char)wadData[headIndex + 5]) <<  8;
+		lumpLength += uint32_t((unsigned char)wadData[headIndex + 6]) << 16;
+		lumpLength += uint32_t((unsigned char)wadData[headIndex + 7]) << 24;
+
+		std::string lumpName(wadData, headIndex+8, 8);
 
 		std::string lumpData(wadData, lumpStart, lumpLength);
 
 		lump_list.push_back(Lump(lumpData, lumpName));
 
-		lumpIndex += 16;
-		lumpCount -=  1;
+		headIndex += 16;
+		headCount -=  1;
 	}
 }
 
