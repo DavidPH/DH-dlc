@@ -208,31 +208,34 @@ int main(int argc, char** argv)
 
 		FOREACH_T(std::list<Lump>, lumpIt, lump_list)
 		{
+			std::string lumpData(lumpIt->getData());
+			std::string lumpName(lumpIt->getName());
+
 			if (dirSub.empty())
 			{
-				     if (lumpIt->getName() == "A_START")
-					dirSub = std::string("A_START") + PATHSEP;
+				     if (lumpName == "A_START")
+					dirSub = lumpName + PATHSEP;
 
-				else if (lumpIt->getName() == "F_START")
-					dirSub = std::string("F_START") + PATHSEP;
+				else if (lumpName == "F_START")
+					dirSub = lumpName + PATHSEP;
 
-				else if (lumpIt->getName() == "FF_START")
-					dirSub = std::string("FF_START") + PATHSEP;
+				else if (lumpName == "FF_START")
+					dirSub = lumpName + PATHSEP;
 
-				else if (lumpIt->getName() == "HI_START")
-					dirSub = std::string("HI_START") + PATHSEP;
+				else if (lumpName == "HI_START")
+					dirSub = lumpName + PATHSEP;
 
-				else if (lumpIt->getName() == "P_START")
-					dirSub = std::string("P_START") + PATHSEP;
+				else if (lumpName == "P_START")
+					dirSub = lumpName + PATHSEP;
 
-				else if (lumpIt->getName() == "S_START")
-					dirSub = std::string("S_START") + PATHSEP;
+				else if (lumpName == "S_START")
+					dirSub = lumpName + PATHSEP;
 
-				else if (lumpIt->getName() == "SS_START")
-					dirSub = std::string("SS_START") + PATHSEP;
+				else if (lumpName == "SS_START")
+					dirSub = lumpName + PATHSEP;
 
-				else if (lumpIt->getName() == "TX_START")
-					dirSub = std::string("TX_START") + PATHSEP;
+				else if (lumpName == "TX_START")
+					dirSub = lumpName + PATHSEP;
 				else
 				{
 					std::list<Lump>::iterator lumpIt2 = lumpIt;
@@ -242,53 +245,56 @@ int main(int argc, char** argv)
 						;
 
 					else if (lumpIt2->getName() == "TEXTMAP")
-						dirSub = lumpIt->getName() + PATHSEP;
+						dirSub = lumpName + PATHSEP;
 
 					else if (lumpIt2->getName() == "THINGS")
-						dirSub = lumpIt->getName() + PATHSEP;
+						dirSub = lumpName + PATHSEP;
 				}
 			}
 
-			std::ofstream lumpStream((dirBase+dirSub+lumpIt->getName()).c_str(), std::ios_base::out | std::ios_base::binary);
-
-			if (!lumpStream)
+			if (!lumpData.empty())
 			{
-				std::cerr << "Unable to open:" << (dirBase+dirSub+lumpIt->getName()) << '\n';
+				std::ofstream lumpStream((dirBase+dirSub+lumpName).c_str(), std::ios_base::out | std::ios_base::binary);
 
-				return 1;
+				if (!lumpStream)
+				{
+					std::cerr << "Unable to open:" << (dirBase+dirSub+lumpName) << '\n';
+
+					return 1;
+				}
+
+				lumpStream << lumpData;
+
+				lumpStream.close();
 			}
-
-			lumpStream << lumpIt->getData();
-
-			lumpStream.close();
 
 			if (!dirSub.empty())
 			{
-				     if (lumpIt->getName() == "A_END")
+				     if (lumpName == "A_END")
 					dirSub.clear();
 
-				else if (lumpIt->getName() == "F_END")
+				else if (lumpName == "F_END")
 					dirSub.clear();
 
-				else if (lumpIt->getName() == "FF_END")
+				else if (lumpName == "FF_END")
 					dirSub.clear();
 
-				else if (lumpIt->getName() == "HI_END")
+				else if (lumpName == "HI_END")
 					dirSub.clear();
 
-				else if (lumpIt->getName() == "P_END")
+				else if (lumpName == "P_END")
 					dirSub.clear();
 
-				else if (lumpIt->getName() == "S_END")
+				else if (lumpName == "S_END")
 					dirSub.clear();
 
-				else if (lumpIt->getName() == "SS_END")
+				else if (lumpName == "SS_END")
 					dirSub.clear();
 
-				else if (lumpIt->getName() == "TX_END")
+				else if (lumpName == "TX_END")
 					dirSub.clear();
 
-				else if (lumpIt->getName() == "ENDMAP")
+				else if (lumpName == "ENDMAP")
 					dirSub.clear();
 			}
 		}
