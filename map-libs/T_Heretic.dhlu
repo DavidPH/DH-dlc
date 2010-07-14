@@ -9,6 +9,7 @@ T_ImpLeader              = (int)    5;
 T_IronLich               = (int)    6;
 T_Sorcerer1              = (int)    7;
 T_BagOfHolding           = (int)    8;
+T_Maulotaur              = (int)    9;
 T_Minotaur               = (int)    9;
 T_GoldWandAmmo           = (int)   10;
 T_DeathmatchStart        = (int)   11;
