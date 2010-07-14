@@ -22,11 +22,14 @@
 		lump name.
 */
 
-#include <fstream>
-#include <string>
+#include "process_file.hpp"
 
 #include "Lump.hpp"
 #include "main.hpp"
+
+#include <fstream>
+#include <iostream>
+#include <string>
 
 
 
@@ -90,7 +93,11 @@ void process_file_wad(std::string const & wadName)
 {
 	std::ifstream wadStream(wadName.c_str(), std::ios_base::in | std::ios_base::binary | std::ios_base::ate);
 
-	if (!wadStream) return;
+	if (!wadStream)
+	{
+		std::cerr << "unable to open:" << wadName << '\n';
+		return;
+	}
 
 	size_t wadSize = wadStream.tellg();
 	wadStream.seekg(0);
@@ -103,19 +110,33 @@ void process_file_wad(std::string const & wadName)
 		wadData += wadChar;
 
 	if (wadSize != wadData.size())
+	{
+		std::cerr << "unexpected size of wad: " << wadName << ':' << wadSize << "!=" << wadData.size() << '\n';
 		return;
+	}
 
-	if (wadSize < 12) return;
+	if (wadSize < 12)
+	{
+		std::cerr << "invalid size of wad:" << wadName << ':' << wadSize << '\n';
+		return;
+	}
 
 	if (((wadData[0] != 'P') && (wadData[0] != 'I')) || (wadData[1] != 'W') || (wadData[2] != 'A') || (wadData[3] != 'D'))
+	{
+		std::cerr << "not a wad:" << wadName << '\n';
 		return;
+	}
 
 	uint32_t lumpCount = (wadData[4] << 0) + (wadData[5] << 8) + (wadData[ 6] << 16) + (wadData[ 7] << 24);
 	uint32_t lumpIndex = (wadData[8] << 0) + (wadData[9] << 8) + (wadData[10] << 16) + (wadData[11] << 24);
 
 	while (lumpCount)
 	{
-		if ((lumpIndex+16) >= wadSize) return;
+		if ((lumpIndex+16) >= wadSize)
+		{
+			std::cerr << "invalid lump index:" << wadName << ':' << lumpIndex << '\n';
+			return;
+		}
 
 		uint32_t lumpStart  = (wadData[lumpIndex+0] << 0) + (wadData[lumpIndex+1] << 8) + (wadData[lumpIndex+2] << 16) + (wadData[lumpIndex+3] << 24);
 		uint32_t lumpLength = (wadData[lumpIndex+4] << 0) + (wadData[lumpIndex+5] << 8) + (wadData[lumpIndex+6] << 16) + (wadData[lumpIndex+7] << 24);
