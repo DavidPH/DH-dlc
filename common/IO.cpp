@@ -55,7 +55,7 @@ bool isdir(char const * filename)
 	if (stat_res != 0) return false;
 
 	#ifdef TARGET_OS_WIN32
-	return (stat_data.st_mode & _S_IFMT) == _S_IFDIR
+	return (stat_data.st_mode & _S_IFMT) == _S_IFDIR;
 	#else
 	return S_ISDIR(stat_data.st_mode);
 	#endif
