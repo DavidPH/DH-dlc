@@ -271,6 +271,8 @@ add_executable(DH-dlc
 	types/int_t.cpp
 	types/real_t.cpp
 	types/string_t.cpp
+
+	../common/IO.cpp
 )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

@@ -34,6 +34,7 @@
 #include "process_file.hpp"
 #include "process_map.hpp"
 #include "../common/foreach.hpp"
+#include "../common/IO.hpp"
 
 
 
@@ -251,6 +252,8 @@ int main(int argc, char** argv)
 						dirSub = lumpName + PATHSEP;
 				}
 			}
+
+			IO::mkdir(dirBase+dirSub, true);
 
 			if (!lumpData.empty())
 			{

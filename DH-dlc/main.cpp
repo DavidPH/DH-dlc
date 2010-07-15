@@ -41,6 +41,7 @@
 #include "SourceStream.hpp"
 #include "types.hpp"
 #include "../common/foreach.hpp"
+#include "../common/IO.hpp"
 #include "../common/process_options.h"
 #include "exceptions/CompilerException.hpp"
 #include "types/int_t.hpp"
@@ -302,6 +303,8 @@ int main(int argc, char** argv)
 		std::cerr << "unable to open:" << name##NAME << "\n"; \
 		exit(1); \
 	}
+
+	IO::mkdir(option_directory, true);
 
 	if (option_output_hexen)
 	{
