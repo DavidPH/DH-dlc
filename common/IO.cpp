@@ -61,6 +61,59 @@ bool isdir(char const * filename)
 	#endif
 }
 
+std::vector<std::string> lsdir(char const * filename)
+{
+	std::vector<std::string> dirlist;
+
+	#ifdef TARGET_OS_WIN32
+	WIN32_FIND_DATA findData;
+	std::string     findDir(std::string(filename) + "*");
+	HANDLE          findResult;
+
+	findResult = FindFirstFile(findDir.c_str(), &findData);
+
+	if (findResult == INVALID_HANDLE_VALUE)
+		return dirList;
+
+	do
+	{
+		std::string findName(findData.cFileName);
+
+		if (findName == "." || findName == "..")
+		{
+			continue;
+		}
+
+		dirList.push_back(findName);
+	}
+	while (FindNextFile(findResult, &findData) != 0);
+
+	FindClose(findResult);
+	#else
+	DIR*    dirFile = opendir(dirName.c_str());
+	dirent* nextDir;
+
+	if (dirFile == NULL)
+		return dirList;
+
+	while ((nextDir = readdir(dirFile)) != NULL)
+	{
+		std::string fileName(nextDir->d_name);
+
+		if (fileName == "." || fileName == "..")
+		{
+			continue;
+		}
+
+		dirList.push_back(findName);
+	}
+
+	closedir(dirFile);
+	#endif
+
+	return dirList;
+}
+
 bool mkdir(std::string const & filename, bool recurse)
 {
 	if (recurse)

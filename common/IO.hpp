@@ -25,6 +25,7 @@
 #define IO_H
 
 #include <string>
+#include <vector>
 
 
 
@@ -34,6 +35,8 @@ namespace IO
 
 
 bool isdir(char const * filename);
+
+std::vector<std::string> lsdir(char const * filename);
 
 bool mkdir(std::string const & filename, bool recurse = false);
 
