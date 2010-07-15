@@ -151,8 +151,10 @@
 
 	[SECTOR] sector0
 	{
-		heightceiling = sector1.heightceiling;
-		heightfloor   = sector1.heightfloor;
+		# if exists : sector1.heightceiling
+			{heightceiling = sector1.heightceiling;}
+		# if exists : sector1.heightfloor
+			{heightfloor   = sector1.heightfloor;}
 
 		textureceiling = _textureTrak;
 		texturefloor   = _textureTrak;
