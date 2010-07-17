@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #define PATHSEP '\\'
 #else
+#include <dirent.h>
 #include <sys/stat.h>
 #define PATHSEP '/'
 #endif
@@ -63,7 +64,7 @@ bool isdir(char const * filename)
 
 std::vector<std::string> lsdir(char const * filename)
 {
-	std::vector<std::string> dirlist;
+	std::vector<std::string> dirList;
 
 	#ifdef TARGET_OS_WIN32
 	WIN32_FIND_DATA findData;
@@ -90,7 +91,7 @@ std::vector<std::string> lsdir(char const * filename)
 
 	FindClose(findResult);
 	#else
-	DIR*    dirFile = opendir(dirName.c_str());
+	DIR*    dirFile = opendir(filename);
 	dirent* nextDir;
 
 	if (dirFile == NULL)
@@ -98,9 +99,9 @@ std::vector<std::string> lsdir(char const * filename)
 
 	while ((nextDir = readdir(dirFile)) != NULL)
 	{
-		std::string fileName(nextDir->d_name);
+		std::string findName(nextDir->d_name);
 
-		if (fileName == "." || fileName == "..")
+		if (findName == "." || findName == "..")
 		{
 			continue;
 		}
