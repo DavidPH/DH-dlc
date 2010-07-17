@@ -36,19 +36,20 @@
 
 
 
-void process_directory(std::string const & dirName, bool primeDir)
+void process_directory(std::string const & dirname, bool primeDir)
 {
-	std::vector<std::string> filelist(IO::lsdir(dirName.c_str()));
+	std::vector<std::string> filelist(IO::lsdir(dirname.c_str()));
 
 	FOREACH_T(std::vector<std::string>, it, filelist)
 	{
 		std::string & filename = *it;
+		std::string pathname(dirname+filename);
 
-		if (IO::isdir(filename.c_str()))
+		if (IO::isdir(pathname.c_str()))
 		{
 			if (primeDir)
 			{
-				process_map(dirName, filename);
+				process_map(dirname, filename);
 			}
 			else
 			{
@@ -57,7 +58,7 @@ void process_directory(std::string const & dirName, bool primeDir)
 		}
 		else // TODO: IO::isfile
 		{
-			process_file(dirName, filename, "");
+			process_file(dirname, filename, "");
 		}
 	}
 }
