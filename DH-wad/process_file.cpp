@@ -33,18 +33,12 @@
 
 
 
-bool process_file(std::string const & nameDir, std::string const & nameFile, std::string const & nameLump_, bool addAlways)
+bool process_file(std::string const & nameDir, std::string const & nameFile, std::string nameLump, bool addAlways)
 {
-	std::string nameLump;
-
-	if (nameLump_.empty())
+	if (nameLump.empty())
 	{
 		// Strips file extension.
 		nameLump = nameFile.substr(0, nameFile.find_first_of('.'));
-	}
-	else
-	{
-		nameLump = nameLump_;
 	}
 
 	if (nameFile.empty())
