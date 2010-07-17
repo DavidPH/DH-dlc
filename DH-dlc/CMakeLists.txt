@@ -202,13 +202,9 @@ endif()
 
 if (USE_GMPLIB)
 	find_path(GMPXX_INCLUDE_DIR gmpxx.h)
+	find_library(GMPXX_LINK_DIR gmpxx.h)
 
-	if (GMPXX_INCLUDE_DIR)
-		message(STATUS "GMPXX include files found at ${GMPXX_INCLUDE_DIR}")
-
-		add_definitions(-DUSE_GMPLIB=1)
-
-	else()
+	if (NOT GMPXX_INCLUDE_DIR)
 		#message(SEND_ERROR "GMPXX include files not found")
 
 		message(STATUS "GMPXX include files not found")
@@ -216,6 +212,26 @@ if (USE_GMPLIB)
 		add_definitions(-DUSE_GMPLIB=0)
 
 		set(USE_GMPLIB N)
+
+	elseif (NOT GMPXX_LINK_DIR)
+		#message(SEND_ERROR "GMPXX link files not found")
+
+		message(STATUS "GMPXX link files not found")
+
+		add_definitions(-DUSE_GMPLIB=0)
+
+		set(USE_GMPLIB N)
+
+	else()
+		message(STATUS "GMPXX include files found at ${GMPXX_INCLUDE_DIR}")
+
+		message(STATUS "GMPXX link files found at ${GMPXX_LINK_DIR}")
+
+		include_directories("${GMPXX_INCLUDE_DIR}")
+
+		link_directories("${GMPXX_LINK_DIR}")
+
+		add_definitions(-DUSE_GMPLIB=1)
 	endif()
 else()
 
