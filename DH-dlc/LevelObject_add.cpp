@@ -437,9 +437,11 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		// [type] # for : name : start : stop : step { data }
 		else if (commandName == command_name_for())
 		{
-			type_t forType = type_t::get_type(st.getType());
-			if (forType == type_t::type_null)
-				forType = type_t::type_int();
+			type_t forType;
+			if (st.getType().empty())
+				forType = type_t::get_type(type_name_int());
+			else
+				forType = type_t::get_type(st.getType());
 
 			name_t      forName   (st.getBase(0));
 			std::string forStart = st.getBase(1);

@@ -177,7 +177,7 @@ std::string LevelObject::encode(bool topLevel)
 
 			if (topLevel)
 			{
-				oss << _type << " // " << get_object_index(this) << "\n{\n";
+				oss << _type.makeString() << " /* " << get_object_index(this) << " */\n{\n";
 
 				FOREACH_T(objmap_t, it, _data.getObjMap())
 					oss << '\t' << it->first << '=' << it->second->encode(false) << ";\n";
