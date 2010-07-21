@@ -91,6 +91,7 @@
 class LevelObjectData;
 class LevelObjectName;
 class LevelObjectPointer;
+class LevelObjectType;
 
 typedef LevelObjectData    any_t;
 typedef bool               bool_t;
@@ -108,6 +109,7 @@ class                      ubyte_t;
 class                      uword_t;
 
 typedef LevelObjectName name_t;
+typedef LevelObjectType type_t;
 
 typedef std::map<name_t, obj_t>  objmap_t;
 

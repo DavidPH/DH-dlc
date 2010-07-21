@@ -55,6 +55,7 @@ public:
 	LevelObjectType();
 
 	Mode getMode() const;
+	std::string makeString() const;
 
 	friend int cmp(LevelObjectType const, LevelObjectType const);
 
@@ -67,6 +68,26 @@ public:
 	static void            add_type(std::string const & type_name, Mode const mode);
 	static LevelObjectType get_type(std::string const & type_name);
 	static bool            has_type(std::string const & type_name);
+
+	// Internally used types. Will return type_null if the type hasn't been
+	// defined yet. (Will also cache the result once it is defined.)
+	static LevelObjectType type_bool();
+	static LevelObjectType type_shortint();
+	static LevelObjectType type_int();
+	static LevelObjectType type_longint();
+	static LevelObjectType type_shortfloat();
+	static LevelObjectType type_float();
+	static LevelObjectType type_longfloat();
+	static LevelObjectType type_string();
+	static LevelObjectType type_string8();
+	static LevelObjectType type_sword();
+	static LevelObjectType type_ubyte();
+	static LevelObjectType type_uword();
+	static LevelObjectType type_linedef();
+	static LevelObjectType type_sector();
+	static LevelObjectType type_sidedef();
+	static LevelObjectType type_thing();
+	static LevelObjectType type_vertex();
 
 	static LevelObjectType const type_null;
 
@@ -121,12 +142,12 @@ inline int cmp(LevelObjectType const l, LevelObjectType const r)
 	return 0;
 }
 
-bool operator == (LevelObjectType const l, LevelObjectType const r) {return cmp(l, r) == 0;}
-bool operator != (LevelObjectType const l, LevelObjectType const r) {return cmp(l, r) != 0;}
-bool operator >= (LevelObjectType const l, LevelObjectType const r) {return cmp(l, r) >= 0;}
-bool operator >  (LevelObjectType const l, LevelObjectType const r) {return cmp(l, r) >  0;}
-bool operator <= (LevelObjectType const l, LevelObjectType const r) {return cmp(l, r) <= 0;}
-bool operator <  (LevelObjectType const l, LevelObjectType const r) {return cmp(l, r) <  0;}
+inline bool operator == (LevelObjectType const l, LevelObjectType const r) {return cmp(l, r) == 0;}
+inline bool operator != (LevelObjectType const l, LevelObjectType const r) {return cmp(l, r) != 0;}
+inline bool operator >= (LevelObjectType const l, LevelObjectType const r) {return cmp(l, r) >= 0;}
+inline bool operator >  (LevelObjectType const l, LevelObjectType const r) {return cmp(l, r) >  0;}
+inline bool operator <= (LevelObjectType const l, LevelObjectType const r) {return cmp(l, r) <= 0;}
+inline bool operator <  (LevelObjectType const l, LevelObjectType const r) {return cmp(l, r) <  0;}
 
 
 

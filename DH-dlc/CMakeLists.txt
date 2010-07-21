@@ -259,7 +259,6 @@ add_executable(DH-dlc
 	LevelObjectName.cpp
 	LevelObjectPointer.cpp
 	LevelObjectType.cpp
-	lo_types.cpp
 	main.cpp
 	math.cpp
 	options.cpp

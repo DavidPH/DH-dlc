@@ -27,7 +27,7 @@
 
 #include <iostream>
 
-#include "lo_types.hpp"
+#include "LevelObjectType.hpp"
 #include "math.hpp"
 #include "options.hpp"
 #include "SourceStream.hpp"
@@ -68,8 +68,6 @@ SourceToken::SourceToken(SourceStream& in) : type(), name(), value(), data(), ba
 		}
 
 		setType = true;
-
-		type = get_lo_type_redirect(type);
 
 		nextChar = -2;
 	}
@@ -152,16 +150,11 @@ SourceToken::SourceToken(SourceStream& in) : type(), name(), value(), data(), ba
 	// type {...} || type;
 	if ((termChar == '{' || termChar == ';') && !setType)
 	{
-		type = get_lo_type_redirect(name);
-
-		if (get_lo_type(type))
+		if (type_t::has_type(name))
 		{
+			type = name;
 			name.clear();
 			setType = true;
-		}
-		else
-		{
-			type.clear();
 		}
 	}
 
@@ -190,17 +183,17 @@ SourceToken::SourceToken(SourceStream& in) : type(), name(), value(), data(), ba
 				type += nextChar;
 			}
 
-			type = get_lo_type_redirect(type);
-
 			nextChar = -2;
 
-			if (!type.empty() && !get_lo_type(type))
+			if (type_t::has_type(type))
+			{
+				setType = true;
+			}
+			else
 			{
 				value = "[" + type + "]";
 				type.clear();
 			}
-			else
-				setType = true;
 		}
 		// = (type) value
 		else if (nextChar == '(' && !setType)
@@ -217,17 +210,17 @@ SourceToken::SourceToken(SourceStream& in) : type(), name(), value(), data(), ba
 				type += nextChar;
 			}
 
-			type = get_lo_type_redirect(type);
-
 			nextChar = -2;
 
-			if (!get_lo_type(type))
+			if (type_t::has_type(type))
+			{
+				setType = true;
+			}
+			else
 			{
 				value = "(" + type + ")";
 				type.clear();
 			}
-			else
-				setType = true;
 		}
 
 		if (nextChar == -2)
@@ -273,16 +266,11 @@ SourceToken::SourceToken(SourceStream& in) : type(), name(), value(), data(), ba
 	// = type {...}
 	if (!setType)
 	{
-		type = get_lo_type_redirect(value);
-
-		if (get_lo_type(type))
+		if (type_t::has_type(value))
 		{
+			type = value;
 			value.clear();
 			setType = true;
-		}
-		else
-		{
-			type.clear();
 		}
 	}
 

@@ -29,8 +29,9 @@
 
 #include "exceptions/InvalidTypeException.hpp"
 #include "exceptions/NoDefaultTypeException.hpp"
-
 #include "types/string_t.hpp"
+
+#include "../common/foreach.hpp"
 
 
 
@@ -41,7 +42,13 @@ LevelObjectType::mode_vector_t       LevelObjectType::mode_vector(1, LevelObject
 LevelObjectType::redirect_type_map_t LevelObjectType::redirect_type_map;
 LevelObjectType::type_map_t          LevelObjectType::type_map;
 
+std::string LevelObjectType::makeString() const
+{
+	FOREACH_T(type_map_t, it, type_map)
+		if (it->second == *this) return it->first;
 
+	return "!!!NOT A TYPE!!!"; // SERIOUSLY!!!
+}
 
 void LevelObjectType::add_default_type(LevelObjectName const & name, LevelObjectType const context, LevelObjectType const type)
 {
@@ -132,6 +139,35 @@ bool LevelObjectType::has_type(std::string const & type_name)
 
 	return true;
 }
+
+#define MAKE_type_X(TYPE) \
+LevelObjectType LevelObjectType::type_##TYPE() \
+{ \
+	static LevelObjectType type = type_null; \
+	\
+	if ((type == type_null) && has_type(type_name_##TYPE())) \
+		type = get_type(type_name_##TYPE()); \
+	\
+	return type; \
+}
+MAKE_type_X(bool)
+MAKE_type_X(shortint)
+MAKE_type_X(int)
+MAKE_type_X(longint)
+MAKE_type_X(shortfloat)
+MAKE_type_X(float)
+MAKE_type_X(longfloat)
+MAKE_type_X(string)
+MAKE_type_X(string8)
+MAKE_type_X(sword)
+MAKE_type_X(ubyte)
+MAKE_type_X(uword)
+MAKE_type_X(linedef)
+MAKE_type_X(sector)
+MAKE_type_X(sidedef)
+MAKE_type_X(thing)
+MAKE_type_X(vertex)
+#undef MAKE_type_X
 
 
 

@@ -29,7 +29,6 @@
 
 #include "global_object.hpp"
 #include "LevelObjectName.hpp"
-#include "lo_types.hpp"
 #include "options.hpp"
 #include "types.hpp"
 #include "../common/foreach.hpp"
@@ -171,7 +170,7 @@ std::string LevelObject::encode(bool topLevel)
 		case any_t::OBJMAP_T:
 		{
 			// TODO: LO_TYPE_INLINE handling.
-			if (get_lo_type(_type) != LO_TYPE_OBJECT)
+			if (_type.getMode() != type_t::MODE_OBJECT)
 				return "";
 
 			std::ostringstream oss;
@@ -233,7 +232,7 @@ void LevelObject::encodeDoom(std::ostream & out)
 {
 	if (_data.getType() != any_t::OBJMAP_T) return;
 
-	if (_type == type_name_linedef())
+	if (_type == type_t::type_linedef())
 	{
 		uword_t v1;        // 00-01
 		uword_t v2;        // 02-03
@@ -274,7 +273,7 @@ void LevelObject::encodeDoom(std::ostream & out)
 			special = uword_t(270);
 			id      = uword_t(_index);
 
-			addObject(name_special, create(type_name_uword(), make_string(special)));
+			addObject(name_special, create(type_t::type_uword(), make_string(special)));
 		}
 
 		v1.encodeBinary(out);
@@ -288,7 +287,7 @@ void LevelObject::encodeDoom(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_sector())
+	if (_type == type_t::type_sector())
 	{
 		CHECKVALUE2_BINARY(name_heightfloor,    sword,     0); // 00-01
 		CHECKVALUE2_BINARY(name_heightceiling,  sword,     0); // 02-03
@@ -301,7 +300,7 @@ void LevelObject::encodeDoom(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_sidedef())
+	if (_type == type_t::type_sidedef())
 	{
 		CHECKVALUE2_BINARY(name_offsetx,       sword,    0); // 00-01
 		CHECKVALUE2_BINARY(name_offsety,       sword,    0); // 02-03
@@ -313,7 +312,7 @@ void LevelObject::encodeDoom(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_thing())
+	if (_type == type_t::type_thing())
 	{
 		sword_t x;     // 00-01
 		sword_t y;     // 02-03
@@ -350,7 +349,7 @@ void LevelObject::encodeDoom(std::ostream & out)
 			type  = uword_t(5004);
 			flags = uword_t(_index);
 
-			addObject(name_type, create(type_name_uword(), make_string(type)));
+			addObject(name_type, create(type_t::type_uword(), make_string(type)));
 		}
 
 		x.encodeBinary(out);
@@ -362,7 +361,7 @@ void LevelObject::encodeDoom(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_vertex())
+	if (_type == type_t::type_vertex())
 	{
 		CHECKVALUE2_BINARY(name_x, sword, 0); // 00-01
 		CHECKVALUE2_BINARY(name_y, sword, 0); // 02-03
@@ -376,7 +375,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 	if (_data.getType() != any_t::OBJMAP_T)
 		return;
 
-	if (_type == type_name_linedef())
+	if (_type == type_t::type_linedef())
 	{
 		int_l_t special = to_int_l(getObject(name_special));
 
@@ -502,7 +501,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_thing())
+	if (_type == type_t::type_thing())
 	{
 		int_l_t type = to_int_l(getObject(name_type));
 
@@ -630,7 +629,7 @@ void LevelObject::encodeHeretic(std::ostream & out)
 {
 	if (_data.getType() != any_t::OBJMAP_T) return;
 
-	if (_type == type_name_linedef())
+	if (_type == type_t::type_linedef())
 	{
 		CHECKVALUE2_BINARY(name_v1,        uword, -1); // 00-01
 		CHECKVALUE2_BINARY(name_v2,        uword, -1); // 02-03
@@ -659,7 +658,7 @@ void LevelObject::encodeHeretic(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_sector())
+	if (_type == type_t::type_sector())
 	{
 		CHECKVALUE2_BINARY(name_heightfloor,    sword,     0); // 00-01
 		CHECKVALUE2_BINARY(name_heightceiling,  sword,     0); // 02-03
@@ -672,7 +671,7 @@ void LevelObject::encodeHeretic(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_sidedef())
+	if (_type == type_t::type_sidedef())
 	{
 		CHECKVALUE2_BINARY(name_offsetx,       sword,    0); // 00-01
 		CHECKVALUE2_BINARY(name_offsety,       sword,    0); // 02-03
@@ -684,7 +683,7 @@ void LevelObject::encodeHeretic(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_thing())
+	if (_type == type_t::type_thing())
 	{
 		CHECKVALUE2_BINARY(name_x,     sword, 0); // 00-01
 		CHECKVALUE2_BINARY(name_y,     sword, 0); // 02-03
@@ -711,7 +710,7 @@ void LevelObject::encodeHeretic(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_vertex())
+	if (_type == type_t::type_vertex())
 	{
 		CHECKVALUE2_BINARY(name_x, sword, 0); // 00-01
 		CHECKVALUE2_BINARY(name_y, sword, 0); // 02-03
@@ -724,7 +723,7 @@ void LevelObject::encodeHexen(std::ostream & out)
 {
 	if (_data.getType() != any_t::OBJMAP_T) return;
 
-	if (_type == type_name_linedef())
+	if (_type == type_t::type_linedef())
 	{
 		uword_t v1;        // 00-01
 		uword_t v2;        // 02-03
@@ -851,7 +850,7 @@ void LevelObject::encodeHexen(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_sector())
+	if (_type == type_t::type_sector())
 	{
 		CHECKVALUE2_BINARY(name_heightfloor,    sword,     0); // 00-01
 		CHECKVALUE2_BINARY(name_heightceiling,  sword,     0); // 02-03
@@ -864,7 +863,7 @@ void LevelObject::encodeHexen(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_sidedef())
+	if (_type == type_t::type_sidedef())
 	{
 		CHECKVALUE2_BINARY(name_offsetx,       sword,    0); // 00-01
 		CHECKVALUE2_BINARY(name_offsety,       sword,    0); // 02-03
@@ -876,7 +875,7 @@ void LevelObject::encodeHexen(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_thing())
+	if (_type == type_t::type_thing())
 	{
 		CHECKVALUE2_BINARY(name_id,      uword,  0); // 00-01
 		CHECKVALUE2_BINARY(name_x,       sword,  0); // 02-03
@@ -914,7 +913,7 @@ void LevelObject::encodeHexen(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_vertex())
+	if (_type == type_t::type_vertex())
 	{
 		CHECKVALUE2_BINARY(name_x, sword, 0); // 00-01
 		CHECKVALUE2_BINARY(name_y, sword, 0); // 02-03
@@ -927,7 +926,7 @@ void LevelObject::encodeStrife(std::ostream & out)
 {
 	if (_data.getType() != any_t::OBJMAP_T) return;
 
-	if (_type == type_name_linedef())
+	if (_type == type_t::type_linedef())
 	{
 		CHECKVALUE2_BINARY(name_v1,        uword, -1); // 00-01
 		CHECKVALUE2_BINARY(name_v2,        uword, -1); // 02-03
@@ -957,7 +956,7 @@ void LevelObject::encodeStrife(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_sector())
+	if (_type == type_t::type_sector())
 	{
 		CHECKVALUE2_BINARY(name_heightfloor,    sword,     0); // 00-01
 		CHECKVALUE2_BINARY(name_heightceiling,  sword,     0); // 02-03
@@ -970,7 +969,7 @@ void LevelObject::encodeStrife(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_sidedef())
+	if (_type == type_t::type_sidedef())
 	{
 		CHECKVALUE2_BINARY(name_offsetx,       sword,    0); // 00-01
 		CHECKVALUE2_BINARY(name_offsety,       sword,    0); // 02-03
@@ -982,7 +981,7 @@ void LevelObject::encodeStrife(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_thing())
+	if (_type == type_t::type_thing())
 	{
 		CHECKVALUE2_BINARY(name_x,     sword, 0); // 00-01
 		CHECKVALUE2_BINARY(name_y,     sword, 0); // 02-03
@@ -1008,7 +1007,7 @@ void LevelObject::encodeStrife(std::ostream & out)
 		return;
 	}
 
-	if (_type == type_name_vertex())
+	if (_type == type_t::type_vertex())
 	{
 		CHECKVALUE2_BINARY(name_x, sword, 0); // 00-01
 		CHECKVALUE2_BINARY(name_y, sword, 0); // 02-03
