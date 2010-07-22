@@ -13,6 +13,8 @@
 # typedef new :       ubyte   : value;
 # typedef new :       uword   : value;
 
+# typedef new : return type   : dynamic;
+
 // Not used internally. Can be used to hold a set of keys.
 # typedef new :       object  : value;
 

@@ -31,7 +31,7 @@
 
 #include "LevelObject.hpp"
 #include "LevelObjectName.hpp"
-#include "lo_types.hpp"
+#include "LevelObjectType.hpp"
 #include "types.hpp"
 #include "../common/foreach.hpp"
 #include "exceptions/InvalidTypeException.hpp"
@@ -41,8 +41,6 @@
 
 obj_t               global_object = LevelObject::create();
 global_object_map_t global_object_map;
-
-static std::map<std::string, size_t> type_counts;
 
 void add_object(name_t const & name, obj_t newObject)
 {
@@ -62,7 +60,7 @@ void clean_objects()
 {
 	FOREACH_T(global_object_map_t, mapIt, global_object_map)
 	{
-		if (get_lo_type(mapIt->first) != LO_TYPE_VALUE) continue;
+		if (mapIt->first.getMode() != type_t::MODE_VALUE) continue;
 
 		FOREACH_T(global_object_list_t, listIt, mapIt->second)
 		{
@@ -87,16 +85,16 @@ obj_t get_object(name_t const & name)
 
 	return global_object->getObject(name);
 }
-obj_t get_object(name_t const & name, std::string const & type)
+obj_t get_object(name_t const & name, type_t const type)
 {
 	obj_t lop = get_object(name);
 
 	if (lop->getType() != type)
-		throw InvalidTypeException("expected:" + type);
+		throw InvalidTypeException("expected:" + type.makeString());
 
 	return lop;
 }
-obj_t get_object(int_s_t objectIndex, std::string const & type)
+obj_t get_object(int_s_t objectIndex, type_t const type)
 {
 	if (objectIndex == -1)
 		return NULL;

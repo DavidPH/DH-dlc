@@ -27,7 +27,7 @@
 #include "global_object.hpp"
 #include "LevelObject.hpp"
 #include "LevelObjectName.hpp"
-#include "lo_types.hpp"
+#include "LevelObjectType.hpp"
 #include "options.hpp"
 #include "parsing.hpp"
 #include "process_file.hpp"
@@ -47,7 +47,14 @@ void process_token(SourceToken st) throw(CompilerException)
 		// # default type : NAME : TYPE : [CONTEXT]
 		if (st.getName() == command_name_defaulttype())
 		{
-			add_default_type(st.getBase(0), st.getBase(1), st.getBase(2));
+			name_t type_name(st.getBase(0));
+			type_t type = type_t::get_type(st.getBase(1));
+			type_t context;
+
+			if (!st.getBase(2).empty())
+				context = type_t::get_type(st.getBase(2));
+
+			type_t::add_default_type(type_name, context, type);
 
 			return;
 		}
@@ -90,25 +97,28 @@ void process_token(SourceToken st) throw(CompilerException)
 		// # typedef : OLD_TYPE : NEW_TYPE
 		if (st.getName() == command_name_typedef())
 		{
-			add_lo_type_redirect(st.getBase(1), st.getBase(0));
+			type_t::add_redirect_type(st.getBase(1), type_t::get_type(st.getBase(0)));
 
 			return;
 		}
 
-		// # typedef new : TYPE : value|object|compound object|inline
+		// # typedef new : TYPE : MODE
 		if (st.getName() == command_name_typedefnew())
 		{
-			if (st.getBase(1) == "value")
-				add_lo_type(st.getBase(0), LO_TYPE_VALUE);
+			if (st.getBase(1) == "dynamic")
+				type_t::add_type(st.getBase(0), type_t::MODE_DYNAMIC);
+
+			else if (st.getBase(1) == "value")
+				type_t::add_type(st.getBase(0), type_t::MODE_VALUE);
 
 			else if (st.getBase(1) == "object")
-				add_lo_type(st.getBase(0), LO_TYPE_OBJECT);
+				type_t::add_type(st.getBase(0), type_t::MODE_OBJECT);
 
 			else if (st.getBase(1) == "compoundobject")
-				add_lo_type(st.getBase(0), LO_TYPE_COMPOUNDOBJECT);
+				type_t::add_type(st.getBase(0), type_t::MODE_COMPOUNDOBJECT);
 
 			else if (st.getBase(1) == "inline")
-				add_lo_type(st.getBase(0), LO_TYPE_INLINE);
+				type_t::add_type(st.getBase(0), type_t::MODE_INLINE);
 
 			else
 				throw CompilerException("unknown typedefnew:" + st.getBase(1));
