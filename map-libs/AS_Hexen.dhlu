@@ -1,0 +1,146 @@
+// Action Specials (Hexen)
+
+AS_None                          = (int)   0;
+AS_Polyobj_StartLine             = (int)   1;
+AS_Polyobj_RotateLeft            = (int)   2;
+AS_Polyobj_RotateRight           = (int)   3;
+AS_Polyobj_Move                  = (int)   4;
+AS_Polyobj_ExplicitLine          = (int)   5;
+AS_Polyobj_MoveTimes8            = (int)   6;
+AS_Polyobj_DoorSwing             = (int)   7;
+AS_Polyobj_DoorSlide             = (int)   8;
+
+AS_Door_Close                    = (int)  10;
+AS_Door_Open                     = (int)  11;
+AS_Door_Raise                    = (int)  12;
+AS_Door_LockedRaise              = (int)  13;
+
+
+
+
+
+
+AS_Floor_LowerByValue            = (int)  20;
+AS_Floor_LowerToLowest           = (int)  21;
+AS_Floor_LowerToNearest          = (int)  22;
+AS_Floor_RaiseByValue            = (int)  23;
+AS_Floor_RaiseToHighest          = (int)  24;
+AS_Floor_RaiseToNearest          = (int)  25;
+AS_Stairs_BuildDown              = (int)  26;
+AS_Stairs_BuildUp                = (int)  27;
+AS_Floor_RaiseAndCrush           = (int)  28;
+AS_Pillar_Build                  = (int)  29;
+AS_Pillar_Open                   = (int)  30;
+AS_Stairs_BuildDownSync          = (int)  31;
+AS_Stairs_BuildUpSync            = (int)  32;
+
+
+AS_Floor_RaiseByValueTimes8      = (int)  35;
+AS_Floor_LowerByValueTimes8      = (int)  36;
+
+
+
+AS_Ceiling_LowerByValue          = (int)  40;
+AS_Ceiling_RaiseByValue          = (int)  41;
+AS_Ceiling_CrushAndRaise         = (int)  42;
+AS_Ceiling_LowerAndCrush         = (int)  43;
+AS_Ceiling_CrushStop             = (int)  44;
+AS_Ceiling_CrushRaiseAndStay     = (int)  45;
+AS_Floor_CrushStop               = (int)  46;
+
+
+
+
+
+
+
+
+
+
+
+
+
+AS_Plat_PerpetualRaise           = (int)  60;
+AS_Plat_Stop                     = (int)  61;
+AS_Plat_DownWaitUpStay           = (int)  62;
+AS_Plat_DownByValue              = (int)  63;
+AS_Plat_UpWaitDownStay           = (int)  64;
+AS_Plat_UpByValue                = (int)  65;
+AS_Floor_LowerInstant            = (int)  66;
+AS_Floor_RaiseInstant            = (int)  67;
+AS_Floor_MoveToValueTimes8       = (int)  68;
+AS_Ceiling_MoveToValueTimes8     = (int)  69;
+AS_Teleport                      = (int)  70;
+AS_Teleport_NoFog                = (int)  71;
+AS_ThrustThing                   = (int)  72;
+AS_DamageThing                   = (int)  73;
+AS_Teleport_NewMap               = (int)  74;
+AS_Teleport_EndGame              = (int)  75;
+
+
+
+
+AS_ACS_Execute                   = (int)  80;
+AS_ACS_Suspend                   = (int)  81;
+AS_ACS_Terminate                 = (int)  82;
+AS_ACS_LockedExecute             = (int)  83;
+
+
+
+
+
+
+AS_Polyobj_OR_RotateLeft         = (int)  90;
+AS_Polyobj_OR_RotateRight        = (int)  91;
+AS_Polyobj_OR_Move               = (int)  92;
+AS_Polyobj_OR_MoveTimes8         = (int)  93;
+AS_Pillar_BuildAndCrush          = (int)  94;
+AS_FloorAndCeiling_LowerByValue  = (int)  95;
+AS_FloorAndCeiling_RaiseByValue  = (int)  96;
+
+
+
+AS_Scroll_Texture_Left           = (int) 100;
+AS_Scroll_Texture_Right          = (int) 101;
+AS_Scroll_Texture_Up             = (int) 102;
+AS_Scroll_Texture_Down           = (int) 103;
+
+
+
+
+
+AS_Light_ForceLightning          = (int) 109;
+AS_Light_RaiseByValue            = (int) 110;
+AS_Light_LowerByValue            = (int) 111;
+AS_Light_ChangeToValue           = (int) 112;
+AS_Light_Fade                    = (int) 113;
+AS_Light_Glow                    = (int) 114;
+AS_Light_Flicker                 = (int) 115;
+AS_Light_Strobe                  = (int) 116;
+
+
+
+AS_Radius_Quake                  = (int) 120;
+AS_Line_SetIdentification        = (int) 121;
+
+
+
+
+
+
+
+AS_UsePuzzleItem                 = (int) 129;
+AS_Thing_Activate                = (int) 130;
+AS_Thing_Deactivate              = (int) 131;
+AS_Thing_Remove                  = (int) 132;
+AS_Thing_Destroy                 = (int) 133;
+AS_Thing_Projectile              = (int) 134;
+AS_Thing_Spawn                   = (int) 135;
+AS_Thing_ProjectileGravity       = (int) 136;
+AS_Thing_SpawnNoFog              = (int) 137;
+AS_Floor_Waggle                  = (int) 138;
+
+AS_Sector_ChangeSound            = (int) 140;
+
+
+
