@@ -185,7 +185,7 @@ SourceToken::SourceToken(SourceStream& in) : type(), name(), value(), data(), ba
 
 			nextChar = -2;
 
-			if (type_t::has_type(type))
+			if (type.empty() || type_t::has_type(type))
 			{
 				setType = true;
 			}
@@ -212,7 +212,7 @@ SourceToken::SourceToken(SourceStream& in) : type(), name(), value(), data(), ba
 
 			nextChar = -2;
 
-			if (type_t::has_type(type))
+			if (type.empty() || type_t::has_type(type))
 			{
 				setType = true;
 			}
