@@ -33,7 +33,7 @@
 #include "global_object.hpp"
 #include "LevelObject.hpp"
 #include "LevelObjectName.hpp"
-#include "lo_types.hpp"
+#include "LevelObjectType.hpp"
 #include "options.hpp"
 #include "process_file.hpp"
 #include "process_stream.hpp"
@@ -41,6 +41,7 @@
 #include "SourceStream.hpp"
 #include "types.hpp"
 #include "../common/foreach.hpp"
+#include "../common/IO.hpp"
 #include "../common/process_options.h"
 #include "exceptions/CompilerException.hpp"
 #include "types/int_t.hpp"
@@ -303,6 +304,8 @@ int main(int argc, char** argv)
 		exit(1); \
 	}
 
+	IO::mkdir(option_directory, true);
+
 	if (option_output_hexen)
 	{
 		OPENFILE(LINEDEFS, ".lmp");
@@ -313,19 +316,19 @@ int main(int argc, char** argv)
 
 		try
 		{
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_linedef()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_linedef()])
 				(*it)->encodeHexen(fileLINEDEFS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sector()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_sector()])
 				(*it)->encodeHexen(fileSECTORS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sidedef()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_sidedef()])
 				(*it)->encodeHexen(fileSIDEDEFS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_thing()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_thing()])
 				(*it)->encodeHexen(fileTHINGS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_vertex()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_vertex()])
 				(*it)->encodeHexen(fileVERTEXES);
 		}
 		catch (CompilerException & e)
@@ -360,19 +363,19 @@ int main(int argc, char** argv)
 
 		try
 		{
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_linedef()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_linedef()])
 				(*it)->encodeStrife(fileLINEDEFS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sector()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_sector()])
 				(*it)->encodeStrife(fileSECTORS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sidedef()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_sidedef()])
 				(*it)->encodeStrife(fileSIDEDEFS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_thing()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_thing()])
 				(*it)->encodeStrife(fileTHINGS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_vertex()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_vertex()])
 				(*it)->encodeStrife(fileVERTEXES);
 		}
 		catch (CompilerException & e)
@@ -396,19 +399,19 @@ int main(int argc, char** argv)
 
 		try
 		{
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_linedef()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_linedef()])
 				(*it)->encodeHeretic(fileLINEDEFS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sector()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_sector()])
 				(*it)->encodeHeretic(fileSECTORS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sidedef()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_sidedef()])
 				(*it)->encodeHeretic(fileSIDEDEFS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_thing()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_thing()])
 				(*it)->encodeHeretic(fileTHINGS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_vertex()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_vertex()])
 				(*it)->encodeHeretic(fileVERTEXES);
 		}
 		catch (CompilerException & e)
@@ -432,19 +435,19 @@ int main(int argc, char** argv)
 
 		try
 		{
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_linedef()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_linedef()])
 				(*it)->encodeDoom(fileLINEDEFS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sector()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_sector()])
 				(*it)->encodeDoom(fileSECTORS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_sidedef()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_sidedef()])
 				(*it)->encodeDoom(fileSIDEDEFS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_thing()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_thing()])
 				(*it)->encodeDoom(fileTHINGS);
 
-			FOREACH_T(global_object_list_t, it, global_object_map[type_name_vertex()])
+			FOREACH_T(global_object_list_t, it, global_object_map[type_t::type_vertex()])
 				(*it)->encodeDoom(fileVERTEXES);
 		}
 		catch (CompilerException & e)
@@ -469,8 +472,8 @@ int main(int argc, char** argv)
 		{
 			obj_t namespaceObj = global_object->getObject(name_t("namespace"));
 
-			if (namespaceObj->getType() == type_name_string())
-				fileTEXTMAP << "namespace = " << namespaceObj->encode(false) << ";\n\n";
+			if (namespaceObj->getType() == type_t::type_string())
+				fileTEXTMAP << "namespace = "; namespaceObj->encodeUDMF(fileTEXTMAP, 1); fileTEXTMAP << ";\n\n";
 		}
 
 		try
@@ -478,12 +481,7 @@ int main(int argc, char** argv)
 			FOREACH_T(global_object_map_t, mapIt, global_object_map)
 			{
 				FOREACH_T(global_object_list_t, listIt, mapIt->second)
-				{
-					std::string encString((*listIt)->encode());
-
-					if (!encString.empty())
-						fileTEXTMAP << encString << "\n\n";
-				}
+					(*listIt)->encodeUDMF(fileTEXTMAP);
 			}
 		}
 		catch (CompilerException & e)
@@ -511,7 +509,6 @@ int main(int argc, char** argv)
 			FOREACH_T(global_object_list_t, listIt, mapIt->second)
 			{
 				obj_t thisObj(*listIt);
-				std::string thisType(get_lo_type_redirect(thisObj->getType()));
 
 				try
 				{
@@ -519,7 +516,7 @@ int main(int argc, char** argv)
 				}
 				catch (CompilerException& e)
 				{
-					std::cerr << thisType << ':' << get_object_index(thisObj) << ':' << e << '\n';
+					std::cerr << thisObj->getType().makeString() << ':' << get_object_index(thisObj) << ':' << e << '\n';
 				}
 			}
 		}

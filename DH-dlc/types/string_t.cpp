@@ -44,6 +44,31 @@ bool string_t::empty() const
 	return _data.empty();
 }
 
+void string_t::encodeText(std::ostream & out)
+{
+	out.put('"');
+
+	for (size_t index = 0; index < _data.size(); ++index)
+	{
+		int c = _data[index];
+
+		switch (c)
+		{
+		case '\\':
+		case '"':
+			out.put('\\');
+			out.put(c);
+			break;
+
+		default:
+			out.put(c);
+			break;
+		}
+	}
+
+	out.put('"');
+}
+
 std::string const & string_t::makeString() const
 {
 	return _data;

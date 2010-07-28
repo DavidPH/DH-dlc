@@ -62,6 +62,30 @@ void string8_t::encodeBinary(std::ostream & out)
 	for (size_t index = 0; index < 8; ++index)
 		out.put(_data[index]);
 }
+void string8_t::encodeText(std::ostream & out)
+{
+	out.put('"');
+
+	for (size_t index = 0; index < 8; ++index)
+	{
+		int c = _data[index];
+
+		switch (c)
+		{
+		case '\\':
+		case '"':
+			out.put('\\');
+			out.put(c);
+			break;
+
+		default:
+			out.put(c);
+			break;
+		}
+	}
+
+	out.put('"');
+}
 
 string8_t & string8_t::operator += (string8_t const & value)
 {
@@ -92,6 +116,10 @@ void sword_t::encodeBinary(std::ostream & out)
 	out.put((_data     ) & 0xFF);
 	out.put((_data >> 8) & 0xFF);
 }
+void sword_t::encodeText(std::ostream & out)
+{
+	out << _data;
+}
 
 ubyte_t::ubyte_t() : _data(0) {}
 ubyte_t::ubyte_t(ubyte_t const & value) : _data(value._data) {}
@@ -100,6 +128,10 @@ ubyte_t::ubyte_t(unsigned char value) : _data(value) {}
 void ubyte_t::encodeBinary(std::ostream & out)
 {
 	out.put(_data & 0xFF);
+}
+void ubyte_t::encodeText(std::ostream & out)
+{
+	out << _data;
 }
 
 uword_t::uword_t() : _data(0) {}
@@ -110,6 +142,10 @@ void uword_t::encodeBinary(std::ostream & out)
 {
 	out.put((_data     ) & 0xFF);
 	out.put((_data >> 8) & 0xFF);
+}
+void uword_t::encodeText(std::ostream & out)
+{
+	out << _data;
 }
 
 

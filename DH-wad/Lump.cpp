@@ -68,6 +68,15 @@ std::string Lump::encodeHead() const
 	return encodedData;
 }
 
+std::string Lump::getData() const
+{
+	return _lumpData;
+}
+std::string Lump::getName() const
+{
+	return std::string(_lumpName.c_str());
+}
+
 
 
 uint32_t Lump::length() const

@@ -35,7 +35,7 @@
 
 
 typedef std::list<obj_t> global_object_list_t;
-typedef std::map<std::string, global_object_list_t> global_object_map_t;
+typedef std::map<type_t, global_object_list_t> global_object_map_t;
 
 extern obj_t               global_object;
 extern global_object_map_t global_object_map;
@@ -45,8 +45,8 @@ void add_object(name_t const &, obj_t);
 void clean_objects();
 
 obj_t get_object(name_t const &);
-obj_t get_object(name_t const &, std::string const &);
-obj_t get_object(int_s_t, std::string const &);
+obj_t get_object(name_t const &, type_t const);
+obj_t get_object(int_s_t, type_t const);
 
 int_s_t get_object_index(obj_t);
 

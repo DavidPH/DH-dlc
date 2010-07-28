@@ -27,6 +27,12 @@
 
 
 
+void real_t::encodeText(std::ostream & out)
+{
+	out.precision(256);
+	out << _data;
+}
+
 float_biggest_t real_t::makeFloat() const
 {
 	#if USE_GMPLIB
@@ -46,6 +52,16 @@ sint_biggest_t real_t::makeInt() const
 }
 
 
+
+void real_l_t::encodeText(std::ostream & out)
+{
+	out.precision(256);
+	#if USE_GMPLIB
+	out << mpf_class(_data);
+	#else
+	out << _data;
+	#endif
+}
 
 float_biggest_t real_l_t::makeFloat() const
 {

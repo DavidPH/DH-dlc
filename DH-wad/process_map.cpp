@@ -76,11 +76,14 @@ void process_map(const std::string& dirnameBase, const std::string& dirname)
 	};
 
 	// Strips file extension.
-	std::string lumpName = dirname.substr(0, dirname.find_first_of('.'));
+	std::string lumpName(dirname, 0, dirname.find_first_of('.'));
 
 	PROCESS_SPECIAL(A,  "ACS");
+	PROCESS_SPECIAL(F,  "flat");
 	PROCESS_SPECIAL(FF, "flats");
 	PROCESS_SPECIAL(HI, "hires");
+	PROCESS_SPECIAL(P,  "patches");
+	PROCESS_SPECIAL(S,  "sprite");
 	PROCESS_SPECIAL(SS, "sprites");
 	PROCESS_SPECIAL(TX, "textures");
 
@@ -88,7 +91,7 @@ void process_map(const std::string& dirnameBase, const std::string& dirname)
 		if (!process_file(dirnameBase + dirname + '/', lumpName+".lmp", ""))
 			process_file(dirnameBase + dirname + '/', lumpName, "", true);
 
-	for (int index = 0; mapLumps[index] != NULL; ++index)
+	for (size_t index = 0; mapLumps[index] != NULL; ++index)
 		process_file(dirnameBase + dirname + '/', mapLumps[index], "");
 
 	if (!process_file(dirnameBase + dirname + '/', "ENDMAP.txt", ""))

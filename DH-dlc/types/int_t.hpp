@@ -57,6 +57,8 @@ class int_t
 		explicit int_t(sint_biggest_t const & v) : _data(v) {cap_data();}
 		#endif
 
+		void encodeText(std::ostream & out);
+
 		float_biggest_t makeFloat() const;
 		sint_biggest_t  makeInt()  const;
 
@@ -117,6 +119,8 @@ class int_l_t
 		#else
 		explicit int_l_t(sint_biggest_t const & v) : _data(v) {}
 		#endif
+
+		void encodeText(std::ostream & out);
 
 		float_biggest_t makeFloat() const;
 		sint_biggest_t  makeInt()  const;

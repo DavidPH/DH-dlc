@@ -55,11 +55,11 @@ AS_Sector_SetLink                = (int)  51;
 AS_Scroll_Wall                   = (int)  52;
 AS_Line_SetTextureOffset         = (int)  53;
 AS_Sector_ChangeFlags            = (int)  54;
-AS_Unused                        = (int)  55;
+AS_Line_SetBlocking              = (int)  55;
 AS_Line_SetTextureScale          = (int)  56;
-AS_Unused                        = (int)  57;
-AS_Unused                        = (int)  58;
-AS_Unused                        = (int)  59;
+AS_Sector_SetPortal              = (int)  57;
+AS_Sector_CopyScroller           = (int)  58;
+
 AS_Plat_PerpetualRaise           = (int)  60;
 AS_Plat_Stop                     = (int)  61;
 AS_Plat_DownWaitUpStay           = (int)  62;
@@ -79,17 +79,17 @@ AS_Teleport_EndGame              = (int)  75;
 AS_TeleportOther                 = (int)  76;
 AS_TeleportGroup                 = (int)  77;
 AS_TeleportInSector              = (int)  78;
-AS_Unused                        = (int)  79;
+
 AS_ACS_Execute                   = (int)  80;
 AS_ACS_Suspend                   = (int)  81;
 AS_ACS_Terminate                 = (int)  82;
 AS_ACS_LockedExecute             = (int)  83;
 AS_ACS_ExecuteWithResult         = (int)  84;
 AS_ACS_LockedExecuteDoor         = (int)  85;
-AS_Unused                        = (int)  86;
-AS_Unused                        = (int)  87;
-AS_Unused                        = (int)  88;
-AS_Unused                        = (int)  89;
+
+
+
+
 AS_Polyobj_OR_RotateLeft         = (int)  90;
 AS_Polyobj_OR_RotateRight        = (int)  91;
 AS_Polyobj_OR_Move               = (int)  92;
@@ -97,18 +97,18 @@ AS_Polyobj_OR_MoveTimes8         = (int)  93;
 AS_Pillar_BuildAndCrush          = (int)  94;
 AS_FloorAndCeiling_LowerByValue  = (int)  95;
 AS_FloorAndCeiling_RaiseByValue  = (int)  96;
-AS_Unused                        = (int)  97;
-AS_Unused                        = (int)  98;
-AS_Unused                        = (int)  99;
+
+
+
 AS_Scroll_Texture_Left           = (int) 100;
 AS_Scroll_Texture_Right          = (int) 101;
 AS_Scroll_Texture_Up             = (int) 102;
 AS_Scroll_Texture_Down           = (int) 103;
-AS_Unused                        = (int) 104;
-AS_Unused                        = (int) 105;
-AS_Unused                        = (int) 106;
-AS_Unused                        = (int) 107;
-AS_Unused                        = (int) 108;
+
+
+
+
+
 AS_Light_ForceLightning          = (int) 109;
 AS_Light_RaiseByValue            = (int) 110;
 AS_Light_LowerByValue            = (int) 111;
@@ -118,15 +118,15 @@ AS_Light_Glow                    = (int) 114;
 AS_Light_Flicker                 = (int) 115;
 AS_Light_Strobe                  = (int) 116;
 AS_Light_Stop                    = (int) 117;
-AS_Unused                        = (int) 118;
+AS_Plane_Copy                    = (int) 118;
 AS_Thing_Damage                  = (int) 119;
 AS_Radius_Quake                  = (int) 120;
 AS_Line_SetIdentification        = (int) 121;
-AS_Unused                        = (int) 122;
-AS_Unused                        = (int) 123;
-AS_Unused                        = (int) 124;
+
+
+
 AS_Thing_Move                    = (int) 125;
-AS_Unused                        = (int) 126;
+
 AS_Thing_SetSpecial              = (int) 127;
 AS_ThrustThingZ                  = (int) 128;
 AS_UsePuzzleItem                 = (int) 129;
@@ -141,37 +141,37 @@ AS_Thing_SpawnNoFog              = (int) 137;
 AS_Floor_Waggle                  = (int) 138;
 AS_Thing_SpawnFacing             = (int) 139;
 AS_Sector_ChangeSound            = (int) 140;
-AS_Unused                        = (int) 141;
-AS_Unused                        = (int) 142;
-AS_Unused                        = (int) 143;
-AS_Unused                        = (int) 144;
+
+
+
+
 AS_Player_SetTeam                = (int) 145; // (Skulltag)
-AS_Unused                        = (int) 146;
-AS_Unused                        = (int) 147;
-AS_Unused                        = (int) 148;
-AS_Unused                        = (int) 149;
-AS_Unused                        = (int) 150;
-AS_Unused                        = (int) 151;
+
+
+
+
+
+
 AS_Team_Score                    = (int) 152; // (Skulltag)
 AS_Team_GivePoints               = (int) 153; // (Skulltag)
 AS_Teleport_NoStop               = (int) 154;
-AS_Unused                        = (int) 155;
-AS_Unused                        = (int) 156;
-AS_Unused                        = (int) 157;
+
+
+AS_SetGlobalFogParameter         = (int) 157; // (GZDoom)
 AS_FS_Execute                    = (int) 158; // (GZDoom)
 AS_Sector_SetPlaneReflection     = (int) 159; // (OpenGL)
 AS_Sector_Set3dFloor             = (int) 160; // (OpenGL)
-AS_Sector_SetContents            = (int) 161; // (GZDoom)
-AS_Unused                        = (int) 162;
-AS_Unused                        = (int) 163;
-AS_Unused                        = (int) 164;
-AS_Unused                        = (int) 165;
-AS_Unused                        = (int) 166;
-AS_Unused                        = (int) 167;
-AS_Unused                        = (int) 168;
-AS_Unused                        = (int) 169;
-AS_Unused                        = (int) 170;
-AS_Unused                        = (int) 171;
+AS_Sector_SetContents            = (int) 161; // (OpenGL)
+
+
+
+
+
+
+
+AS_Generic_Crusher2              = (int) 169;
+AS_Sector_SetCeilingScale2       = (int) 170;
+AS_Sector_SetFloorScale2         = (int) 171;
 AS_Plat_UpNearestWaitDownStay    = (int) 172;
 AS_NoiseAlert                    = (int) 173;
 AS_SendToCommunicator            = (int) 174;

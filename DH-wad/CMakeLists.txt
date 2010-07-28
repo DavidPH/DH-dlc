@@ -5,6 +5,8 @@ add_executable(DH-wad
 	process_directory.cpp
 	process_file.cpp
 	process_map.cpp
+
+	../common/IO.cpp
 )
 
 

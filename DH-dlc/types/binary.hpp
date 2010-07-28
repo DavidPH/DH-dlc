@@ -55,6 +55,7 @@ class string8_t
 		void clear();
 
 		void encodeBinary(std::ostream & out);
+		void encodeText  (std::ostream & out);
 
 		std::string makeString() const {return std::string(_data, 8);}
 
@@ -79,6 +80,7 @@ class sword_t
 		explicit sword_t(signed short int);
 
 		void encodeBinary(std::ostream & out);
+		void encodeText  (std::ostream & out);
 
 		signed short int makeInt() const {return _data;}
 
@@ -112,6 +114,7 @@ class ubyte_t
 		explicit ubyte_t(unsigned char);
 
 		void encodeBinary(std::ostream & out);
+		void encodeText  (std::ostream & out);
 
 		unsigned char makeInt() const {return _data;}
 
@@ -145,6 +148,7 @@ class uword_t
 		explicit uword_t(unsigned short int);
 
 		void encodeBinary(std::ostream & out);
+		void encodeText  (std::ostream & out);
 
 		unsigned short int makeInt() const {return _data;}
 

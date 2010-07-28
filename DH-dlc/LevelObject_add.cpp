@@ -43,7 +43,6 @@
 #include "compound_objects.hpp"
 #include "global_object.hpp"
 #include "LevelObjectName.hpp"
-#include "lo_types.hpp"
 #include "math.hpp"
 #include "options.hpp"
 #include "parsing.hpp"
@@ -335,16 +334,16 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		// # change type : TYPE : [VALUE]
 		// VALUE is used when changing to a value type
 		else if (commandName == command_name_changetype())
-			setType(st.getBase(0), st.getBase(1));
+			setType(type_t::get_type(st.getBase(0)), st.getBase(1));
 
 		// # compound : [TYPE]
 		else if (commandName == command_name_compound())
 		{
 			if (!st.getBase(0).empty())
-				addData(get_compound_object(st.getBase(0)), get_lo_type_redirect(st.getBase(0)));
+				addData(get_compound_object(st.getBase(0)), st.getBase(0));
 
 			else
-				addData(get_compound_object(_type), _type);
+				addData(get_compound_object(_type.makeString()), _type.makeString());
 
 			_isCompounded = true;
 		}
@@ -438,9 +437,11 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		// [type] # for : name : start : stop : step { data }
 		else if (commandName == command_name_for())
 		{
-			std::string forType = st.getType();
-			if (forType.empty())
-				forType = type_name_int();
+			type_t forType;
+			if (st.getType().empty())
+				forType = type_t::get_type(type_name_int());
+			else
+				forType = type_t::get_type(st.getType());
 
 			name_t      forName   (st.getBase(0));
 			std::string forStart = st.getBase(1);
@@ -492,7 +493,7 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		else if (commandName == command_name_return() && _data.getType() == any_t::OBJMAP_T)
 		{
 			obj_t returnType  = getObject(name_t::name_return_type);
-			obj_t returnValue = create(to_string(returnType).makeString(), st.getBase(0));
+			obj_t returnValue = create(type_t::get_type(to_string(returnType).makeString()), st.getBase(0));
 			addObject(name_t::name_return_value, returnValue);
 			_isReturned = 1;
 		}
@@ -587,9 +588,9 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 	if (_data.getType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("cannot assign key to non-object");
 
-	std::string newType = st.getType();
+	type_t newType;
 
-	if (newType.empty())
+	if (st.getType().empty())
 	{
 		if (!st.getBase(0).empty())
 			newType = get_object(name_t(st.getBase(0)))->_type;
@@ -598,24 +599,28 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		else if (has_object(name_t(st.getValue())))
 			newType = get_object(name_t(st.getValue()))->_type;
 		else
-			newType = get_default_type(name.getString(), _type);
+			newType = type_t::get_default_type(name, _type);
+	}
+	else
+	{
+		newType = type_t::get_type(st.getType());
 	}
 
-	if (option_force_default_types && has_default_type(name.getString(), _type) && newType != get_default_type(name.getString(), _type))
-		throw InvalidTypeException("force-default-types:" + newType + " for " + name.getString() + " in " + _type);
+	if (option_force_default_types && type_t::has_default_type(name, _type) && (newType != type_t::get_default_type(name, _type)))
+		throw InvalidTypeException("force-default-types:" + newType.makeString() + " for " + name.getString() + " in " + _type.makeString());
 
 	obj_t newObject;
 
-	switch (get_lo_type(newType))
+	switch (newType.getMode())
 	{
-	case LO_TYPE_VALUE:
+	case type_t::MODE_VALUE:
 		newObject = LevelObject::create(newType, st.getValue());
 
 		break;
 
-	case LO_TYPE_OBJECT:
-	case LO_TYPE_COMPOUNDOBJECT:
-	case LO_TYPE_INLINE:
+	case type_t::MODE_OBJECT:
+	case type_t::MODE_COMPOUNDOBJECT:
+	case type_t::MODE_INLINE:
 		if (st.getValue().empty())
 			newObject = LevelObject::create(newType, st.getData(), st.getBase());
 
@@ -625,7 +630,7 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 		break;
 
 	default:
-		throw InvalidTypeException(newType + " is not a type");
+		throw InvalidTypeException(newType.makeString() + " is not a type");
 	}
 
 	addObject(name, newObject);

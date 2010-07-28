@@ -188,8 +188,8 @@ DEFINE_FUNCTION(distance)
 
 	if (args.size() == 2)
 	{
-		obj_t p1 = parse_obj(args[0], type_name_vertex());
-		obj_t p2 = parse_obj(args[1], type_name_vertex());
+		obj_t p1 = parse_obj(args[0], type_t::type_vertex());
+		obj_t p2 = parse_obj(args[1], type_t::type_vertex());
 
 		x1 = Tconv(p1->getObject(name_t(key_name_x())));
 		y1 = Tconv(p1->getObject(name_t(key_name_y())));
@@ -217,8 +217,8 @@ DEFINE_FUNCTION(facing)
 	/* ([VERTEX] p1, [VERTEX] p2) */
 	if (args.size() == 2)
 	{
-		obj_t p1 = parse_obj(args[0], type_name_vertex());
-		obj_t p2 = parse_obj(args[1], type_name_vertex());
+		obj_t p1 = parse_obj(args[0], type_t::type_vertex());
+		obj_t p2 = parse_obj(args[1], type_t::type_vertex());
 
 		x1 = Tconv(p1->getObject(name_t(key_name_x())));
 		x2 = Tconv(p2->getObject(name_t(key_name_x())));
@@ -332,15 +332,15 @@ T parse__function(std::string const & opString, std::vector<std::string> const &
 	{
 		obj_t funcObj = LevelObject::create();
 
-		obj_t returnType = LevelObject::create(type_name_string(), string_t(Tname));
+		obj_t returnType = LevelObject::create(type_t::type_string(), string_t(Tname));
 		funcObj->addObject(name_t::name_return_type, returnType);
 
-		obj_t argcObj = LevelObject::create(type_name_shortint(), int_s_t(args.size()));
+		obj_t argcObj = LevelObject::create(type_t::type_shortint(), int_s_t(args.size()));
 		funcObj->addObject(name_t(key_name_argc()), argcObj);
 
 		for (int_s_t index = 0; (size_t)index < args.size(); ++index)
 		{
-			obj_t argObj = LevelObject::create(type_name_string(), string_t(args[index]));
+			obj_t argObj = LevelObject::create(type_t::type_string(), string_t(args[index]));
 
 			name_t argName(std::string(key_name_arg()) + make_string(index));
 

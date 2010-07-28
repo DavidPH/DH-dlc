@@ -43,6 +43,7 @@
 #define LEVELOBJECT_H
 
 #include "LevelObjectData.hpp"
+#include "LevelObjectType.hpp"
 #include "types.hpp"
 
 #include <ostream>
@@ -70,15 +71,15 @@ class LevelObject
 
 		bool hasObject(name_t const & name);
 
-		std::string const & getType() const;
-		void setType(std::string const & type, std::string const & value = "");
+		type_t getType() const;
+		void setType(type_t const type, std::string const & value = "");
 
-		std::string encode(bool=true);
 		void encodeDoom     (std::ostream & out);
 		void encodeExtraData(std::ostream & out);
 		void encodeHeretic  (std::ostream & out);
 		void encodeHexen    (std::ostream & out);
 		void encodeStrife   (std::ostream & out);
+		void encodeUDMF     (std::ostream & out, int depth = 0);
 
 		any_t const & getData() const {return _data;}
 
@@ -87,10 +88,10 @@ class LevelObject
 		LevelObject & operator = (LevelObject const & other);
 
 		static obj_t create();
-		static obj_t create(std::string const & type);
-		static obj_t create(std::string const & type, any_t const & data);
-		static obj_t create(std::string const & type, std::string const & value);
-		static obj_t create(std::string const & type, std::string const & data, std::vector<std::string> const & base);
+		static obj_t create(type_t const type);
+		static obj_t create(type_t const type, any_t const & data);
+		static obj_t create(type_t const type, std::string const & value);
+		static obj_t create(type_t const type, std::string const & data, std::vector<std::string> const & base);
 
 		friend void add_object(name_t const &, obj_t);
 		friend int_s_t get_object_index(obj_t);
@@ -103,17 +104,17 @@ class LevelObject
 	private:
 		LevelObject();
 		LevelObject(LevelObject const &);
-		LevelObject(std::string const &);
-		LevelObject(std::string const &, any_t const &);
-		LevelObject(std::string const &, std::string const &);
-		LevelObject(std::string const &, std::string const &, std::vector<std::string> const &);
+		LevelObject(type_t const);
+		LevelObject(type_t const, any_t const &);
+		LevelObject(type_t const, std::string const &);
+		LevelObject(type_t const, std::string const &, std::vector<std::string> const &);
 
 		size_t _index;
 		size_t _refCount;
 
 		any_t _data;
 
-		std::string _type;
+		type_t _type;
 
 		unsigned _addGlobal    : 1;
 		unsigned _isBreaked    : 1; // #break

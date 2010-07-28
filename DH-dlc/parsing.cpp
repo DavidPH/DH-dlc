@@ -432,7 +432,7 @@ int_l_t parse_int_l(std::string const & value)
 	return parse_num_base<int_l_t, parse_int_l, to_int_l, parse_int_l_unary, parse_int_l_unary, parse_int_l_function>(value);
 }
 
-obj_t parse_obj(std::string const & value, std::string const & type)
+obj_t parse_obj(std::string const & value, type_t const type)
 {
 	if (has_object(name_t(value)))
 		return get_object(name_t(value), type);

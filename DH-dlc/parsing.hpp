@@ -55,7 +55,7 @@ int_l_t parse_int_l_function(std::string const &, std::vector<std::string> const
 int_l_t parse_int_l_unary(std::string const &);
 int_l_t parse_int_l_unary(std::string const &, std::string const &);
 
-obj_t parse_obj(std::string const &, std::string const &);
+obj_t parse_obj(std::string const &, type_t const);
 
 real_s_t parse_real_s(std::string const &);
 real_s_t parse_real_s_function(std::string const &, std::vector<std::string> const &);

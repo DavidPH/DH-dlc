@@ -23,97 +23,44 @@
 
 #include "process_directory.hpp"
 
-#ifdef TARGET_OS_WIN32
-#include <windows.h>
-#else
-#include <dirent.h>
-#endif
-#include <string>
-
 #include "process_file.hpp"
 #include "process_map.hpp"
 
+#include "../common/IO.hpp"
+#include "../common/foreach.hpp"
+
+#include <string>
+#include <vector>
+
+#include <iostream>
 
 
-void process_directory(std::string const & dirName, bool primeDir)
+
+void process_directory(std::string const & dirname, bool primeDir)
 {
-	#ifdef TARGET_OS_WIN32
-	WIN32_FIND_DATA findData;
-	std::string     findDir(dirName + "*");
-	HANDLE          findResult;
+	std::vector<std::string> filelist(IO::lsdir(dirname.c_str()));
 
-	findResult = FindFirstFile(findDir.c_str(), &findData);
-
-	if (findResult == INVALID_HANDLE_VALUE)
-		return;
-
-	do
+	FOREACH_T(std::vector<std::string>, it, filelist)
 	{
-		std::string fileName(findData.cFileName);
+		std::string & filename = *it;
+		std::string pathname(dirname+filename);
 
-		if (fileName == "." || fileName == "..")
-		{
-			continue;
-		}
-
-		if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		if (IO::isdir(pathname.c_str()))
 		{
 			if (primeDir)
 			{
-				process_map(dirName, fileName);
+				process_map(dirname, filename);
 			}
 			else
 			{
-				process_directory(fileName, false);
+				process_directory(filename, false);
 			}
 		}
-		else
+		else // TODO: IO::isfile
 		{
-			process_file(dirName, fileName, fileName);
+			process_file(dirname, filename, "");
 		}
 	}
-	while (FindNextFile(findResult, &findData) != 0);
-
-	FindClose(findResult);
-	#else
-	DIR*    dirFile = opendir(dirName.c_str());
-	dirent* nextDir;
-
-	if (dirFile == NULL)
-		return;
-
-	while ((nextDir = readdir(dirFile)) != NULL)
-	{
-		std::string fileName(nextDir->d_name);
-
-		if (fileName == "." || fileName == "..")
-		{
-			continue;
-		}
-
-		if (nextDir->d_type == DT_DIR)
-		{
-			if (primeDir)
-			{
-				process_map(dirName, fileName);
-			}
-			else
-			{
-				process_directory(fileName, false);
-			}
-		}
-		else if (nextDir->d_type == DT_REG)
-		{
-			process_file(dirName, fileName, fileName);
-		}
-		else
-		{
-			continue;
-		}
-	}
-
-	closedir(dirFile);
-	#endif
 }
 
 
