@@ -20,13 +20,14 @@
 #ifndef PROCESS_TOKEN_H
 #define PROCESS_TOKEN_H
 
+#include "SourceScanner.hpp"
 #include "SourceToken.hpp"
 #include "exceptions/CompilerException.hpp"
 
 
 
-void process_token(SourceToken     const & st, SourceStream & ss);
-void process_token(SourceTokenDHLX const & st, SourceStream & ss);
+void process_token(SourceToken     const & st, SourceScannerDDL  & sc);
+void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc);
 
 
 

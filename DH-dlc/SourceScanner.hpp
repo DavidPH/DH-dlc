@@ -18,7 +18,7 @@
 */
 
 /*
-
+	Extracts and manages tokens from a SourceStream.
 */
 
 #ifndef SOURCESCANNER_H
@@ -48,8 +48,8 @@ class SourceScanner
 		std::stack<TT> _ungetStack;
 };
 
-typedef SourceScanner<SourceTokenDHLX, SourceStream> SourceScannerDHLX;
 typedef SourceScanner<SourceToken,     SourceStream> SourceScannerDDL;
+typedef SourceScanner<SourceTokenDHLX, SourceStream> SourceScannerDHLX;
 
 
 

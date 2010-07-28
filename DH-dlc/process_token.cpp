@@ -37,7 +37,7 @@
 
 
 
-void process_token(SourceToken const & st, SourceStream & ss)
+void process_token(SourceToken const & st, SourceScannerDDL & sc)
 {
 	if (st.empty())
 		return;
@@ -131,34 +131,22 @@ void process_token(SourceToken const & st, SourceStream & ss)
 	global_object->addObject(name_t(st.getName()), st);
 }
 
-void process_token(SourceTokenDHLX const & st, SourceStream & ss)
+void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	if ((st.getType() == SourceTokenDHLX::TT_EOF) || (st.getType() == SourceTokenDHLX::TT_NONE))
 		return;
 
 	if (st.getType() == SourceTokenDHLX::TT_OP_HASH)
 	{
-		SourceTokenDHLX commandToken(ss);
-
-		if (commandToken.getType() != SourceTokenDHLX::TT_IDENTIFIER)
-			throw SyntaxException("expected TT_IDENTIFIER after TT_OP_HASH got " + make_string(commandToken.getType()));
+		SourceTokenDHLX commandToken(sc.get(SourceTokenDHLX::TT_IDENTIFIER));
 
 		std::string commandString('#' + commandToken.getData());
 
 		if (commandString == command_name_include())
 		{
-			SourceTokenDHLX arg0(ss);
+			SourceTokenDHLX arg0(sc.get(SourceTokenDHLX::TT_STRING, SourceTokenDHLX::TT_OP_COLON));
 
-			if (arg0.getType() == SourceTokenDHLX::TT_OP_COLON)
-				ss >> arg0;
-
-			if (arg0.getType() != SourceTokenDHLX::TT_STRING)
-				throw SyntaxException("expected TT_STRING got " + make_string(arg0.getType()));
-
-			SourceTokenDHLX arge(ss);
-
-			if (arge.getType() != SourceTokenDHLX::TT_OP_SEMICOLON)
-				throw SyntaxException("expected TT_OP_SEMICOLON got " + make_string(arge.getType()));
+			sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
 
 			process_file(arg0.getData());
 

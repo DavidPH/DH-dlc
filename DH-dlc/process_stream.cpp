@@ -35,16 +35,17 @@
 template <class TokenClass>
 void process_stream(SourceStream & ss, std::string const & filename)
 {
+	SourceScanner<TokenClass, SourceStream> sc(ss);
 	TokenClass st;
 
 	while (ss)
 	{
 		try
 		{
-			ss >> st;
-			process_token(st, ss);
+			st = sc.get();
+			process_token(st, sc);
 		}
-		catch (CompilerException& e)
+		catch (CompilerException & e)
 		{
 			PRINT_AND_COUNT_ERROR(filename << ':' << ss.getLineCount() << ':' << e << "\n  ->" << st << '\n');
 		}
