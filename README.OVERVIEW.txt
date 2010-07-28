@@ -208,6 +208,8 @@ exists with an extension and without, it will be added twice, so don't do that.
 	BLOCKMAP.lmp
 	BEHAVIOR.o
 	SCRIPTS.acs
+	DIALOG.txt
+	DIALOGUE.o
 
 The following command line options are worth noting:
 	--directory DIR Adds files in DIR and sub-directories to the wad
