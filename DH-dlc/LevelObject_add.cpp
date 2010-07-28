@@ -635,6 +635,21 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 
 	addObject(name, newObject);
 }
+void LevelObject::addObject(SourceScannerDHLX & sc)
+{
+	SourceTokenDHLX typeToken = sc.get(SourceTokenDHLX::TT_IDENTIFIER);
+
+	type_t type;
+
+	if (type_t::has_type(typeToken.getData()))
+	{
+		type = type_t::get_type(typeToken.getData());
+	}
+	else
+	{
+		sc.unget(typeToken);
+	}
+}
 
 
 

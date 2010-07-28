@@ -149,9 +149,20 @@ void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 			sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
 
 			process_file(arg0.getData());
-
-			return;
 		}
+		else
+		{
+			global_object->doCommand(commandString, sc);
+		}
+	}
+	else if (st.getType() == SourceTokenDHLX::TT_IDENTIFIER)
+	{
+		sc.unget(st);
+		global_object->addObject(sc);
+	}
+	else
+	{
+		throw SyntaxException("invalid top-level token:" + make_string(st));
 	}
 }
 

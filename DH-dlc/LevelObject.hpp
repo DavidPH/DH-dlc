@@ -44,12 +44,14 @@
 
 #include "LevelObjectData.hpp"
 #include "LevelObjectType.hpp"
+#include "SourceScanner.hpp"
 #include "types.hpp"
 
 #include <ostream>
 #include <vector>
 
 class SourceToken;
+class SourceTokenDHLX;
 
 
 
@@ -66,6 +68,9 @@ class LevelObject
 
 		void addObject(name_t const & name, obj_t);
 		void addObject(name_t const & name, SourceToken const &);
+		void addObject(SourceScannerDHLX &);
+
+		void doCommand(std::string const & command, SourceScannerDHLX &);
 
 		obj_t getObject(name_t const & name);
 
