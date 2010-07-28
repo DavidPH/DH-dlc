@@ -55,6 +55,8 @@ class real_t
 		explicit real_t(float_biggest_t const & v) : _data(v) {}
 		#endif
 
+		void encodeText(std::ostream & out);
+
 		float_biggest_t makeFloat() const;
 		sint_biggest_t  makeInt()  const;
 
@@ -102,6 +104,8 @@ class real_l_t
 		#else
 		explicit real_l_t(float_biggest_t const & v) : _data(v) {}
 		#endif
+
+		void encodeText(std::ostream & out);
 
 		float_biggest_t makeFloat() const;
 		sint_biggest_t  makeInt()  const;

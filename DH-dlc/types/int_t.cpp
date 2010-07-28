@@ -55,6 +55,11 @@ void int_t::cap_data()
 	}
 }
 
+void int_t::encodeText(std::ostream & out)
+{
+	out << _data;
+}
+
 float_biggest_t int_t::makeFloat() const
 {
 	#if USE_GMPLIB
@@ -94,6 +99,11 @@ void int_t::resetLimits()
 }
 
 
+
+void int_l_t::encodeText(std::ostream & out)
+{
+	out << _data;
+}
 
 float_biggest_t int_l_t::makeFloat() const
 {

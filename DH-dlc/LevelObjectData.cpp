@@ -25,8 +25,6 @@
 
 #include "LevelObjectData.hpp"
 
-#include <stdexcept>
-
 #include "LevelObjectName.hpp" // objmap_t
 #include "LevelObjectPointer.hpp"
 #include "types.hpp"
@@ -34,6 +32,8 @@
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"
 #include "types/string_t.hpp"
+
+#include <stdexcept>
 
 
 
@@ -191,6 +191,75 @@ void LevelObjectData::clear()
 	}
 
 	_val = NULL_T;
+}
+
+
+
+void LevelObjectData::encodeText(std::ostream & out)
+{
+	switch (_val)
+	{
+	case NULL_T:
+		break;
+
+	case BOOL_T:
+		if (_valBool)
+			out << "true";
+		else
+			out << "false";
+		break;
+
+	case INT_S_T:
+		out << _valIntShort;
+		break;
+
+	case INT_T:
+		_valInt->encodeText(out);
+		break;
+
+	case INT_L_T:
+		_valIntLong->encodeText(out);
+		break;
+
+	case OBJ_T:
+		break;
+
+	case OBJMAP_T:
+		break;
+
+	case REAL_S_T:
+		out.precision(256);
+		out << *_valRealShort;
+		break;
+
+	case REAL_T:
+		_valReal->encodeText(out);
+		break;
+
+	case REAL_L_T:
+		_valRealLong->encodeText(out);
+		break;
+
+	case STRING_T:
+		_valString->encodeText(out);
+		break;
+
+	case STRING8_T:
+		_valString8->encodeText(out);
+		break;
+
+	case SWORD_T:
+		_valSWord->encodeText(out);
+		break;
+
+	case UBYTE_T:
+		_valUByte->encodeText(out);
+		break;
+
+	case UWORD_T:
+		_valUWord->encodeText(out);
+		break;
+	}
 }
 
 

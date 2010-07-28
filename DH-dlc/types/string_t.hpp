@@ -24,6 +24,7 @@
 #ifndef STRING_T_H
 #define STRING_T_H
 
+#include <ostream>
 #include <string>
 
 
@@ -40,6 +41,8 @@ class string_t
 		void clear();
 
 		bool empty() const;
+
+		void encodeText(std::ostream & out);
 
 		std::string const & makeString() const;
 

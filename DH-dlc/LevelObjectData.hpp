@@ -35,6 +35,8 @@
 
 #include "types.hpp"
 
+#include <ostream>
+
 
 
 class LevelObjectData
@@ -93,6 +95,10 @@ class LevelObjectData
 	LevelObjectData(uword_t const &);
 
 	~LevelObjectData() {clear();}
+
+
+
+	void encodeText(std::ostream & out);
 
 
 

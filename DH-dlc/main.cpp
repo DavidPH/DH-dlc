@@ -473,7 +473,7 @@ int main(int argc, char** argv)
 			obj_t namespaceObj = global_object->getObject(name_t("namespace"));
 
 			if (namespaceObj->getType() == type_t::type_string())
-				fileTEXTMAP << "namespace = " << namespaceObj->encode(false) << ";\n\n";
+				fileTEXTMAP << "namespace = "; namespaceObj->encodeUDMF(fileTEXTMAP, 1); fileTEXTMAP << ";\n\n";
 		}
 
 		try
@@ -481,12 +481,7 @@ int main(int argc, char** argv)
 			FOREACH_T(global_object_map_t, mapIt, global_object_map)
 			{
 				FOREACH_T(global_object_list_t, listIt, mapIt->second)
-				{
-					std::string encString((*listIt)->encode());
-
-					if (!encString.empty())
-						fileTEXTMAP << encString << "\n\n";
-				}
+					(*listIt)->encodeUDMF(fileTEXTMAP);
 			}
 		}
 		catch (CompilerException & e)

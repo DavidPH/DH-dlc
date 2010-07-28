@@ -74,12 +74,12 @@ class LevelObject
 		type_t getType() const;
 		void setType(type_t const type, std::string const & value = "");
 
-		std::string encode(bool=true);
 		void encodeDoom     (std::ostream & out);
 		void encodeExtraData(std::ostream & out);
 		void encodeHeretic  (std::ostream & out);
 		void encodeHexen    (std::ostream & out);
 		void encodeStrife   (std::ostream & out);
+		void encodeUDMF     (std::ostream & out, int depth = 0);
 
 		any_t const & getData() const {return _data;}
 
