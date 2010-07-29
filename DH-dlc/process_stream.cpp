@@ -52,7 +52,7 @@ void process_stream(SourceStream & ss, std::string const & filename)
 	}
 }
 
-template void process_stream<SourceToken>(SourceStream &, std::string const &);
+template void process_stream<SourceTokenDDL>(SourceStream &, std::string const &);
 template void process_stream<SourceTokenDHLX>(SourceStream &, std::string const &);
 
 

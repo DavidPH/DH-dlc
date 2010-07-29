@@ -100,7 +100,7 @@ void LevelObject::addData(std::string const & data, std::string const & name)
 
 	std::istringstream iss(data);
 	SourceStream       ss(iss);
-	SourceToken        st;
+	SourceTokenDDL     st;
 
 	while (ss)
 	{
@@ -331,7 +331,7 @@ void LevelObject::addObject(name_t const & name, obj_t newObject)
 	if (!name.empty())
 		_data.getObjMap()[name] = newObject;
 }
-void LevelObject::addObject(name_t const & name, SourceToken const & st)
+void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 {
 	if (st.empty())
 		return;

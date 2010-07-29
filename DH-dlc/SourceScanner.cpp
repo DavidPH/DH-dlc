@@ -81,7 +81,7 @@ void SourceScanner<TT, SS>::unget(TT token)
 
 
 template class SourceScanner<SourceTokenDHLX, SourceStream>;
-template class SourceScanner<SourceToken,     SourceStream>;
+template class SourceScanner<SourceTokenDDL,  SourceStream>;
 
 
 

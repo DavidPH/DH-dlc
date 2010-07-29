@@ -50,7 +50,7 @@
 #include <ostream>
 #include <vector>
 
-class SourceToken;
+class SourceTokenDDL;
 class SourceTokenDHLX;
 
 
@@ -68,7 +68,7 @@ class LevelObject
 		bool addDataIf(std::string const & data, std::vector<std::string> const & values, std::string const & op, bool checkElse = false);
 
 		void addObject(name_t const & name, obj_t);
-		void addObject(name_t const & name, SourceToken const &);
+		void addObject(name_t const & name, SourceTokenDDL const &);
 		void addObject(SourceScannerDHLX &);
 
 		void doCommand(std::string const & command, SourceScannerDHLX &);

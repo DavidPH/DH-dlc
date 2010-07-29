@@ -79,7 +79,7 @@ void process_file(std::string const & filename)
 	{
 		SourceStream ss(sourceFile);
 
-		process_stream<SourceToken>(ss, filename);
+		process_stream<SourceTokenDDL>(ss, filename);
 	}
 
 	sourceFile.close();

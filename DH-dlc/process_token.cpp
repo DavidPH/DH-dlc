@@ -37,7 +37,7 @@
 
 
 
-void process_token(SourceToken const & st, SourceScannerDDL & sc)
+void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 {
 	if (st.empty())
 		return;

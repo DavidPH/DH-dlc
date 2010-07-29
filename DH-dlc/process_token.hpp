@@ -26,7 +26,7 @@
 
 
 
-void process_token(SourceToken     const & st, SourceScannerDDL  & sc);
+void process_token(SourceTokenDDL  const & st, SourceScannerDDL  & sc);
 void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc);
 
 

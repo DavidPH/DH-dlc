@@ -263,7 +263,7 @@ int main(int argc, char** argv)
 		if (*it == "-")
 		{
 			SourceStream ss(std::cin);
-			process_stream<SourceToken>(ss, "stdin");
+			process_stream<SourceTokenDDL>(ss, "stdin");
 		}
 		else
 			process_file(*it);

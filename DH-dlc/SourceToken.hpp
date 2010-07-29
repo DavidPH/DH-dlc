@@ -32,13 +32,13 @@
 
 
 
-class SourceToken
+class SourceTokenDDL
 {
 	public:
 		typedef std::string TokenType;
 
-		explicit SourceToken();
-		explicit SourceToken(SourceStream & in);
+		explicit SourceTokenDDL();
+		explicit SourceTokenDDL(SourceStream & in);
 
 		void clear();
 
@@ -125,16 +125,16 @@ class SourceTokenDHLX
 
 
 
-std::ostream & operator << (std::ostream & out, SourceToken        const & in);
+std::ostream & operator << (std::ostream & out, SourceTokenDDL     const & in);
 std::ostream & operator << (std::ostream & out, SourceTokenDHLX    const & in);
 std::ostream & operator << (std::ostream & out, SourceTokenDHLX::TokenType in);
 
-SourceStream & operator >> (SourceStream & in, SourceToken     & out);
+SourceStream & operator >> (SourceStream & in, SourceTokenDDL  & out);
 SourceStream & operator >> (SourceStream & in, SourceTokenDHLX & out);
 
 
 
-inline void SourceToken::clear()
+inline void SourceTokenDDL::clear()
 {
 	type.clear();
 	name.clear();
@@ -145,35 +145,35 @@ inline void SourceToken::clear()
 
 
 
-inline bool SourceToken::empty() const
+inline bool SourceTokenDDL::empty() const
 {
 	return type.empty() && name.empty() && value.empty() && data.empty() && base.empty();
 }
 
 
 
-inline std::string const & SourceToken::getName() const
+inline std::string const & SourceTokenDDL::getName() const
 {
 	return name;
 }
-inline std::string const & SourceToken::getType() const
+inline std::string const & SourceTokenDDL::getType() const
 {
 	return type;
 }
-inline std::string const & SourceToken::getValue() const
+inline std::string const & SourceTokenDDL::getValue() const
 {
 	return value;
 }
-inline std::string const & SourceToken::getData() const
+inline std::string const & SourceTokenDDL::getData() const
 {
 	return data;
 }
 
-inline std::vector<std::string> const & SourceToken::getBase() const
+inline std::vector<std::string> const & SourceTokenDDL::getBase() const
 {
 	return base;
 }
-inline std::string const & SourceToken::getBase(size_t index, std::string const & def) const
+inline std::string const & SourceTokenDDL::getBase(size_t index, std::string const & def) const
 {
 	if (index < base.size())
 		return base[index];

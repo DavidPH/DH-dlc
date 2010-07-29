@@ -48,7 +48,7 @@ class SourceScanner
 		std::stack<TT> _ungetStack;
 };
 
-typedef SourceScanner<SourceToken,     SourceStream> SourceScannerDDL;
+typedef SourceScanner<SourceTokenDDL,  SourceStream> SourceScannerDDL;
 typedef SourceScanner<SourceTokenDHLX, SourceStream> SourceScannerDHLX;
 
 

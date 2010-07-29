@@ -35,9 +35,9 @@
 
 
 
-SourceToken::SourceToken() : type(), name(), value(), data(), base() {}
+SourceTokenDDL::SourceTokenDDL() : type(), name(), value(), data(), base() {}
 
-SourceToken::SourceToken(SourceStream& in) : type(), name(), value(), data(), base()
+SourceTokenDDL::SourceTokenDDL(SourceStream& in) : type(), name(), value(), data(), base()
 {
 	int nextChar = in.get();
 	if (nextChar == -1)
@@ -535,7 +535,7 @@ SourceTokenDHLX::TokenType SourceTokenDHLX::getType() const
 
 
 
-std::ostream & operator << (std::ostream & out, SourceToken const & in)
+std::ostream & operator << (std::ostream & out, SourceTokenDDL const & in)
 {
 	out << "[" << in.getType() << "] " << in.getName();
 
@@ -607,9 +607,9 @@ std::ostream & operator << (std::ostream & out, SourceTokenDHLX::TokenType in)
 	return out << int(in);
 }
 
-SourceStream & operator >> (SourceStream & in, SourceToken & out)
+SourceStream & operator >> (SourceStream & in, SourceTokenDDL & out)
 {
-	out = SourceToken(in);
+	out = SourceTokenDDL(in);
 
 	if (option_debug_token)
 		std::cerr << out << "\n";
