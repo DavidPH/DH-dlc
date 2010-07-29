@@ -367,6 +367,45 @@ std::vector<std::string> parse_args(std::string const & value)
 
 
 
+bool_t parse_bool(SourceScannerDHLX & sc)
+{
+	bool_t data(0);
+	SourceTokenDHLX st(sc.get());
+
+	switch (st.getType())
+	{
+	case SourceTokenDHLX::TT_IDENTIFIER:
+		if (st.getData() == "true")
+		{
+			data = true;
+		}
+		else if (st.getData() == "false")
+		{
+			data = false;
+		}
+		else
+		{
+			sc.unget(st);
+			data = to_bool(get_object(parse_name(sc)));
+		}
+		break;
+
+	default:
+		sc.unget(st);
+		return data;
+	}
+
+	st = sc.get();
+
+	switch (st.getType())
+	{
+	default:
+		sc.unget(st);
+		return data;
+	}
+
+	return data;
+}
 bool_t parse_bool(std::string const & value)
 {
 	if (value.empty())
@@ -419,17 +458,113 @@ static T parse_num_base(std::string const & value)
 	return Tconv(get_object(name_t(value)));
 }
 
+template <typename T, T (Tconv)(any_t const &)>
+T parse_int_base(SourceScannerDHLX & sc)
+{
+	T data(0);
+	SourceTokenDHLX st(sc.get());
+
+	switch (st.getType())
+	{
+	case SourceTokenDHLX::TT_IDENTIFIER:
+		sc.unget(st);
+		data = Tconv(get_object(parse_name(sc)));
+		break;
+
+	case SourceTokenDHLX::TT_NUMBER:
+		data = Tconv(string_t(st.getData()));
+		break;
+
+	default:
+		sc.unget(st);
+		return data;
+	}
+
+	st = sc.get();
+
+	switch (st.getType())
+	{
+	case SourceTokenDHLX::TT_OP_MINUS:
+		data -= parse_int_base<T, Tconv>(sc);
+		break;
+
+	case SourceTokenDHLX::TT_OP_PLUS:
+		data += parse_int_base<T, Tconv>(sc);
+		break;
+
+	default:
+		sc.unget(st);
+		return data;
+	}
+
+	return data;
+}
+
+int_s_t parse_int_s(SourceScannerDHLX & sc)
+{
+	return parse_int_base<int_s_t, to_int_s>(sc);
+}
 int_s_t parse_int_s(std::string const & value)
 {
 	return parse_num_base<int_s_t, parse_int_s, to_int_s, parse_int_s_unary, parse_int_s_unary, parse_int_s_function>(value);
+}
+int_t parse_int(SourceScannerDHLX & sc)
+{
+	return parse_int_base<int_t, to_int>(sc);
 }
 int_t parse_int(std::string const & value)
 {
 	return parse_num_base<int_t, parse_int, to_int, parse_int_unary, parse_int_unary, parse_int_function>(value);
 }
+int_l_t parse_int_l(SourceScannerDHLX & sc)
+{
+	return parse_int_base<int_l_t, to_int_l>(sc);
+}
 int_l_t parse_int_l(std::string const & value)
 {
 	return parse_num_base<int_l_t, parse_int_l, to_int_l, parse_int_l_unary, parse_int_l_unary, parse_int_l_function>(value);
+}
+
+name_t parse_name(SourceScannerDHLX & sc)
+{
+	std::vector<std::string> nameVector;
+	std::string nameElement;
+
+	SourceTokenDHLX nameToken(sc.get(SourceTokenDHLX::TT_IDENTIFIER));
+
+	nameElement = nameToken.getData();
+
+	while (true)
+	{
+		nameToken = sc.get();
+
+		if (nameToken.getType() == SourceTokenDHLX::TT_OP_PERIOD)
+		{
+			nameVector.push_back(nameElement);
+			nameElement = sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData();
+		}
+		else if (nameToken.getType() == SourceTokenDHLX::TT_OP_BRACKET_O)
+		{
+			nameElement += '.';
+			nameElement += make_string(parse_int_s(sc));
+			sc.get(SourceTokenDHLX::TT_OP_BRACKET_C);
+		}
+		else if (nameToken.getType() == SourceTokenDHLX::TT_OP_CMP_LT)
+		{
+			nameElement += '.';
+			nameElement += make_string(parse_string(sc));
+			sc.get(SourceTokenDHLX::TT_OP_CMP_GT);
+		}
+		else
+		{
+			sc.unget(nameToken);
+			break;
+		}
+	}
+
+	nameVector.push_back(nameElement);
+
+	return name_t(nameVector);
 }
 
 obj_t parse_obj(std::string const & value, type_t const type)
@@ -440,19 +575,110 @@ obj_t parse_obj(std::string const & value, type_t const type)
 	return get_object(parse_int_s(value), type);
 }
 
+template <typename T, T (Tconv)(any_t const &)>
+T parse_real_base(SourceScannerDHLX & sc)
+{
+	T data(0);
+	SourceTokenDHLX st(sc.get());
+
+	switch (st.getType())
+	{
+	case SourceTokenDHLX::TT_IDENTIFIER:
+		sc.unget(st);
+		data = Tconv(get_object(parse_name(sc)));
+		break;
+
+	case SourceTokenDHLX::TT_NUMBER:
+		data = Tconv(string_t(st.getData()));
+		break;
+
+	default:
+		sc.unget(st);
+		return data;
+	}
+
+	st = sc.get();
+
+	switch (st.getType())
+	{
+	case SourceTokenDHLX::TT_OP_MINUS:
+		data -= parse_int_base<T, Tconv>(sc);
+		break;
+
+	case SourceTokenDHLX::TT_OP_PLUS:
+		data += parse_int_base<T, Tconv>(sc);
+		break;
+
+	default:
+		sc.unget(st);
+		return data;
+	}
+
+	return data;
+}
+
+real_s_t parse_real_s(SourceScannerDHLX & sc)
+{
+	return parse_real_base<real_s_t, to_real_s>(sc);
+}
 real_s_t parse_real_s(std::string const & value)
 {
 	return parse_num_base<real_s_t, parse_real_s, to_real_s, parse_real_s_unary, parse_real_s_unary, parse_real_s_function>(value);
 }
+real_t parse_real(SourceScannerDHLX & sc)
+{
+	return parse_real_base<real_t, to_real>(sc);
+}
 real_t parse_real(std::string const & value)
 {
 	return parse_num_base<real_t, parse_real, to_real, parse_real_unary, parse_real_unary, parse_real_function>(value);
+}
+real_l_t parse_real_l(SourceScannerDHLX & sc)
+{
+	return parse_real_base<real_l_t, to_real_l>(sc);
 }
 real_l_t parse_real_l(std::string const & value)
 {
 	return parse_num_base<real_l_t, parse_real_l, to_real_l, parse_real_l_unary, parse_real_l_unary, parse_real_l_function>(value);
 }
 
+template <typename T, T (Tconv)(any_t const &)>
+static T parse_string_base(SourceScannerDHLX & sc)
+{
+	T data;
+	SourceTokenDHLX st(sc.get());
+
+	switch (st.getType())
+	{
+	case SourceTokenDHLX::TT_IDENTIFIER:
+		sc.unget(st);
+		data = Tconv(get_object(parse_name(sc)));
+		break;
+
+	case SourceTokenDHLX::TT_STRING:
+		data = T(st.getData());
+		break;
+
+	default:
+		sc.unget(st);
+		return data;
+	}
+
+	st = sc.get();
+
+	switch (st.getType())
+	{
+	case SourceTokenDHLX::TT_OP_PLUS:
+		data += parse_string_base<T, Tconv>(sc);
+		break;
+
+	default:
+		sc.unget(st);
+		return data;
+	}
+
+	return data;
+}
 template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &), T (Tfunc)(std::string const &, std::vector<std::string> const &)>
 static T parse_string_base(std::string const & value)
 {
@@ -474,25 +700,45 @@ static T parse_string_base(std::string const & value)
 	return Tconv(get_object(name_t(value)));
 }
 
+string_t parse_string(SourceScannerDHLX & sc)
+{
+	return parse_string_base<string_t, to_string>(sc);
+}
 string_t parse_string(std::string const & value)
 {
 	return parse_string_base<string_t, parse_string, to_string, parse_string_unary, parse_string_unary, parse_string_function>(value);
+}
+string8_t parse_string8(SourceScannerDHLX & sc)
+{
+	return parse_string_base<string8_t, to_string8>(sc);
 }
 string8_t parse_string8(std::string const & value)
 {
 	return parse_string_base<string8_t, parse_string8, to_string8, parse_string8_unary, parse_string8_unary, parse_string8_function>(value);
 }
 
+sword_t parse_sword(SourceScannerDHLX & sc)
+{
+	return parse_int_base<sword_t, to_sword>(sc);
+}
 sword_t parse_sword(std::string const & value)
 {
 	return parse_num_base<sword_t, parse_sword, to_sword, parse_sword_unary, parse_sword_unary, parse_sword_function>(value);
 }
 
+ubyte_t parse_ubyte(SourceScannerDHLX & sc)
+{
+	return parse_int_base<ubyte_t, to_ubyte>(sc);
+}
 ubyte_t parse_ubyte(std::string const & value)
 {
 	return parse_num_base<ubyte_t, parse_ubyte, to_ubyte, parse_ubyte_unary, parse_ubyte_unary, parse_ubyte_function>(value);
 }
 
+uword_t parse_uword(SourceScannerDHLX & sc)
+{
+	return parse_int_base<uword_t, to_uword>(sc);
+}
 uword_t parse_uword(std::string const & value)
 {
 	return parse_num_base<uword_t, parse_uword, to_uword, parse_uword_unary, parse_uword_unary, parse_uword_function>(value);

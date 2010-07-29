@@ -284,21 +284,341 @@ SourceToken::SourceToken(SourceStream& in) : type(), name(), value(), data(), ba
 
 
 
-std::ostream& operator << (std::ostream& out, const SourceToken& in)
+SourceTokenDHLX::SourceTokenDHLX() : _data(), _type(TT_NONE) {}
+SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 {
-	out << "[" << in.type << "] " << in.name;
+	int nextChar = in.get();
 
-	for (size_t index = 0; index < in.base.size(); ++index)
-		out << " : " << in.base[index];
+	// Discard any whitespace before token.
+	if (nextChar == ' ') nextChar = in.get();
 
-	out << " = " << in.value << " {" << in.data << "}";
+	switch (nextChar)
+	{
+	case -1: _type = TT_EOF; return;
+
+	case '}': _type = TT_OP_BRACE_C;       return;
+	case '{': _type = TT_OP_BRACE_O;       return;
+	case ']': _type = TT_OP_BRACKET_C;     return;
+	case '[': _type = TT_OP_BRACKET_O;     return;
+	case ':': _type = TT_OP_COLON;         return;
+	case ',': _type = TT_OP_COMMA;         return;
+	case '#': _type = TT_OP_HASH;          return;
+	case ')': _type = TT_OP_PARENTHESIS_C; return;
+	case '(': _type = TT_OP_PARENTHESIS_O; return;
+	case '.': _type = TT_OP_PERIOD;        return;
+	case ';': _type = TT_OP_SEMICOLON;     return;
+
+	case '&':
+		nextChar = in.get();
+
+		if (nextChar == '=') {_type = TT_OP_AND_EQUALS; return;}
+		if (nextChar == '&')
+		{
+			nextChar = in.get();
+
+			if (nextChar == '=') {_type = TT_OP_AND2_EQUALS; return;}
+
+			in.unget(nextChar);
+
+			_type = TT_OP_AND2; return;
+		}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_AND; return;
+
+	case '*':
+		nextChar = in.get();
+
+		if (nextChar == '=') {_type = TT_OP_ASTERIX_EQUALS; return;}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_ASTERIX; return;
+
+	case '=':
+		nextChar = in.get();
+
+		if (nextChar == '=') {_type = TT_OP_CMP_EQ; return;}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_EQUALS; return;
+
+	case '>':
+		nextChar = in.get();
+
+		if (nextChar == '=') {_type = TT_OP_CMP_GE; return;}
+		if (nextChar == '>')
+		{
+			nextChar = in.get();
+
+			if (nextChar == '=') {_type = TT_OP_SHIFT_RIGHT_EQUALS; return;}
+
+			in.unget(nextChar);
+
+			_type = TT_OP_SHIFT_RIGHT; return;
+		}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_CMP_GT; return;
+
+	case '<':
+		nextChar = in.get();
+
+		if (nextChar == '=') {_type = TT_OP_CMP_LE; return;}
+		if (nextChar == '<')
+		{
+			nextChar = in.get();
+
+			if (nextChar == '=') {_type = TT_OP_SHIFT_LEFT_EQUALS; return;}
+
+			in.unget(nextChar);
+
+			_type = TT_OP_SHIFT_LEFT; return;
+		}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_CMP_LT; return;
+
+	case '-':
+		nextChar = in.get();
+
+		if (nextChar == '=') {_type = TT_OP_MINUS_EQUALS; return;}
+		if (nextChar == '-') {_type = TT_OP_MINUS2;       return;}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_MINUS; return;
+
+	case '!':
+		nextChar = in.get();
+
+		if (nextChar == '=') {_type = TT_OP_CMP_NE; return;}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_NOT; return;
+
+	case '|':
+		nextChar = in.get();
+
+		if (nextChar == '=') {_type = TT_OP_PIPE_EQUALS; return;}
+		if (nextChar == '|')
+		{
+			nextChar = in.get();
+
+			if (nextChar == '=') {_type = TT_OP_PIPE2_EQUALS; return;}
+
+			in.unget(nextChar);
+
+			_type = TT_OP_PIPE2; return;
+		}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_PIPE; return;
+
+	case '+':
+		nextChar = in.get();
+
+		if (nextChar == '=') {_type = TT_OP_PLUS_EQUALS; return;}
+		if (nextChar == '+') {_type = TT_OP_PLUS2;       return;}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_PLUS; return;
+
+	case '/':
+		nextChar = in.get();
+
+		if (nextChar == '=') {_type = TT_OP_SLASH_EQUALS; return;}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_SLASH; return;
+	}
+
+	if (isalpha(nextChar) || nextChar == '_')
+	{
+		_type = TT_IDENTIFIER;
+
+		while (isalnum(nextChar) || nextChar == '_')
+		{
+			_data += (char)nextChar;
+
+			nextChar = in.get();
+		}
+
+		in.unget(nextChar);
+
+		return;
+	}
+
+	if (isdigit(nextChar))
+	{
+		_type = TT_NUMBER;
+
+		bool foundDot   (false);
+		bool foundPlus  (false);
+		bool foundZero  (nextChar == '0');
+		bool foundPrefix(!foundZero);
+
+		int lastChar;
+
+		while (true)
+		{
+			_data += (char)nextChar;
+
+			lastChar = nextChar;
+			nextChar = in.get();
+
+			if (!foundPrefix)
+			{
+				// Can only find prefix at start.
+				foundPrefix = true;
+
+				if (nextChar == 'D' || nextChar == 'd') continue;
+				if (nextChar == 'O' || nextChar == 'o') continue;
+				if (nextChar == 'X' || nextChar == 'x') continue;
+			}
+
+			if (isxdigit(nextChar)) continue;
+
+			if (!foundDot && nextChar == '.')
+			{
+				foundDot = true;
+				continue;
+			}
+
+			if (!foundPlus && ((lastChar == 'E') || (lastChar == 'e')) && ((nextChar == '+') || (nextChar == '-')))
+			{
+				foundPlus = true;
+				continue;
+			}
+
+			break;
+		}
+
+		in.unget(nextChar);
+
+		return;
+	}
+
+	if (nextChar == '"')
+	{
+		_type = TT_STRING;
+
+		nextChar = in.get();
+
+		while (in.isInQuote())
+		{
+			_data += (char)nextChar;
+
+			nextChar = in.get();
+		}
+
+		return;
+	}
+}
+
+std::string const & SourceTokenDHLX::getData() const
+{
+	return _data;
+}
+SourceTokenDHLX::TokenType SourceTokenDHLX::getType() const
+{
+	return _type;
+}
+
+
+
+std::ostream & operator << (std::ostream & out, SourceToken const & in)
+{
+	out << "[" << in.getType() << "] " << in.getName();
+
+	for (size_t index = 0; index < in.getBase().size(); ++index)
+		out << " : " << in.getBase()[index];
+
+	out << " = " << in.getValue() << " {" << in.getData() << "}";
 
 	return out;
 }
+std::ostream & operator << (std::ostream & out, SourceTokenDHLX const & in)
+{
+	return out << "SourceTokenDHLX(" << "data=(" << in.getData() << ')' << ',' << "type=(" << in.getType() << ')' << ')';
+}
+std::ostream & operator << (std::ostream & out, SourceTokenDHLX::TokenType in)
+{
+	switch (in)
+	{
+		case SourceTokenDHLX::TT_NONE: return out << "TT_NONE";
+		case SourceTokenDHLX::TT_EOF:  return out << "TT_EOF";
 
-SourceStream& operator >> (SourceStream& in, SourceToken& out)
+		case SourceTokenDHLX::TT_IDENTIFIER: return out << "TT_IDENTIFIER";
+		case SourceTokenDHLX::TT_NUMBER:     return out << "TT_NUMBER";
+		case SourceTokenDHLX::TT_STRING:     return out << "TT_STRING";
+
+		case SourceTokenDHLX::TT_OP_AND:                return out << "TT_OP_AND";
+		case SourceTokenDHLX::TT_OP_AND_EQUALS:         return out << "TT_OP_AND_EQUALS";
+		case SourceTokenDHLX::TT_OP_AND2:               return out << "TT_OP_AND2";
+		case SourceTokenDHLX::TT_OP_AND2_EQUALS:        return out << "TT_OP_AND2_EQUALS";
+		case SourceTokenDHLX::TT_OP_ASTERIX:            return out << "TT_OP_ASTERIX";
+		case SourceTokenDHLX::TT_OP_ASTERIX_EQUALS:     return out << "TT_OP_ASTERIX_EQUALS";
+		case SourceTokenDHLX::TT_OP_BRACE_C:            return out << "TT_OP_BRACE_C";
+		case SourceTokenDHLX::TT_OP_BRACE_O:            return out << "TT_OP_BRACE_O";
+		case SourceTokenDHLX::TT_OP_BRACKET_C:          return out << "TT_OP_BRACKET_C";
+		case SourceTokenDHLX::TT_OP_BRACKET_O:          return out << "TT_OP_BRACKET_O";
+		case SourceTokenDHLX::TT_OP_CMP_EQ:             return out << "TT_OP_CMP_EQ";
+		case SourceTokenDHLX::TT_OP_CMP_GE:             return out << "TT_OP_CMP_GE";
+		case SourceTokenDHLX::TT_OP_CMP_GT:             return out << "TT_OP_CMP_GT";
+		case SourceTokenDHLX::TT_OP_CMP_LE:             return out << "TT_OP_CMP_LE";
+		case SourceTokenDHLX::TT_OP_CMP_LT:             return out << "TT_OP_CMP_LT";
+		case SourceTokenDHLX::TT_OP_CMP_NE:             return out << "TT_OP_CMP_NE";
+		case SourceTokenDHLX::TT_OP_COLON:              return out << "TT_OP_COLON";
+		case SourceTokenDHLX::TT_OP_COMMA:              return out << "TT_OP_COMMA";
+		case SourceTokenDHLX::TT_OP_EQUALS:             return out << "TT_OP_EQUALS";
+		case SourceTokenDHLX::TT_OP_HASH:               return out << "TT_OP_HASH";
+		case SourceTokenDHLX::TT_OP_MINUS:              return out << "TT_OP_MINUS";
+		case SourceTokenDHLX::TT_OP_MINUS_EQUALS:       return out << "TT_OP_MINUS_EQUALS";
+		case SourceTokenDHLX::TT_OP_MINUS2:             return out << "TT_OP_MINUS2";
+		case SourceTokenDHLX::TT_OP_NOT:                return out << "TT_OP_NOT";
+		case SourceTokenDHLX::TT_OP_PERIOD:             return out << "TT_OP_PERIOD";
+		case SourceTokenDHLX::TT_OP_PIPE:               return out << "TT_OP_PIPE";
+		case SourceTokenDHLX::TT_OP_PIPE_EQUALS:        return out << "TT_OP_PIPE_EQUALS";
+		case SourceTokenDHLX::TT_OP_PIPE2:              return out << "TT_OP_PIPE2";
+		case SourceTokenDHLX::TT_OP_PIPE2_EQUALS:       return out << "TT_OP_PIPE2_EQUALS";
+		case SourceTokenDHLX::TT_OP_PARENTHESIS_C:      return out << "TT_OP_PARENTHESIS_C";
+		case SourceTokenDHLX::TT_OP_PARENTHESIS_O:      return out << "TT_OP_PARENTHESIS_O";
+		case SourceTokenDHLX::TT_OP_PLUS:               return out << "TT_OP_PLUS";
+		case SourceTokenDHLX::TT_OP_PLUS_EQUALS:        return out << "TT_OP_PLUS_EQUALS";
+		case SourceTokenDHLX::TT_OP_PLUS2:              return out << "TT_OP_PLUS2";
+		case SourceTokenDHLX::TT_OP_SEMICOLON:          return out << "TT_OP_SEMICOLON";
+		case SourceTokenDHLX::TT_OP_SHIFT_LEFT:         return out << "TT_OP_SHIFT_LEFT";
+		case SourceTokenDHLX::TT_OP_SHIFT_LEFT_EQUALS:  return out << "TT_OP_SHIFT_LEFT_EQUALS";
+		case SourceTokenDHLX::TT_OP_SHIFT_RIGHT:        return out << "TT_OP_SHIFT_RIGHT";
+		case SourceTokenDHLX::TT_OP_SHIFT_RIGHT_EQUALS: return out << "TT_OP_SHIFT_RIGHT_EQUALS";
+		case SourceTokenDHLX::TT_OP_SLASH:              return out << "TT_OP_SLASH";
+		case SourceTokenDHLX::TT_OP_SLASH_EQUALS:       return out << "TT_OP_SLASH_EQUALS";
+	}
+
+	return out << int(in);
+}
+
+SourceStream & operator >> (SourceStream & in, SourceToken & out)
 {
 	out = SourceToken(in);
+
+	if (option_debug_token)
+		std::cerr << out << "\n";
+
+	return in;
+}
+SourceStream & operator >> (SourceStream & in, SourceTokenDHLX & out)
+{
+	out = SourceTokenDHLX(in);
 
 	if (option_debug_token)
 		std::cerr << out << "\n";

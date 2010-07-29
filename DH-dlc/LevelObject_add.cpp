@@ -54,6 +54,7 @@
 #include "exceptions/CompilerException.hpp"
 #include "exceptions/InvalidTypeException.hpp"
 #include "exceptions/NoSuchElementException.hpp"
+#include "exceptions/SyntaxException.hpp"
 #include "exceptions/UnknownCommandException.hpp"
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"
@@ -74,6 +75,25 @@ void LevelObject::addBase(std::string const & base)
 	_data.getObjMap().insert(other->_data.getObjMap().begin(), other->_data.getObjMap().end());
 }
 
+void LevelObject::addData(SourceScannerDHLX & sc)
+{
+	LevelObjectStack los(this);
+
+	SourceTokenDHLX st;
+
+	while (true)
+	{
+		st = sc.get();
+		sc.unget(st); // TODO: SourceScanner::peek
+
+		if ((st.getType() == SourceTokenDHLX::TT_OP_BRACE_C) || (st.getType() == SourceTokenDHLX::TT_EOF))
+		{
+			break;
+		}
+
+		addObject(sc);
+	}
+}
 void LevelObject::addData(std::string const & data, std::string const & name)
 {
 	LevelObjectStack los(this);
@@ -634,6 +654,57 @@ void LevelObject::addObject(name_t const & name, SourceToken const & st)
 	}
 
 	addObject(name, newObject);
+}
+void LevelObject::addObject(SourceScannerDHLX & sc)
+{
+	SourceTokenDHLX typeToken = sc.get(SourceTokenDHLX::TT_IDENTIFIER);
+
+	type_t newType(type_t::type_null);
+
+	if (type_t::has_type(typeToken.getData()))
+	{
+		newType = type_t::get_type(typeToken.getData());
+	}
+	else
+	{
+		sc.unget(typeToken);
+	}
+
+	name_t newName(parse_name(sc));
+
+	if (newType == type_t::type_null)
+	{
+		if (hasObject(newName))
+			newType = getObject(newName)->_type;
+		else
+			newType = type_t::get_default_type(newName, _type);
+	}
+
+	obj_t newObject;
+
+	SourceTokenDHLX opToken(sc.get());
+
+	switch (opToken.getType())
+	{
+	case SourceTokenDHLX::TT_OP_BRACE_O:
+		newObject = create(newType);
+		newObject->addData(sc);
+		sc.get(SourceTokenDHLX::TT_OP_BRACE_C);
+		break;
+
+	case SourceTokenDHLX::TT_OP_EQUALS:
+		if (newType.getMode() == type_t::MODE_VALUE)
+			newObject = create(newType, sc);
+		else
+			newObject = get_object(parse_int_s(sc), newType);
+		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+		break;
+
+	default:
+		throw SyntaxException("Unexpected token:" + make_string(opToken.getType()));
+	}
+
+	addObject(newName, newObject);
 }
 
 

@@ -33,9 +33,16 @@
 class SourceStream
 {
 	public:
-		SourceStream(std::istream&);
+		enum SourceType
+		{
+			ST_NORMAL,
+			ST_DHLX,
+		};
+
+		SourceStream(std::istream & in, SourceType type = ST_NORMAL);
 
 		int get();
+		void unget(int c);
 		std::string getbrace();
 
 		int getBraceDepth() const;
@@ -50,57 +57,65 @@ class SourceStream
 		     operator void* () const;
 
 	private:
-		int lastData, thisData, nextData;
-		std::istream* in;
+		int _lastData, _thisData, _nextData;
+		int _ungetData;
+		std::istream * _in;
 
-		int countLine;
+		int _countLine;
 
-		int depthBrace;   // { }
-		int depthComment; // /* */
+		int _depthBrace;   // { }
+		int _depthComment; // /* */
 
-		bool doStrip;
-		bool doStripAuto;
+		unsigned _doStrip           : 1;
+		unsigned _doStripAuto       : 1;
+		unsigned _doStripComment    : 1;
+		unsigned _doStripQuote      : 1;
+		unsigned _doStripWhitespace : 1;
 
-		bool inComment; // //
-		bool inQuote;   // "
-		bool inQuote2;  // '
+		unsigned _doCompressWhitespace : 1;
+
+		unsigned _inComment        : 1; // //
+		unsigned _inQuote          : 1; // "
+		unsigned _inQuote2         : 1; // '
+		unsigned _inWhitespace     : 1;
+		unsigned _inWhitespaceLast : 1;
 };
 
 
 
 inline int SourceStream::getBraceDepth() const
 {
-	return depthBrace;
+	return _depthBrace;
 }
 
 inline int SourceStream::getCommentDepth() const
 {
-	return depthComment;
+	return _depthComment;
 }
 
 inline int SourceStream::getLineCount() const
 {
-	return countLine;
+	return _countLine;
 }
 
 inline bool SourceStream::isInComment() const
 {
-	return inComment || depthComment != 0;
+	return _inComment || _depthComment != 0;
 }
 
 inline bool SourceStream::isInQuote() const
 {
-	return inQuote || inQuote2;
+	return _inQuote || _inQuote2;
 }
 
 inline bool SourceStream::operator ! () const
 {
-	return !(*in);
+	return !(*_in);
 }
 
 inline SourceStream::operator void* () const
 {
-	return (void*) *in;
+	return (void*) *_in;
 }
 
 

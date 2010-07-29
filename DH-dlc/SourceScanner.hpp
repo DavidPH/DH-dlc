@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, 2010 David Hill
+    Copyright 2010 David Hill
 
     This file is part of DH-dlc.
 
@@ -18,27 +18,42 @@
 */
 
 /*
-
+	Extracts and manages tokens from a SourceStream.
 */
 
-#ifndef PROCESS_STREAM_H
-#define PROCESS_STREAM_H
+#ifndef SOURCESCANNER_H
+#define SOURCESCANNER_H
 
 #include "SourceStream.hpp"
+#include "SourceToken.hpp"
 
-#include <string>
-
-
-
-/*
-	Filename is purely for logging purposes.
-*/
-template <class TokenClass>
-extern void process_stream(SourceStream & ss, std::string const & filename = "");
+#include <stack>
 
 
 
-#endif /* PROCESS_STREAM_H */
+template <typename TT, typename SS>
+class SourceScanner
+{
+	public:
+		explicit SourceScanner(SS & in);
+
+		TT get();
+		TT get(typename TT::TokenType typeMust);
+		TT get(typename TT::TokenType typeMust, typename TT::TokenType typeSkip);
+		void unget(TT token);
+
+	private:
+		SS & _in;
+
+		std::stack<TT> _ungetStack;
+};
+
+typedef SourceScanner<SourceToken,     SourceStream> SourceScannerDDL;
+typedef SourceScanner<SourceTokenDHLX, SourceStream> SourceScannerDHLX;
+
+
+
+#endif /* SOURCESCANNER_H */
 
 
 

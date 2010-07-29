@@ -44,12 +44,14 @@
 
 #include "LevelObjectData.hpp"
 #include "LevelObjectType.hpp"
+#include "SourceScanner.hpp"
 #include "types.hpp"
 
 #include <ostream>
 #include <vector>
 
 class SourceToken;
+class SourceTokenDHLX;
 
 
 
@@ -60,12 +62,16 @@ class LevelObject
 
 		void addBase(std::string const &);
 
+		void addData(SourceScannerDHLX & sc);
 		void addData(std::string const & data, std::string const & name = "...");
 		bool addDataIf(std::string const & data, std::string const & value1, std::string const & value2, std::string const & op, std::string const & type = "", bool checkElse = false);
 		bool addDataIf(std::string const & data, std::vector<std::string> const & values, std::string const & op, bool checkElse = false);
 
 		void addObject(name_t const & name, obj_t);
 		void addObject(name_t const & name, SourceToken const &);
+		void addObject(SourceScannerDHLX &);
+
+		void doCommand(std::string const & command, SourceScannerDHLX &);
 
 		obj_t getObject(name_t const & name);
 
@@ -90,6 +96,7 @@ class LevelObject
 		static obj_t create();
 		static obj_t create(type_t const type);
 		static obj_t create(type_t const type, any_t const & data);
+		static obj_t create(type_t const type, SourceScannerDHLX & sc);
 		static obj_t create(type_t const type, std::string const & value);
 		static obj_t create(type_t const type, std::string const & data, std::vector<std::string> const & base);
 
@@ -106,6 +113,7 @@ class LevelObject
 		LevelObject(LevelObject const &);
 		LevelObject(type_t const);
 		LevelObject(type_t const, any_t const &);
+		LevelObject(type_t const, SourceScannerDHLX &);
 		LevelObject(type_t const, std::string const &);
 		LevelObject(type_t const, std::string const &, std::vector<std::string> const &);
 

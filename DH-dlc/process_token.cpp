@@ -33,10 +33,11 @@
 #include "process_file.hpp"
 #include "SourceToken.hpp"
 #include "exceptions/CompilerException.hpp"
+#include "exceptions/SyntaxException.hpp"
 
 
 
-void process_token(SourceToken st) throw(CompilerException)
+void process_token(SourceToken const & st, SourceScannerDDL & sc)
 {
 	if (st.empty())
 		return;
@@ -128,6 +129,41 @@ void process_token(SourceToken st) throw(CompilerException)
 	}
 
 	global_object->addObject(name_t(st.getName()), st);
+}
+
+void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	if ((st.getType() == SourceTokenDHLX::TT_EOF) || (st.getType() == SourceTokenDHLX::TT_NONE))
+		return;
+
+	if (st.getType() == SourceTokenDHLX::TT_OP_HASH)
+	{
+		SourceTokenDHLX commandToken(sc.get(SourceTokenDHLX::TT_IDENTIFIER));
+
+		std::string commandString('#' + commandToken.getData());
+
+		if (commandString == command_name_include())
+		{
+			SourceTokenDHLX arg0(sc.get(SourceTokenDHLX::TT_STRING, SourceTokenDHLX::TT_OP_COLON));
+
+			sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+
+			process_file(arg0.getData());
+		}
+		else
+		{
+			global_object->doCommand(commandString, sc);
+		}
+	}
+	else if (st.getType() == SourceTokenDHLX::TT_IDENTIFIER)
+	{
+		sc.unget(st);
+		global_object->addObject(sc);
+	}
+	else
+	{
+		throw SyntaxException("invalid top-level token:" + make_string(st));
+	}
 }
 
 

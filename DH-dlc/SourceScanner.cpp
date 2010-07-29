@@ -1,0 +1,87 @@
+/*
+    Copyright 2010 David Hill
+
+    This file is part of DH-dlc.
+
+    DH-dlc is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    DH-dlc is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DH-dlc.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*
+
+*/
+
+#include "SourceScanner.hpp"
+
+#include "exceptions/SyntaxException.hpp"
+
+
+
+template <typename TT, typename SS>
+SourceScanner<TT, SS>::SourceScanner(SS & in) : _in(in) {}
+
+template <typename TT, typename SS>
+TT SourceScanner<TT, SS>::get()
+{
+	TT token;
+
+	if (_ungetStack.empty())
+		_in >> token;
+	else
+	{
+		token = _ungetStack.top();
+
+		_ungetStack.pop();
+	}
+
+	return token;
+}
+
+template <typename TT, typename SS>
+TT SourceScanner<TT, SS>::get(typename TT::TokenType typeMust)
+{
+	TT token = get();
+
+	if (token.getType() != typeMust)
+		throw SyntaxException("expected " + make_string(typeMust) + " got " + make_string(token.getType()));
+
+	return token;
+}
+
+template <typename TT, typename SS>
+TT SourceScanner<TT, SS>::get(typename TT::TokenType typeMust, typename TT::TokenType typeSkip)
+{
+	TT token = get();
+
+	if (token.getType() == typeSkip)
+		token = get();
+
+	if (token.getType() != typeMust)
+		throw SyntaxException("expected " + make_string(typeMust) + " got " + make_string(token.getType()));
+
+	return token;
+}
+
+template <typename TT, typename SS>
+void SourceScanner<TT, SS>::unget(TT token)
+{
+	_ungetStack.push(token);
+}
+
+
+
+template class SourceScanner<SourceTokenDHLX, SourceStream>;
+template class SourceScanner<SourceToken,     SourceStream>;
+
+
+

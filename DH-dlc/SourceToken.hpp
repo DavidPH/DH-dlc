@@ -35,8 +35,10 @@
 class SourceToken
 {
 	public:
-		SourceToken();
-		SourceToken(SourceStream&);
+		typedef std::string TokenType;
+
+		explicit SourceToken();
+		explicit SourceToken(SourceStream & in);
 
 		void clear();
 
@@ -51,12 +53,84 @@ class SourceToken
 		std::vector<std::string> const & getBase() const;
 		std::string const & getBase(size_t, std::string const & = "") const;
 
-		friend std::ostream& operator << (std::ostream&, const SourceToken&);
-
 	private:
 		std::string type, name, value, data;
 		std::vector<std::string> base;
 };
+
+class SourceTokenDHLX
+{
+	public:
+		enum TokenType
+		{
+			TT_NONE, TT_EOF,
+
+			TT_IDENTIFIER,
+			TT_NUMBER,
+			TT_STRING,
+
+			TT_OP_AND,                // &
+			TT_OP_AND_EQUALS,         // &=
+			TT_OP_AND2,               // &&
+			TT_OP_AND2_EQUALS,        // &&=
+			TT_OP_ASTERIX,            // *
+			TT_OP_ASTERIX_EQUALS,     // *=
+			TT_OP_BRACE_C,            // }
+			TT_OP_BRACE_O,            // {
+			TT_OP_BRACKET_C,          // ]
+			TT_OP_BRACKET_O,          // [
+			TT_OP_CMP_EQ,             // ==
+			TT_OP_CMP_GE,             // >=
+			TT_OP_CMP_GT,             // >
+			TT_OP_CMP_LE,             // <=
+			TT_OP_CMP_LT,             // <
+			TT_OP_CMP_NE,             // !=
+			TT_OP_COLON,              // :
+			TT_OP_COMMA,              // ,
+			TT_OP_EQUALS,             // =
+			TT_OP_HASH,               // #
+			TT_OP_MINUS,              // -
+			TT_OP_MINUS_EQUALS,       // -=
+			TT_OP_MINUS2,             // --
+			TT_OP_NOT,                // !
+			TT_OP_PERIOD,             // .
+			TT_OP_PIPE,               // |
+			TT_OP_PIPE_EQUALS,        // |=
+			TT_OP_PIPE2,              // ||
+			TT_OP_PIPE2_EQUALS,       // ||=
+			TT_OP_PARENTHESIS_C,      // )
+			TT_OP_PARENTHESIS_O,      // (
+			TT_OP_PLUS,               // +
+			TT_OP_PLUS_EQUALS,        // +=
+			TT_OP_PLUS2,              // ++
+			TT_OP_SEMICOLON,          // ;
+			TT_OP_SHIFT_LEFT,         // <<
+			TT_OP_SHIFT_LEFT_EQUALS,  // <<=
+			TT_OP_SHIFT_RIGHT,        // >>
+			TT_OP_SHIFT_RIGHT_EQUALS, // >>=
+			TT_OP_SLASH,              // /
+			TT_OP_SLASH_EQUALS,       // /=
+		};
+
+		explicit SourceTokenDHLX();
+		explicit SourceTokenDHLX(SourceStream & in);
+
+		std::string const & getData() const;
+		TokenType getType() const;
+
+	private:
+		std::string _data;
+		TokenType   _type;
+};
+
+
+
+std::ostream & operator << (std::ostream & out, SourceToken        const & in);
+std::ostream & operator << (std::ostream & out, SourceTokenDHLX    const & in);
+std::ostream & operator << (std::ostream & out, SourceTokenDHLX::TokenType in);
+
+SourceStream & operator >> (SourceStream & in, SourceToken     & out);
+SourceStream & operator >> (SourceStream & in, SourceTokenDHLX & out);
 
 
 
@@ -106,12 +180,6 @@ inline std::string const & SourceToken::getBase(size_t index, std::string const 
 	else
 		return def;
 }
-
-
-
-std::ostream& operator << (std::ostream&, const SourceToken&);
-
-SourceStream& operator >> (SourceStream& in, SourceToken& out);
 
 
 

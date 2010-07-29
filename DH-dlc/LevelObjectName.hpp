@@ -45,6 +45,7 @@ class LevelObjectName
 		*/
 		explicit LevelObjectName(char const * name);
 		explicit LevelObjectName(std::string const & raw_name);
+		explicit LevelObjectName(std::vector<std::string> const & nameVec);
 
 		bool empty() const;
 

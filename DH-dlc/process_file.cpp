@@ -23,15 +23,16 @@
 
 #include "process_file.hpp"
 
+#include "options.hpp"
+#include "process_stream.hpp"
+#include "SourceStream.hpp"
+#include "SourceToken.hpp"
+
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <string>
-
-#include "options.hpp"
-#include "process_stream.hpp"
-#include "SourceStream.hpp"
 
 
 
@@ -68,9 +69,18 @@ void process_file(std::string const & filename)
 		}
 	}
 
-	SourceStream ss(sourceFile);
+	if ((filename.size() > 5) && (filename.compare(filename.size() - 5, 5, ".dhlx") == 0))
+	{
+		SourceStream ss(sourceFile, SourceStream::ST_DHLX);
 
-	process_stream(ss, filename);
+		process_stream<SourceTokenDHLX>(ss, filename);
+	}
+	else
+	{
+		SourceStream ss(sourceFile);
+
+		process_stream<SourceToken>(ss, filename);
+	}
 
 	sourceFile.close();
 }

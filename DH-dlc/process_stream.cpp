@@ -23,33 +23,37 @@
 
 #include "process_stream.hpp"
 
-#include <cstdlib>
-#include <iostream>
-
 #include "options.hpp"
 #include "process_token.hpp"
 #include "SourceToken.hpp"
 
+#include <cstdlib>
+#include <iostream>
 
 
-void process_stream(SourceStream& ss, std::string const & filename)
+
+template <class TokenClass>
+void process_stream(SourceStream & ss, std::string const & filename)
 {
-	SourceToken st;
+	SourceScanner<TokenClass, SourceStream> sc(ss);
+	TokenClass st;
 
 	while (ss)
 	{
 		try
 		{
-			st.clear();
-			ss >> st;
-			process_token(st);
+			st = sc.get();
+			process_token(st, sc);
 		}
-		catch (CompilerException& e)
+		catch (CompilerException & e)
 		{
 			PRINT_AND_COUNT_ERROR(filename << ':' << ss.getLineCount() << ':' << e << "\n  ->" << st << '\n');
 		}
 	}
 }
+
+template void process_stream<SourceToken>(SourceStream &, std::string const &);
+template void process_stream<SourceTokenDHLX>(SourceStream &, std::string const &);
 
 
 
