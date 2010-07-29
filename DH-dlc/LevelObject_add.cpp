@@ -649,6 +649,8 @@ void LevelObject::addObject(SourceScannerDHLX & sc)
 	{
 		sc.unget(typeToken);
 	}
+
+	name_t name(parse_name(sc));
 }
 
 

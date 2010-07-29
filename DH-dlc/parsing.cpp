@@ -419,6 +419,10 @@ static T parse_num_base(std::string const & value)
 	return Tconv(get_object(name_t(value)));
 }
 
+int_s_t parse_int_s(SourceScannerDHLX & sc)
+{
+	return int_s_t();
+}
 int_s_t parse_int_s(std::string const & value)
 {
 	return parse_num_base<int_s_t, parse_int_s, to_int_s, parse_int_s_unary, parse_int_s_unary, parse_int_s_function>(value);
@@ -430,6 +434,46 @@ int_t parse_int(std::string const & value)
 int_l_t parse_int_l(std::string const & value)
 {
 	return parse_num_base<int_l_t, parse_int_l, to_int_l, parse_int_l_unary, parse_int_l_unary, parse_int_l_function>(value);
+}
+
+name_t parse_name(SourceScannerDHLX & sc)
+{
+	std::vector<std::string> nameVector;
+	std::string nameElement;
+
+	SourceTokenDHLX nameToken(sc.get(SourceTokenDHLX::TT_IDENTIFIER));
+
+	nameElement = nameToken.getData();
+
+	while (true)
+	{
+		nameToken = sc.get();
+
+		if (nameToken.getType() == SourceTokenDHLX::TT_OP_PERIOD)
+		{
+			nameVector.push_back(nameElement);
+			nameElement = sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData();
+		}
+		else if (nameToken.getType() == SourceTokenDHLX::TT_OP_BRACKET_O)
+		{
+			nameElement += '.';
+			nameElement += make_string(parse_int_s(sc));
+			sc.get(SourceTokenDHLX::TT_OP_BRACKET_C);
+		}
+		else if (nameToken.getType() == SourceTokenDHLX::TT_OP_CMP_LT)
+		{
+			nameElement += '.';
+			nameElement += make_string(parse_string(sc));
+			sc.get(SourceTokenDHLX::TT_OP_CMP_GT);
+		}
+		else
+		{
+			sc.unget(nameToken);
+			break;
+		}
+	}
+
+	return name_t(nameVector);
 }
 
 obj_t parse_obj(std::string const & value, type_t const type)
@@ -474,6 +518,10 @@ static T parse_string_base(std::string const & value)
 	return Tconv(get_object(name_t(value)));
 }
 
+string_t parse_string(SourceScannerDHLX & sc)
+{
+	return string_t();
+}
 string_t parse_string(std::string const & value)
 {
 	return parse_string_base<string_t, parse_string, to_string, parse_string_unary, parse_string_unary, parse_string_function>(value);

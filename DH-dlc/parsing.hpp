@@ -24,6 +24,7 @@
 #ifndef PARSING_H
 #define PARSING_H
 
+#include "SourceScanner.hpp"
 #include "types.hpp"
 
 #include <string>
@@ -42,6 +43,7 @@ bool_t parse_bool_function(std::string const &, std::vector<std::string> const &
 bool_t parse_bool_unary(std::string const &);
 bool_t parse_bool_unary(std::string const &, std::string const &);
 
+int_s_t parse_int_s(SourceScannerDHLX &);
 int_s_t parse_int_s(std::string const &);
 int_s_t parse_int_s_function(std::string const &, std::vector<std::string> const &);
 int_s_t parse_int_s_unary(std::string const &);
@@ -54,6 +56,8 @@ int_l_t parse_int_l(std::string const &);
 int_l_t parse_int_l_function(std::string const &, std::vector<std::string> const &);
 int_l_t parse_int_l_unary(std::string const &);
 int_l_t parse_int_l_unary(std::string const &, std::string const &);
+
+name_t parse_name(SourceScannerDHLX &);
 
 obj_t parse_obj(std::string const &, type_t const);
 
@@ -70,6 +74,7 @@ real_l_t parse_real_l_function(std::string const &, std::vector<std::string> con
 real_l_t parse_real_l_unary(std::string const &);
 real_l_t parse_real_l_unary(std::string const &, std::string const &);
 
+string_t parse_string(SourceScannerDHLX &);
 string_t parse_string(std::string const &);
 string_t parse_string_function(std::string const &, std::vector<std::string> const &);
 string_t parse_string_unary(std::string const &);

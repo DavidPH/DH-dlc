@@ -305,6 +305,7 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	case '#': _type = TT_OP_HASH;          return;
 	case ')': _type = TT_OP_PARENTHESIS_C; return;
 	case '(': _type = TT_OP_PARENTHESIS_O; return;
+	case '.': _type = TT_OP_PERIOD;        return;
 	case ';': _type = TT_OP_SEMICOLON;     return;
 
 	case '&':
@@ -581,6 +582,7 @@ std::ostream & operator << (std::ostream & out, SourceTokenDHLX::TokenType in)
 		case SourceTokenDHLX::TT_OP_MINUS_EQUALS:       return out << "TT_OP_MINUS_EQUALS";
 		case SourceTokenDHLX::TT_OP_MINUS2:             return out << "TT_OP_MINUS2";
 		case SourceTokenDHLX::TT_OP_NOT:                return out << "TT_OP_NOT";
+		case SourceTokenDHLX::TT_OP_PERIOD:             return out << "TT_OP_PERIOD";
 		case SourceTokenDHLX::TT_OP_PIPE:               return out << "TT_OP_PIPE";
 		case SourceTokenDHLX::TT_OP_PIPE_EQUALS:        return out << "TT_OP_PIPE_EQUALS";
 		case SourceTokenDHLX::TT_OP_PIPE2:              return out << "TT_OP_PIPE2";

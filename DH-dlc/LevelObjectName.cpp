@@ -79,6 +79,10 @@ LevelObjectName::LevelObjectName(std::string const & raw_name)
 		//std::cerr << *it << '\n';
 	}
 }
+LevelObjectName::LevelObjectName(std::vector<std::string> const & nameVector) : _name(nameVector)
+{
+
+}
 
 bool LevelObjectName::empty() const
 {

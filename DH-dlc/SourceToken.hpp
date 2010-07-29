@@ -93,6 +93,7 @@ class SourceTokenDHLX
 			TT_OP_MINUS_EQUALS,       // -=
 			TT_OP_MINUS2,             // --
 			TT_OP_NOT,                // !
+			TT_OP_PERIOD,             // .
 			TT_OP_PIPE,               // |
 			TT_OP_PIPE_EQUALS,        // |=
 			TT_OP_PIPE2,              // ||
