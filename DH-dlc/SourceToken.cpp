@@ -466,10 +466,13 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 		bool foundZero  (nextChar == '0');
 		bool foundPrefix(!foundZero);
 
+		int lastChar;
+
 		while (true)
 		{
 			_data += (char)nextChar;
 
+			lastChar = nextChar;
 			nextChar = in.get();
 
 			if (!foundPrefix)
@@ -490,7 +493,7 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 				continue;
 			}
 
-			if (!foundPlus && (nextChar == '+' || nextChar == '-'))
+			if (!foundPlus && ((lastChar == 'E') || (lastChar == 'e')) && ((nextChar == '+') || (nextChar == '-')))
 			{
 				foundPlus = true;
 				continue;

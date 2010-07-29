@@ -693,7 +693,10 @@ void LevelObject::addObject(SourceScannerDHLX & sc)
 		break;
 
 	case SourceTokenDHLX::TT_OP_EQUALS:
-		newObject = create(newType, sc);
+		if (newType.getMode() == type_t::MODE_VALUE)
+			newObject = create(newType, sc);
+		else
+			newObject = get_object(parse_int_s(sc), newType);
 		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
 		break;
 
