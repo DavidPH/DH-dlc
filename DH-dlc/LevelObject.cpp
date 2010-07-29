@@ -84,6 +84,29 @@ LevelObject::LevelObject(type_t const type) : LevelObject_INIT_LIST(type, false)
 	else                                         _data = objmap_t();
 }
 LevelObject::LevelObject(type_t const type, any_t const & data) : LevelObject_INIT_LIST(type, data) {}
+LevelObject::LevelObject(type_t const type, SourceScannerDHLX & sc) : LevelObject_INIT_LIST(type, false)
+{
+	     if (_type == type_t::type_bool())       _data = parse_bool(sc);
+
+	else if (_type == type_t::type_shortint())   _data = parse_int_s(sc);
+	else if (_type == type_t::type_int())        _data = parse_int(sc);
+	else if (_type == type_t::type_longint())    _data = parse_int_l(sc);
+
+	else if (_type == type_t::type_shortfloat()) _data = parse_real_s(sc);
+	else if (_type == type_t::type_float())      _data = parse_real(sc);
+	else if (_type == type_t::type_longfloat())  _data = parse_real_l(sc);
+
+	else if (_type == type_t::type_string())     _data = parse_string(sc);
+	else if (_type == type_t::type_string8())    _data = parse_string8(sc);
+
+	else if (_type == type_t::type_sword())      _data = parse_sword(sc);
+
+	else if (_type == type_t::type_ubyte())      _data = parse_ubyte(sc);
+
+	else if (_type == type_t::type_uword())      _data = parse_uword(sc);
+
+	else                                         _data = objmap_t();
+}
 LevelObject::LevelObject(type_t const type, std::string const & value) : LevelObject_INIT_LIST(type, false)
 {
 	     if (_type == type_t::type_bool())       _data = parse_bool(value);
@@ -143,6 +166,10 @@ obj_t LevelObject::create(type_t const type)
 obj_t LevelObject::create(type_t const type, any_t const & data)
 {
 	return new LevelObject(type, data);
+}
+obj_t LevelObject::create(type_t const type, SourceScannerDHLX & sc)
+{
+	return new LevelObject(type, sc);
 }
 obj_t LevelObject::create(type_t const type, std::string const & value)
 {

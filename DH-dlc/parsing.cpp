@@ -562,6 +562,8 @@ name_t parse_name(SourceScannerDHLX & sc)
 		}
 	}
 
+	nameVector.push_back(nameElement);
+
 	return name_t(nameVector);
 }
 
