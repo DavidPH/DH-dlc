@@ -25,8 +25,7 @@
 #define SOURCESTREAM_H
 
 #include <istream>
-
-#include "types.hpp"
+#include <stack>
 
 
 
@@ -58,7 +57,7 @@ class SourceStream
 
 	private:
 		int _lastData, _thisData, _nextData;
-		int _ungetData;
+		std::stack<int> _ungetStack;
 		std::istream * _in;
 
 		int _countLine;

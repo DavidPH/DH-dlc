@@ -27,7 +27,7 @@
 
 SourceStream::SourceStream(std::istream & in, SourceType type) :
 	_lastData(-2), _thisData(-2), _nextData(-2),
-	_ungetData(-2),
+	_ungetStack(),
 	_in(&in),
 
 	_countLine(1),
@@ -66,10 +66,10 @@ SourceStream::SourceStream(std::istream & in, SourceType type) :
 
 int SourceStream::get()
 {
-	if (_ungetData != -2)
+	if (!_ungetStack.empty())
 	{
-		int c = _ungetData;
-		_ungetData = -2;
+		int c = _ungetStack.top();
+		_ungetStack.pop();
 		return c;
 	}
 
@@ -266,7 +266,7 @@ int SourceStream::get()
 
 void SourceStream::unget(int c)
 {
-	_ungetData = c;
+	_ungetStack.push(c);
 }
 
 std::string SourceStream::getbrace()

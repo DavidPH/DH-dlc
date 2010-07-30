@@ -23,6 +23,8 @@
 
 #include "SourceScanner.hpp"
 
+#include "types.hpp"
+
 #include "exceptions/SyntaxException.hpp"
 
 
