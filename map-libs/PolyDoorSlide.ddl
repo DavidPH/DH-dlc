@@ -118,8 +118,8 @@
 	[float] _dist3 = <distance>(v3, v4);
 	[float] _dist4 = <distance>(v4, v1);
 
-	[float] _flange = 1/256;
-	[float] _offset = 1/256;
+	[float] _flange = 1/1;
+	[float] _offset = 1/128;
 
 	[int] _doorAngle = (float)[round][deg2byte]_angle3;
 	[int] _doorDelay = 70;
@@ -151,6 +151,20 @@
 
 	[SECTOR] sector0
 	{
+		lightlevel = 0;
+
+		# if exists : sector1.lightlevel
+			{lightlevel += sector1.lightlevel;}
+		#else
+			{lightlevel += 160;}
+
+		# if exists : sector2.lightlevel
+			{lightlevel += sector2.lightlevel;}
+		#else
+			{lightlevel += 160;}
+
+		lightlevel /= 2;
+
 		# if exists : sector1.heightceiling
 			{heightceiling = sector1.heightceiling;}
 		# if exists : sector1.heightfloor
@@ -186,10 +200,10 @@
 		texturemiddle = _textureTrak;
 	}
 	[SIDEDEF] pocket1.side2 : pocket1.side1 {}
-	[SIDEDEF] pocket1.side3 : pocket1.side2 {}
+	[SIDEDEF] pocket1.side3 : pocket1.side1 {}
 	[SIDEDEF] pocket1.side4 = side0;
-	[SIDEDEF] pocket1.side5 : pocket1.side3 {}
-	[SIDEDEF] pocket1.side6 : pocket1.side5 {}
+	[SIDEDEF] pocket1.side5 : pocket1.side1 {}
+	[SIDEDEF] pocket1.side6 : pocket1.side1 {}
 
 	[VertexOffset] pocket1.v1 {b =         v1; a = _angle4+180; d = _flange;}
 	[VertexOffset] pocket1.v2 {b = pocket1.v1; a = _angle1+180; d = _dist1/2;}
@@ -198,6 +212,8 @@
 	[VERTEX]       pocket1.v5 = pocket1.v1;
 	[VERTEX]       pocket1.v6 = v1;
 	[VERTEX]       pocket1.v7 = v4;
+
+	pocket1.side6.offsetx = <distance>(v1, pocket1.v4);
 
 	[object] pocket2;
 
@@ -208,10 +224,10 @@
 		texturemiddle = _textureTrak;
 	}
 	[SIDEDEF] pocket2.side2 : pocket2.side1 {}
-	[SIDEDEF] pocket2.side3 : pocket2.side2 {}
+	[SIDEDEF] pocket2.side3 : pocket2.side1 {}
 	[SIDEDEF] pocket2.side4 = side0;
-	[SIDEDEF] pocket2.side5 : pocket2.side3 {}
-	[SIDEDEF] pocket2.side6 : pocket2.side5 {}
+	[SIDEDEF] pocket2.side5 : pocket2.side1 {}
+	[SIDEDEF] pocket2.side6 : pocket2.side1 {}
 
 	[VertexOffset] pocket2.v1 {b =         v3; a = _angle2+180; d = _flange;}
 	[VertexOffset] pocket2.v2 {b = pocket2.v1; a = _angle3+180; d = _dist3/2;}
@@ -220,6 +236,8 @@
 	[VERTEX]       pocket2.v5 = pocket2.v1;
 	[VERTEX]       pocket2.v6 = v3;
 	[VERTEX]       pocket2.v7 = v2;
+
+	pocket2.side6.offsetx = <distance>(v3, pocket1.v4);
 
 	#for:indexPocket:1:3
 	{
@@ -248,7 +266,7 @@
 			v1 = pocket[indexPocket].v4;
 			v2 = pocket[indexPocket].v7;
 
-			sidefront = pocket[indexPocket].side5;
+			sidefront = pocket[indexPocket].side6;
 		}
 	}
 
@@ -273,6 +291,13 @@
 	divider.line2:divider.line5 {v1 = divider.v1; v2 = pocket2.v4;}
 	divider.line3:divider.line5 {v1 = pocket2.v1; v2 = divider.v2;}
 	divider.line4:divider.line5 {v1 = divider.v2; v2 = pocket1.v4;}
+
+
+
+	pocket1.v1.{x = (pocket1.v2.x + divider.v1.x) / 2; y = (pocket1.v2.y + divider.v1.y) / 2;}
+	pocket1.v4.{x = (pocket1.v3.x + divider.v2.x) / 2; y = (pocket1.v3.y + divider.v2.y) / 2;}
+	pocket2.v1.{x = (pocket2.v2.x + divider.v2.x) / 2; y = (pocket2.v2.y + divider.v2.y) / 2;}
+	pocket2.v4.{x = (pocket2.v3.x + divider.v1.x) / 2; y = (pocket2.v3.y + divider.v1.y) / 2;}
 
 
 
@@ -323,6 +348,8 @@
 	}
 	[SIDEDEF] door1.side2 : door1.side1
 	{
+		offsetx = _flange + _offset;
+
 		texturemiddle = _textureTrak;
 	}
 	[SIDEDEF] door1.side3 : door1.side1
@@ -347,17 +374,17 @@
 
 		texturemiddle = _textureDoor;
 	}
-	[SIDEDEF] door2.side2 : door1.side1
+	[SIDEDEF] door2.side2 : door2.side1
 	{
-		offsetx = 0;
+		offsetx = _flange + _offset;
 
 		texturemiddle = _textureTrak;
 	}
-	[SIDEDEF] door2.side3 : door1.side1
+	[SIDEDEF] door2.side3 : door2.side1
 	{
 		offsetx = 0;
 	}
-	[SIDEDEF] door2.side4 : door1.side2;
+	[SIDEDEF] door2.side4 : door2.side2;
 
 	[VertexOffset] door2.v1 {b = doorholder.v2; a = <facing>(b, doorholder.v6); d = _offset;}
 	[VertexOffset] door2.v2 {b = doorholder.v1; a = <facing>(b, doorholder.v5); d = _offset;}
