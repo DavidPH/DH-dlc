@@ -173,16 +173,86 @@ int SourceStream::get()
 
 			switch (nextData)
 			{
-				case 'r': return '\r';
-				case 'n': return '\n';
-				case 't': return '\t';
-				case '\n': ++_countLine;
-				case '\\':
-				case '\'':
-				case '"': return nextData;
+			case 'r': return '\r';
+			case 'n': return '\n';
+			case 't': return '\t';
+			case '\n': ++_countLine;
+			case '\t':
+			case '\\':
+			case '\'':
+			case '"':
+			case ' ':
+				return nextData;
+
+			case 'x':
+			case 'X':
+			{
+				int digit1 = _in->get();
+				int digit2 = _in->get();
+
+				switch (digit1)
+				{
+				case '0': nextData = 0x00; break;
+				case '1': nextData = 0x10; break;
+				case '2': nextData = 0x20; break;
+				case '3': nextData = 0x30; break;
+				case '4': nextData = 0x40; break;
+				case '5': nextData = 0x50; break;
+				case '6': nextData = 0x60; break;
+				case '7': nextData = 0x70; break;
+				case '8': nextData = 0x80; break;
+				case '9': nextData = 0x90; break;
+				case 'A': nextData = 0xA0; break;
+				case 'B': nextData = 0xB0; break;
+				case 'C': nextData = 0xC0; break;
+				case 'D': nextData = 0xD0; break;
+				case 'E': nextData = 0xE0; break;
+				case 'F': nextData = 0xF0; break;
+				case 'a': nextData = 0xa0; break;
+				case 'b': nextData = 0xb0; break;
+				case 'c': nextData = 0xc0; break;
+				case 'd': nextData = 0xd0; break;
+				case 'e': nextData = 0xe0; break;
+				case 'f': nextData = 0xf0; break;
 
 				default:
-					throw SyntaxException(std::string("unknown escape sequence:\\") + (char)nextData);
+					throw SyntaxException(((std::string("invalid escape sequence:\\") + (char)nextData) + (char)digit1) + (char)digit2);
+				}
+
+				switch (digit2)
+				{
+				case '0': nextData += 0x00; break;
+				case '1': nextData += 0x01; break;
+				case '2': nextData += 0x02; break;
+				case '3': nextData += 0x03; break;
+				case '4': nextData += 0x04; break;
+				case '5': nextData += 0x05; break;
+				case '6': nextData += 0x06; break;
+				case '7': nextData += 0x07; break;
+				case '8': nextData += 0x08; break;
+				case '9': nextData += 0x09; break;
+				case 'A': nextData += 0x0A; break;
+				case 'B': nextData += 0x0B; break;
+				case 'C': nextData += 0x0C; break;
+				case 'D': nextData += 0x0D; break;
+				case 'E': nextData += 0x0E; break;
+				case 'F': nextData += 0x0F; break;
+				case 'a': nextData += 0x0a; break;
+				case 'b': nextData += 0x0b; break;
+				case 'c': nextData += 0x0c; break;
+				case 'd': nextData += 0x0d; break;
+				case 'e': nextData += 0x0e; break;
+				case 'f': nextData += 0x0f; break;
+
+				default:
+					throw SyntaxException(((std::string("invalid escape sequence:\\") + (char)nextData) + (char)digit1) + (char)digit2);
+				}
+
+				return nextData;
+			}
+
+			default:
+				throw SyntaxException(std::string("unknown escape sequence:\\") + (char)nextData);
 			}
 		}
 
