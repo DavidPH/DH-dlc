@@ -110,10 +110,6 @@ T num_from_string(std::string const & value)
 {
 	if (value.empty()) return T(0);
 
-	int base(10);
-	std::string num_str;
-	std::string exp_str;
-
 	// May get numbers in the form of fractions at times. This should only
 	// happen with mpq_class, so not concerned about loss of precision from
 	// the operation.
@@ -121,43 +117,47 @@ T num_from_string(std::string const & value)
 	if (pos != std::string::npos)
 		return num_from_string<T>(value.substr(0, pos)) / num_from_string<T>(value.substr(pos+1));
 
+	int base(10);
+	std::string num_str;
+	std::string exp_str;
+
 	if (value[0] == '0')
 	{
 		switch (value.size() >= 2 ? value[1] : 0)
 		{
-			case 'x':
-			case 'X':
-				base    = 16;
-				num_str = value.substr(2);
-				break;
+		case 'x':
+		case 'X':
+			base    = 16;
+			num_str = value.substr(2);
+			break;
 
-			case 'd':
-			case 'D':
-				base    = 10;
-				num_str = value.substr(2);
-				break;
+		case 'd':
+		case 'D':
+			base    = 10;
+			num_str = value.substr(2);
+			break;
 
-			case 'o':
-			case 'O':
-				base    = 8;
-				num_str = value.substr(2);
-				break;
+		case 'o':
+		case 'O':
+			base    = 8;
+			num_str = value.substr(2);
+			break;
 
-			case 'b':
-			case 'B':
-				base    = 2;
-				num_str = value.substr(2);
-				break;
+		case 'b':
+		case 'B':
+			base    = 2;
+			num_str = value.substr(2);
+			break;
 
-			case '.':
-				base    = 10;
-				num_str = value.substr(1);
-				break;
+		case '.':
+			base    = 10;
+			num_str = value.substr(1);
+			break;
 
-			default:
-				base    = 8;
-				num_str = value.substr(1);
-				break;
+		default:
+			base    = 8;
+			num_str = value.substr(1);
+			break;
 		}
 	}
 
@@ -195,19 +195,17 @@ T num_from_string(std::string const & value)
 
 	if (num_char == '.')
 	{
-		size_t base_pos = pos-1;
+		pos = num_str.size();
+		T num_part(0);
 
-		while (pos < num_str.size())
+		while ((num_char = num_str[--pos]) != '.')
 		{
-			num_char = num_str[pos++];
+			num_part += num_from_char<T>(num_char, base);
 
-			T num_part = num_from_char<T>(num_char, base);
-
-			for (size_t i = pos - base_pos - 1; i; --i)
-				num_part /= T(base);
-
-			num += num_part;
+			num_part /= T(base);
 		}
+
+		num += num_part;
 	}
 
 	if (!exp_str.empty())
