@@ -52,7 +52,7 @@ struct ParsingData
 	ParsingData(std::string const & valueIn) :
 	valueReturn(), value(valueIn), valueLeft(), valueRight(),
 	operatorChar(-2),
-	hasBracket(0)
+	hasBracket(0), hasExponent(0)
 	{
 		int bracketCount = 0;
 
@@ -65,10 +65,18 @@ struct ParsingData
 				++bracketCount;
 				hasBracket = true;
 			}
+			else if (indexChar == '[' || indexChar == '<')
+			{
+				++bracketCount;
+			}
 			else if (indexChar == ')')
 			{
 				--bracketCount;
 				hasBracket = true;
+			}
+			else if (indexChar == ']' || indexChar == '>')
+			{
+				--bracketCount;
 			}
 			else if (isoperator(indexChar))
 			{
@@ -81,7 +89,7 @@ struct ParsingData
 				isdigit(value[index+1])
 				)
 				{
-
+					hasExponent = true;
 				}
 				else if (bracketCount == 0)
 				{
@@ -108,7 +116,8 @@ struct ParsingData
 
 	int operatorChar;
 
-	unsigned hasBracket : 1;
+	unsigned hasBracket  : 1;
+	unsigned hasExponent : 1;
 };
 
 template <class T, T (Tfunc)(std::string const &, std::vector<std::string> const &)>
@@ -435,21 +444,24 @@ static T parse_num_base(std::string const & value)
 	if (check_all<T, Tparse, Tconv, Tconst, Tunary, Tfunc>(&data))
 		return data.valueReturn;
 
-	size_t pos = value.find_first_of("+-");
-
-	if (pos != std::string::npos)
+	if (data.hasExponent)
 	{
-		if (isdigit(value[0]))
-			return Tconv(string_t(value));
+		size_t pos = value.find_first_of("+-");
 
-		std::string valueLeft(value, 0, pos);
-		std::string valueRight(value, pos+1);
+		if (pos != std::string::npos)
+		{
+			if (isdigit(value[0]))
+				return Tconv(string_t(value));
 
-		if (value[pos] == '+')
-			return Tparse(valueLeft) + Tparse(valueRight);
+			std::string valueLeft(value, 0, pos);
+			std::string valueRight(value, pos+1);
 
-		if (value[pos] == '-')
-			return Tparse(valueLeft) - Tparse(valueRight);
+			if (value[pos] == '+')
+				return Tparse(valueLeft) + Tparse(valueRight);
+
+			if (value[pos] == '-')
+				return Tparse(valueLeft) - Tparse(valueRight);
+		}
 	}
 
 	if (isdigit(value[0]))
