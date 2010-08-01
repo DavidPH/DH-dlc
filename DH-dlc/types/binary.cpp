@@ -163,6 +163,38 @@ void uword_t::encodeText(std::ostream & out)
 	out << _data;
 }
 
+sdword_t::sdword_t() : _data(0) {}
+sdword_t::sdword_t(sdword_t const & value) : _data(value._data) {}
+sdword_t::sdword_t(signed long int value) : _data(value) {}
+
+void sdword_t::encodeBinary(std::ostream & out)
+{
+	out.put((_data      ) & 0xFF);
+	out.put((_data >>  8) & 0xFF);
+	out.put((_data >> 16) & 0xFF);
+	out.put((_data >> 24) & 0xFF);
+}
+void sdword_t::encodeText(std::ostream & out)
+{
+	out << _data;
+}
+
+udword_t::udword_t() : _data(0) {}
+udword_t::udword_t(udword_t const & value) : _data(value._data) {}
+udword_t::udword_t(unsigned long int value) : _data(value) {}
+
+void udword_t::encodeBinary(std::ostream & out)
+{
+	out.put((_data      ) & 0xFF);
+	out.put((_data >>  8) & 0xFF);
+	out.put((_data >> 16) & 0xFF);
+	out.put((_data >> 24) & 0xFF);
+}
+void udword_t::encodeText(std::ostream & out)
+{
+	out << _data;
+}
+
 
 
 template <size_t S>
@@ -202,6 +234,20 @@ int cmp(uword_t const & l, uword_t const & r)
 
 	return 0;
 }
+int cmp(sdword_t const & l, sdword_t const & r)
+{
+	if (l._data < r._data) return -1;
+	if (l._data > r._data) return +1;
+
+	return 0;
+}
+int cmp(udword_t const & l, udword_t const & r)
+{
+	if (l._data < r._data) return -1;
+	if (l._data > r._data) return +1;
+
+	return 0;
+}
 
 template <size_t S>
 std::ostream & operator << (std::ostream & out, stringf_t<S> const & in)
@@ -216,15 +262,23 @@ template std::ostream & operator << < 16U> (std::ostream & out, stringf_t< 16U> 
 template std::ostream & operator << < 32U> (std::ostream & out, stringf_t< 32U> const & r);
 template std::ostream & operator << < 80U> (std::ostream & out, stringf_t< 80U> const & r);
 template std::ostream & operator << <320U> (std::ostream & out, stringf_t<320U> const & r);
-std::ostream & operator << (std::ostream & out, sword_t const & in)
-{
-	return out << in._data;
-}
 std::ostream & operator << (std::ostream & out, ubyte_t const & in)
 {
 	return out << in._data;
 }
+std::ostream & operator << (std::ostream & out, sword_t const & in)
+{
+	return out << in._data;
+}
 std::ostream & operator << (std::ostream & out, uword_t const & in)
+{
+	return out << in._data;
+}
+std::ostream & operator << (std::ostream & out, sdword_t const & in)
+{
+	return out << in._data;
+}
+std::ostream & operator << (std::ostream & out, udword_t const & in)
 {
 	return out << in._data;
 }
