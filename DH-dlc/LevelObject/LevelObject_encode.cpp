@@ -313,33 +313,17 @@ void LevelObject::encodeExtraData(std::ostream & out)
 
 		if (hasObject(name_extradata_special))
 		{
-			obj_t extradata_special = getObject(name_extradata_special);
-
-			out << "\tspecial ";
-
-			if (extradata_special->_data.getType() == any_t::STRING_T)
-				out << to_string(extradata_special);
-			else
-				out << to_int_l(extradata_special);
-
-			out << "\n";
+			out << "\tspecial "; getObject(name_extradata_special)->_data.encodeText(out); out << '\n';
 		}
 
 		if (hasObject(name_extradata_tag))
-			out << "\ttag " << to_int_l(getObject(name_extradata_tag)) << '\n';
+		{
+			out << "\ttag "; getObject(name_extradata_tag)->_data.encodeText(out); out << '\n';
+		}
 
 		if (hasObject(name_extradata_flags))
 		{
-			obj_t extradata_flags = getObject(name_extradata_flags);
-
-			out << "\textflags ";
-
-			if (extradata_flags->_data.getType() == any_t::STRING_T)
-				out << to_string(extradata_flags);
-			else
-				out << to_int_l(extradata_flags);
-
-			out << "\n";
+			out << "\textflags "; getObject(name_extradata_flags)->_data.encodeText(out); out << '\n';
 		}
 		else
 		{
@@ -388,35 +372,35 @@ void LevelObject::encodeExtraData(std::ostream & out)
 		out << "\targs {";
 
 		if (hasObject(name_arg0))
-			out << to_int_l(getObject(name_arg0));
+			getObject(name_arg0)->_data.encodeText(out);
 		else
 			out << "0";
 
 		out << ", ";
 
 		if (hasObject(name_arg1))
-			out << to_int_l(getObject(name_arg1));
+			getObject(name_arg1)->_data.encodeText(out);
 		else
 			out << "0";
 
 		out << ", ";
 
 		if (hasObject(name_arg2))
-			out << to_int_l(getObject(name_arg2));
+			getObject(name_arg2)->_data.encodeText(out);
 		else
 			out << "0";
 
 		out << ", ";
 
 		if (hasObject(name_arg3))
-			out << to_int_l(getObject(name_arg3));
+			getObject(name_arg3)->_data.encodeText(out);
 		else
 			out << "0";
 
 		out << ", ";
 
 		if (hasObject(name_arg4))
-			out << to_int_l(getObject(name_arg4));
+			getObject(name_arg4)->_data.encodeText(out);
 		else
 			out << "0";
 
@@ -439,30 +423,12 @@ void LevelObject::encodeExtraData(std::ostream & out)
 
 		if (hasObject(name_extradata_type))
 		{
-			obj_t extradata_type = getObject(name_extradata_type);
-
-			out << "\ttype ";
-
-			if (extradata_type->_data.getType() == any_t::STRING_T)
-				out << to_string(extradata_type);
-			else
-				out << to_int_l(extradata_type);
-
-			out << "\n";
+			out << "\ttype "; getObject(name_extradata_type)->_data.encodeText(out); out << '\n';
 		}
 
 		if (hasObject(name_extradata_flags))
 		{
-			obj_t extradata_flags = getObject(name_extradata_flags);
-
-			out << "\toptions ";
-
-			if (extradata_flags->_data.getType() == any_t::STRING_T)
-				out << to_string(extradata_flags);
-			else
-				out << to_int_l(extradata_flags);
-
-			out << "\n";
+			out << "\toptions "; getObject(name_extradata_flags)->_data.encodeText(out); out << '\n';
 		}
 		else
 		{
@@ -508,42 +474,44 @@ void LevelObject::encodeExtraData(std::ostream & out)
 		out << "\targs {";
 
 		if (hasObject(name_arg0))
-			out << to_int_l(getObject(name_arg0));
+			getObject(name_arg0)->_data.encodeText(out);
 		else
 			out << "0";
 
 		out << ", ";
 
 		if (hasObject(name_arg1))
-			out << to_int_l(getObject(name_arg1));
+			getObject(name_arg1)->_data.encodeText(out);
 		else
 			out << "0";
 
 		out << ", ";
 
 		if (hasObject(name_arg2))
-			out << to_int_l(getObject(name_arg2));
+			getObject(name_arg2)->_data.encodeText(out);
 		else
 			out << "0";
 
 		out << ", ";
 
 		if (hasObject(name_arg3))
-			out << to_int_l(getObject(name_arg3));
+			getObject(name_arg3)->_data.encodeText(out);
 		else
 			out << "0";
 
 		out << ", ";
 
 		if (hasObject(name_arg4))
-			out << to_int_l(getObject(name_arg4));
+			getObject(name_arg4)->_data.encodeText(out);
 		else
 			out << "0";
 
 		out << "}\n";
 
 		if (hasObject(name_height))
-			out << "\theight " << to_int_l(getObject(name_height)) << '\n';
+		{
+			out << "\theight "; getObject(name_height)->_data.encodeText(out); out << '\n';
+		}
 
 		out << "}\n\n";
 
