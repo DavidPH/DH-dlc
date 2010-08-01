@@ -18,8 +18,8 @@
 */
 
 /*
-	Defines fundamental internal types. Also defines the functions for
-	using them like normal types, and converting between one another.
+	Declares fundamental internal types. Also declares the functions for
+	converting between one another.
 
 	2010/02/03 - Added name_t class to try and make name handling simpler.
 	2010/02/19 - Use the more standard ptrdiff_t for int_s_t instead of
@@ -37,16 +37,12 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-//#define __STDC_LIMIT_MACROS
+#include "types_limits.hpp"
 
 #include <cfloat>
 #include <climits>
-#include <map>
-#include <ostream>
 #include <sstream>
 #include <string>
-
-#include "types_limits.hpp"
 
 
 
@@ -94,6 +90,9 @@ class LevelObjectName;
 class LevelObjectPointer;
 class LevelObjectType;
 
+template <size_t S>
+class stringf_t;
+
 typedef LevelObjectData    any_t;
 typedef bool               bool_t;
 typedef ptrdiff_t          int_s_t;
@@ -105,7 +104,11 @@ typedef double             real_s_t;
 class                      real_t;
 class                      real_l_t;
 class                      string_t;
-class                      string8_t;
+typedef stringf_t<  8U>    string8_t;
+typedef stringf_t< 16U>    string16_t;
+typedef stringf_t< 32U>    string32_t;
+typedef stringf_t< 80U>    string80_t;
+typedef stringf_t<320U>    string320_t;
 class                      sword_t;
 class                      ubyte_t;
 class                      uword_t;
