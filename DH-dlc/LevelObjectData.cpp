@@ -25,7 +25,7 @@
 
 #include "LevelObjectData.hpp"
 
-#include "LevelObjectName.hpp" // objmap_t
+#include "LevelObjectMap.hpp"
 #include "LevelObjectPointer.hpp"
 #include "types.hpp"
 #include "types/binary.hpp"

@@ -139,6 +139,10 @@ size_t LevelObjectName::size() const
 	return this->_name.size();
 }
 
+bool LevelObjectName::operator == (LevelObjectName const & other) const
+{
+	return this->_name[0] == other._name[0];
+}
 bool LevelObjectName::operator < (LevelObjectName const & other) const
 {
 	// TODO This could cause problems if a multi-part name was used for a

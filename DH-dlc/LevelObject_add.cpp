@@ -42,6 +42,7 @@
 
 #include "compound_objects.hpp"
 #include "global_object.hpp"
+#include "LevelObjectMap.hpp"
 #include "LevelObjectName.hpp"
 #include "math.hpp"
 #include "options.hpp"
@@ -72,7 +73,7 @@ void LevelObject::addBase(std::string const & base)
 	if (other->_data.getType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
 
-	_data.getObjMap().insert(other->_data.getObjMap().begin(), other->_data.getObjMap().end());
+	_data.getObjMap() += other->_data.getObjMap();
 }
 
 void LevelObject::addData(SourceScannerDHLX & sc)
@@ -329,7 +330,7 @@ void LevelObject::addObject(name_t const & name, obj_t newObject)
 	add_object(name, newObject);
 
 	if (!name.empty())
-		_data.getObjMap()[name] = newObject;
+		_data.getObjMap().add(name, newObject);
 }
 void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 {
@@ -382,7 +383,7 @@ void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 		else if (commandName == command_name_delete() && _data.getType() == any_t::OBJMAP_T)
 		{
 			if (hasObject(name_t(st.getBase(0))))
-				_data.getObjMap().erase(name_t(st.getBase(0)));
+				_data.getObjMap().del(name_t(st.getBase(0)));
 
 			clean_objects();
 		}
@@ -393,8 +394,8 @@ void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 		{
 			FOREACH_T(objmap_t, it, _data.getObjMap())
 			{
-				if (it->first.isVolatile())
-					_data.getObjMap().erase(it->first);
+				if (it->isVolatile())
+					_data.getObjMap().del(*(it--));
 			}
 
 			clean_objects();
@@ -406,10 +407,10 @@ void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 		{
 			FOREACH_T(objmap_t, it, _data.getObjMap())
 			{
-				std::string itName = it->first.getString();
+				std::string itName = it->getString();
 
 				if (itName.size() > 1 && itName[0] == '_' && itName[1] != '_')
-					_data.getObjMap().erase(it->first);
+					_data.getObjMap().del(*it);
 			}
 
 			clean_objects();
@@ -493,7 +494,7 @@ void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 				}
 			}
 
-			_data.getObjMap().erase(forName);
+			_data.getObjMap().del(forName);
 		}
 
 		// # if cmp : value1 : op : value2 : [type] { data }

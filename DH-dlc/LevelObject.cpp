@@ -37,6 +37,7 @@
 
 #include "compound_objects.hpp"
 #include "global_object.hpp"
+#include "LevelObjectMap.hpp"
 #include "LevelObjectName.hpp"
 #include "math.hpp"
 #include "options.hpp"
@@ -208,14 +209,10 @@ obj_t LevelObject::getObject(name_t const & name)
 		return getObject(name.getFirst())->getObject(name.getRest());
 	}
 
-	objmap_t::iterator elemIterator = _data.getObjMap().find(name);
-
-	if (elemIterator == _data.getObjMap().end())
-	{
+	if (!_data.getObjMap().has(name))
 		throw NoSuchElementException(name.getString());
-	}
 
-	return elemIterator->second;
+	return _data.getObjMap().get(name);
 }
 
 bool LevelObject::hasObject(name_t const & name)
@@ -237,9 +234,7 @@ bool LevelObject::hasObject(name_t const & name)
 		return getObject(name.getFirst())->hasObject(name.getRest());
 	}
 
-	objmap_t::iterator elemIterator = _data.getObjMap().find(name);
-
-	if (elemIterator == _data.getObjMap().end())
+	if (!_data.getObjMap().has(name))
 		return false;
 
 	return true;
@@ -289,7 +284,7 @@ void LevelObject::setType(type_t const newType, std::string const & value)
 
 
 
-std::ostream & LevelObject::printOn (std::ostream & out, int indent) const
+std::ostream & LevelObject::printOn (std::ostream & out, int indent)
 {
 	out << '[' << getType() << ']';
 
@@ -305,8 +300,8 @@ std::ostream & LevelObject::printOn (std::ostream & out, int indent) const
 		{
 			for (int i = indent + 1; i; --i) out << "  ";
 
-			out << it->first << '=';
-			it->second->printOn(out, indent+1);
+			out << *it << '=';
+			_data.getObjMap().get(*it)->printOn(out, indent+1);
 		}
 
 		for (int i = indent; i; --i) out << "  ";

@@ -61,7 +61,8 @@ class LevelObjectName
 
 		LevelObjectName & operator = (LevelObjectName const & other);
 
-		bool operator < (LevelObjectName const & other) const;
+		bool operator == (LevelObjectName const & other) const;
+		bool operator <  (LevelObjectName const & other) const;
 
 
 

@@ -89,7 +89,7 @@ class LevelObject
 
 		any_t const & getData() const {return _data;}
 
-		std::ostream& printOn(std::ostream&, int depth = 0) const;
+		std::ostream& printOn(std::ostream&, int depth = 0);
 
 		LevelObject & operator = (LevelObject const & other);
 

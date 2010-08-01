@@ -28,6 +28,7 @@
 #include <sstream>
 
 #include "global_object.hpp"
+#include "LevelObjectMap.hpp"
 #include "LevelObjectName.hpp"
 #include "options.hpp"
 #include "types.hpp"
@@ -960,14 +961,16 @@ void LevelObject::encodeUDMF(std::ostream & out, int depth)
 
 			FOREACH_T(objmap_t, it, _data.getObjMap())
 			{
-				if (it->second->_type.getMode() == type_t::MODE_INLINE)
+				obj_t itObj = _data.getObjMap().get(*it);
+
+				if (itObj->_type.getMode() == type_t::MODE_INLINE)
 				{
-					it->second->encodeUDMF(out, depth+1);
+					itObj->encodeUDMF(out, depth+1);
 				}
 				else
 				{
 					for(int i = depth+1; i; --i) out.put('\t');
-					out << it->first << '='; it->second->encodeUDMF(out, depth+1); out << ";\n";
+					out << *it << '='; itObj->encodeUDMF(out, depth+1); out << ";\n";
 				}
 			}
 

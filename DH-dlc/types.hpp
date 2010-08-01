@@ -89,6 +89,7 @@
 
 
 class LevelObjectData;
+class LevelObjectMap;
 class LevelObjectName;
 class LevelObjectPointer;
 class LevelObjectType;
@@ -99,6 +100,7 @@ typedef ptrdiff_t          int_s_t;
 class                      int_t;
 class                      int_l_t;
 typedef LevelObjectPointer obj_t;
+typedef LevelObjectMap     objmap_t;
 typedef double             real_s_t;
 class                      real_t;
 class                      real_l_t;
@@ -110,8 +112,6 @@ class                      uword_t;
 
 typedef LevelObjectName name_t;
 typedef LevelObjectType type_t;
-
-typedef std::map<name_t, obj_t>  objmap_t;
 
 
 
