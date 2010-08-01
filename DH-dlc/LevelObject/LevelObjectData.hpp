@@ -62,12 +62,16 @@ class LevelObjectData
 
 		STRING_T,
 		STRING8_T,
-
-		SWORD_T,
+		STRING16_T,
+		STRING32_T,
+		STRING80_T,
+		STRING320_T,
 
 		UBYTE_T,
-
+		SWORD_T,
 		UWORD_T,
+		SDWORD_T,
+		UDWORD_T,
 	};
 
 	LevelObjectData(LevelObjectData const &);
@@ -85,14 +89,18 @@ class LevelObjectData
 	LevelObjectData(real_t   const &);
 	LevelObjectData(real_l_t const &);
 
-	LevelObjectData(string_t  const &);
-	LevelObjectData(string8_t const &);
+	LevelObjectData(string_t    const &);
+	LevelObjectData(string8_t   const &);
+	LevelObjectData(string16_t  const &);
+	LevelObjectData(string32_t  const &);
+	LevelObjectData(string80_t  const &);
+	LevelObjectData(string320_t const &);
 
-	LevelObjectData(sword_t const &);
-
-	LevelObjectData(ubyte_t const &);
-
-	LevelObjectData(uword_t const &);
+	LevelObjectData(ubyte_t  const &);
+	LevelObjectData(sword_t  const &);
+	LevelObjectData(uword_t  const &);
+	LevelObjectData(sdword_t const &);
+	LevelObjectData(udword_t const &);
 
 	~LevelObjectData() {clear();}
 
@@ -124,19 +132,29 @@ class LevelObjectData
 	real_l_t       & getRealLong();
 	real_l_t const & getRealLong() const;
 
-	string_t        & getString();
-	string_t  const & getString() const;
-	string8_t       & getString8();
-	string8_t const & getString8() const;
+	string_t          & getString();
+	string_t    const & getString() const;
+	string8_t         & getString8();
+	string8_t   const & getString8() const;
+	string16_t        & getString16();
+	string16_t  const & getString16() const;
+	string32_t        & getString32();
+	string32_t  const & getString32() const;
+	string80_t        & getString80();
+	string80_t  const & getString80() const;
+	string320_t       & getString320();
+	string320_t const & getString320() const;
 
-	sword_t       & getSWord();
-	sword_t const & getSWord() const;
-
-	ubyte_t       & getUByte();
-	ubyte_t const & getUByte() const;
-
-	uword_t       & getUWord();
-	uword_t const & getUWord() const;
+	ubyte_t        & getUByte();
+	ubyte_t  const & getUByte() const;
+	sword_t        & getSWord();
+	sword_t  const & getSWord() const;
+	uword_t        & getUWord();
+	uword_t  const & getUWord() const;
+	sdword_t       & getSDWord();
+	sdword_t const & getSDWord() const;
+	udword_t       & getUDWord();
+	udword_t const & getUDWord() const;
 
 
 
@@ -154,14 +172,18 @@ class LevelObjectData
 	real_t   toReal()      const;
 	real_l_t toRealLong()  const;
 
-	string_t  toString()  const;
-	string8_t toString8() const;
+	string_t    toString()    const;
+	string8_t   toString8()   const;
+	string16_t  toString16()  const;
+	string32_t  toString32()  const;
+	string80_t  toString80()  const;
+	string320_t toString320() const;
 
-	sword_t toSWord() const;
-
-	ubyte_t toUByte() const;
-
-	uword_t toUWord() const;
+	ubyte_t  toUByte()  const;
+	sword_t  toSWord()  const;
+	uword_t  toUWord()  const;
+	sdword_t toSDWord() const;
+	udword_t toUDWord() const;
 
 
 
@@ -205,14 +227,18 @@ class LevelObjectData
 		real_t   * _valReal;
 		real_l_t * _valRealLong;
 
-		string_t  * _valString;
-		string8_t * _valString8;
+		string_t    * _valString;
+		string8_t   * _valString8;
+		string16_t  * _valString16;
+		string32_t  * _valString32;
+		string80_t  * _valString80;
+		string320_t * _valString320;
 
-		sword_t * _valSWord;
-
-		ubyte_t * _valUByte;
-
-		uword_t * _valUWord;
+		ubyte_t  * _valUByte;
+		sword_t  * _valSWord;
+		uword_t  * _valUWord;
+		sdword_t * _valSDWord;
+		udword_t * _valUDWord;
 	};
 };
 

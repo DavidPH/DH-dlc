@@ -261,15 +261,6 @@ int_l_t random_int_l(const int_l_t& min, const int_l_t& max)
 	return random_int_l(max-min) + min;
 }
 
-sword_t random_sword(const sword_t& max)
-{
-	return to_sword(random_int_l(to_int_l(max)));
-}
-sword_t random_sword(const sword_t& min, const sword_t& max)
-{
-	return to_sword(random_int_l(to_int_l(min), to_int_l(max)));
-}
-
 ubyte_t random_ubyte(const ubyte_t& max)
 {
 	return to_ubyte(random_int_l(to_int_l(max)));
@@ -279,6 +270,15 @@ ubyte_t random_ubyte(const ubyte_t& min, const ubyte_t& max)
 	return to_ubyte(random_int_l(to_int_l(min), to_int_l(max)));
 }
 
+sword_t random_sword(const sword_t& max)
+{
+	return to_sword(random_int_l(to_int_l(max)));
+}
+sword_t random_sword(const sword_t& min, const sword_t& max)
+{
+	return to_sword(random_int_l(to_int_l(min), to_int_l(max)));
+}
+
 uword_t random_uword(const uword_t& max)
 {
 	return to_uword(random_int_l(to_int_l(max)));
@@ -286,6 +286,24 @@ uword_t random_uword(const uword_t& max)
 uword_t random_uword(const uword_t& min, const uword_t& max)
 {
 	return to_uword(random_int_l(to_int_l(min), to_int_l(max)));
+}
+
+sdword_t random_sdword(const sdword_t& max)
+{
+	return to_sdword(random_int_l(to_int_l(max)));
+}
+sdword_t random_sdword(const sdword_t& min, const sdword_t& max)
+{
+	return to_sdword(random_int_l(to_int_l(min), to_int_l(max)));
+}
+
+udword_t random_udword(const udword_t& max)
+{
+	return to_udword(random_int_l(to_int_l(max)));
+}
+udword_t random_udword(const udword_t& min, const udword_t& max)
+{
+	return to_udword(random_int_l(to_int_l(min), to_int_l(max)));
 }
 
 
