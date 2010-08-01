@@ -25,8 +25,9 @@
 
 #include "LevelObjectPointer.hpp"
 
-#include "../common/foreach.hpp"
-#include "exceptions/NoSuchElementException.hpp"
+#include "../exceptions/NoSuchElementException.hpp"
+
+#include "../../common/foreach.hpp"
 
 #include <iostream>
 

@@ -33,26 +33,30 @@
 
 #include "LevelObject.hpp"
 
-#include <ostream>
-
-#include "compound_objects.hpp"
-#include "global_object.hpp"
 #include "LevelObjectMap.hpp"
 #include "LevelObjectName.hpp"
-#include "math.hpp"
-#include "options.hpp"
-#include "parsing.hpp"
-#include "scripts.hpp"
-#include "SourceStream.hpp"
-#include "types.hpp"
-#include "../common/foreach.hpp"
-#include "exceptions/InvalidTypeException.hpp"
-#include "exceptions/NoSuchElementException.hpp"
-#include "exceptions/UnknownCommandException.hpp"
-#include "types/binary.hpp"
-#include "types/int_t.hpp"
-#include "types/real_t.hpp"
-#include "types/string_t.hpp"
+
+#include "../compound_objects.hpp"
+#include "../global_object.hpp"
+#include "../math.hpp"
+#include "../options.hpp"
+#include "../parsing.hpp"
+#include "../scripts.hpp"
+#include "../SourceStream.hpp"
+#include "../types.hpp"
+
+#include "../exceptions/InvalidTypeException.hpp"
+#include "../exceptions/NoSuchElementException.hpp"
+#include "../exceptions/UnknownCommandException.hpp"
+
+#include "../types/binary.hpp"
+#include "../types/int_t.hpp"
+#include "../types/real_t.hpp"
+#include "../types/string_t.hpp"
+
+#include "../../common/foreach.hpp"
+
+#include <ostream>
 
 
 

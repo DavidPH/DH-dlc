@@ -30,7 +30,7 @@
 
 #include "LevelObject.hpp"
 
-#include "types.hpp"
+#include "../types.hpp"
 
 
 

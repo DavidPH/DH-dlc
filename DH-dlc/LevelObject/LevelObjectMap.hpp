@@ -25,7 +25,8 @@
 #define LEVELOBJECTMAP_H
 
 #include "LevelObjectName.hpp"
-#include "types.hpp"
+
+#include "../types.hpp"
 
 #include <list>
 #include <map>

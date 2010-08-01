@@ -25,13 +25,15 @@
 
 #include "SourceToken.hpp"
 
-#include <iostream>
-
-#include "LevelObjectType.hpp"
 #include "math.hpp"
 #include "options.hpp"
 #include "SourceStream.hpp"
+
 #include "exceptions/SyntaxException.hpp"
+
+#include "LevelObject/LevelObjectType.hpp"
+
+#include <iostream>
 
 
 

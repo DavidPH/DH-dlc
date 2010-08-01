@@ -29,13 +29,16 @@
 
 #include "global_object.hpp"
 
-#include "LevelObject.hpp"
-#include "LevelObjectName.hpp"
-#include "LevelObjectType.hpp"
 #include "types.hpp"
-#include "../common/foreach.hpp"
+
 #include "exceptions/InvalidTypeException.hpp"
 #include "exceptions/ParsingException.hpp"
+
+#include "LevelObject/LevelObject.hpp"
+#include "LevelObject/LevelObjectName.hpp"
+#include "LevelObject/LevelObjectType.hpp"
+
+#include "../common/foreach.hpp"
 
 
 

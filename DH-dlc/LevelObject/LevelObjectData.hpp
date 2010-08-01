@@ -33,7 +33,7 @@
 #ifndef LEVELOBJECTDATA_H
 #define LEVELOBJECTDATA_H
 
-#include "types.hpp"
+#include "../types.hpp"
 
 #include <ostream>
 

@@ -23,11 +23,14 @@
 
 #include "LevelObjectName.hpp"
 
-#include "parsing.hpp"
-#include "../common/foreach.hpp"
-#include "exceptions/ParsingException.hpp"
-#include "types/int_t.hpp"
-#include "types/string_t.hpp"
+#include "../parsing.hpp"
+
+#include "../exceptions/ParsingException.hpp"
+
+#include "../types/int_t.hpp"
+#include "../types/string_t.hpp"
+
+#include "../../common/foreach.hpp"
 
 static std::string parse_name(std::string const & value);
 

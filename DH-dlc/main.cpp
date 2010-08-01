@@ -25,28 +25,27 @@
 
 #include "main.hpp"
 
-#include <cstdlib>
-#include <cstring>
-#include <fstream>
-#include <iostream>
-
 #include "global_object.hpp"
-#include "LevelObject.hpp"
-#include "LevelObjectName.hpp"
-#include "LevelObjectType.hpp"
 #include "options.hpp"
 #include "process_file.hpp"
 #include "process_stream.hpp"
 #include "scripts.hpp"
 #include "SourceStream.hpp"
 #include "types.hpp"
+
+#include "exceptions/CompilerException.hpp"
+
+#include "types/int_t.hpp"
+#include "types/real_t.hpp"
+
 #include "../common/foreach.hpp"
 #include "../common/IO.hpp"
 #include "../common/process_options.h"
-#include "exceptions/CompilerException.hpp"
-#include "types/int_t.hpp"
-#include "types/real_t.hpp"
-#include "types/string_t.hpp"
+
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <iostream>
 
 
 

@@ -25,13 +25,11 @@
 
 #include "compound_objects.hpp"
 #include "global_object.hpp"
-#include "LevelObject.hpp"
-#include "LevelObjectName.hpp"
-#include "LevelObjectType.hpp"
 #include "options.hpp"
 #include "parsing.hpp"
 #include "process_file.hpp"
 #include "SourceToken.hpp"
+
 #include "exceptions/CompilerException.hpp"
 #include "exceptions/SyntaxException.hpp"
 

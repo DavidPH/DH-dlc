@@ -23,19 +23,23 @@
 
 #include "parsing.hpp"
 
-#include "LevelObject.hpp"
-#include "LevelObjectName.hpp"
-#include "LevelObjectPointer.hpp"
 #include "math.hpp"
 #include "options.hpp"
 #include "types.hpp"
-#include "../common/string_funcs.hpp"
+
 #include "exceptions/FunctionException.hpp"
 #include "exceptions/UnknownFunctionException.hpp"
+
+#include "LevelObject/LevelObject.hpp"
+#include "LevelObject/LevelObjectName.hpp"
+#include "LevelObject/LevelObjectPointer.hpp"
+
 #include "types/binary.hpp"
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"
 #include "types/string_t.hpp"
+
+#include "../common/string_funcs.hpp"
 
 
 

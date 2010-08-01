@@ -25,8 +25,9 @@
 #ifndef GLOBAL_OBJECT_H
 #define GLOBAL_OBJECT_H
 
-#include "LevelObjectPointer.hpp"
 #include "types.hpp"
+
+#include "LevelObject/LevelObjectPointer.hpp"
 
 #include <list>
 #include <map>

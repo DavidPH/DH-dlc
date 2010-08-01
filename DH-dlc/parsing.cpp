@@ -31,14 +31,14 @@
 #include <cmath>
 
 #include "global_object.hpp"
-#include "LevelObjectData.hpp"
-#include "LevelObjectName.hpp"
 #include "math.hpp"
 #include "options.hpp"
 #include "types.hpp"
+
 #include "exceptions/FunctionException.hpp"
 #include "exceptions/InvalidTypeException.hpp"
 #include "exceptions/ParsingException.hpp"
+
 #include "types/binary.hpp"
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"

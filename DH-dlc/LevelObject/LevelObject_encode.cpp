@@ -24,20 +24,24 @@
 
 #include "LevelObject.hpp"
 
-#include <climits>
-#include <sstream>
-
-#include "global_object.hpp"
 #include "LevelObjectMap.hpp"
 #include "LevelObjectName.hpp"
-#include "options.hpp"
-#include "types.hpp"
-#include "../common/foreach.hpp"
-#include "exceptions/InvalidTypeException.hpp"
-#include "types/binary.hpp"
-#include "types/int_t.hpp"
-#include "types/real_t.hpp"
-#include "types/string_t.hpp"
+
+#include "../global_object.hpp"
+#include "../options.hpp"
+#include "../types.hpp"
+
+#include "../exceptions/InvalidTypeException.hpp"
+
+#include "../types/binary.hpp"
+#include "../types/int_t.hpp"
+#include "../types/real_t.hpp"
+#include "../types/string_t.hpp"
+
+#include "../../common/foreach.hpp"
+
+#include <climits>
+#include <sstream>
 
 
 

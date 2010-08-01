@@ -31,20 +31,21 @@
 
 #include "types.hpp"
 
-#include <iostream>
-#include <stdexcept>
-
 #include "global_object.hpp"
-#include "LevelObject.hpp"
-#include "LevelObjectName.hpp"
 #include "options.hpp"
 #include "parsing.hpp"
-#include "../common/foreach.hpp"
+
 #include "exceptions/ParsingException.hpp"
+
 #include "types/binary.hpp"
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"
 #include "types/string_t.hpp"
+
+#include "../common/foreach.hpp"
+
+#include <iostream>
+#include <stdexcept>
 
 
 

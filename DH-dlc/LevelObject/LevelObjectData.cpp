@@ -27,11 +27,12 @@
 
 #include "LevelObjectMap.hpp"
 #include "LevelObjectPointer.hpp"
-#include "types.hpp"
-#include "types/binary.hpp"
-#include "types/int_t.hpp"
-#include "types/real_t.hpp"
-#include "types/string_t.hpp"
+
+#include "../types.hpp"
+#include "../types/binary.hpp"
+#include "../types/int_t.hpp"
+#include "../types/real_t.hpp"
+#include "../types/string_t.hpp"
 
 #include <stdexcept>
 

@@ -252,14 +252,6 @@ endif()
 add_executable(DH-dlc
 	compound_objects.cpp
 	global_object.cpp
-	LevelObject.cpp
-	LevelObject_add.cpp
-	LevelObject_encode.cpp
-	LevelObjectData.cpp
-	LevelObjectMap.cpp
-	LevelObjectName.cpp
-	LevelObjectPointer.cpp
-	LevelObjectType.cpp
 	main.cpp
 	math.cpp
 	options.cpp
@@ -284,6 +276,15 @@ add_executable(DH-dlc
 	exceptions/SyntaxException.cpp
 	exceptions/UnknownCommandException.cpp
 	exceptions/UnknownFunctionException.cpp
+
+	LevelObject/LevelObject.cpp
+	LevelObject/LevelObject_add.cpp
+	LevelObject/LevelObject_encode.cpp
+	LevelObject/LevelObjectData.cpp
+	LevelObject/LevelObjectMap.cpp
+	LevelObject/LevelObjectName.cpp
+	LevelObject/LevelObjectPointer.cpp
+	LevelObject/LevelObjectType.cpp
 
 	types/binary.cpp
 	types/int_t.cpp

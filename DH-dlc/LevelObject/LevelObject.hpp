@@ -44,8 +44,9 @@
 
 #include "LevelObjectData.hpp"
 #include "LevelObjectType.hpp"
-#include "SourceScanner.hpp"
-#include "types.hpp"
+
+#include "../SourceScanner.hpp"
+#include "../types.hpp"
 
 #include <ostream>
 #include <vector>

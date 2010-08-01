@@ -23,15 +23,16 @@
 
 #include "LevelObjectType.hpp"
 
-#include "global_object.hpp"
-#include "options.hpp"
-#include "types.hpp"
+#include "../global_object.hpp"
+#include "../options.hpp"
+#include "../types.hpp"
 
-#include "exceptions/InvalidTypeException.hpp"
-#include "exceptions/NoDefaultTypeException.hpp"
-#include "types/string_t.hpp"
+#include "../exceptions/InvalidTypeException.hpp"
+#include "../exceptions/NoDefaultTypeException.hpp"
 
-#include "../common/foreach.hpp"
+#include "../types/string_t.hpp"
+
+#include "../../common/foreach.hpp"
 
 
 
