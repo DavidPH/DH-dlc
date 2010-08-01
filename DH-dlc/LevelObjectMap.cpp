@@ -59,6 +59,10 @@ void LevelObjectMap::add(name_t const & name, obj_t obj)
 
 	_objMap[name] = obj;
 }
+void LevelObjectMap::add(obj_t obj)
+{
+	_objList.push_back(pair_t(name_t(""), obj));
+}
 void LevelObjectMap::del(name_t const & name)
 {
 	_objMap.erase(name);

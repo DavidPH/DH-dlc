@@ -331,6 +331,8 @@ void LevelObject::addObject(name_t const & name, obj_t newObject)
 
 	if (!name.empty())
 		_data.getObjMap().add(name, newObject);
+	else if (newObject->getType().getMode() == type_t::MODE_INLINE)
+		_data.getObjMap().add(newObject);
 }
 void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 {
