@@ -73,6 +73,7 @@ class LevelObject
 		void addObject(SourceScannerDHLX &);
 
 		void doCommand(std::string const & command, SourceScannerDHLX &);
+		void doCommand(std::string const & command, SourceTokenDDL const &);
 
 		obj_t getObject(name_t const & name);
 

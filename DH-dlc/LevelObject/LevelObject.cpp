@@ -187,16 +187,6 @@ obj_t LevelObject::create(type_t const type, std::string const & data, std::vect
 
 
 
-void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
-{
-	// # break
-	if (command == command_name_break())
-		_isBreaked = true;
-
-	else
-		throw UnknownCommandException(command);
-}
-
 obj_t LevelObject::getObject(name_t const & name)
 {
 	if (_data.getType() != any_t::OBJMAP_T)
