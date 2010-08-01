@@ -44,7 +44,18 @@ LevelObjectMap::LevelObjectMap(LevelObjectMap const & other) : _objMap(other._ob
 void LevelObjectMap::add(name_t const & name, obj_t obj)
 {
 	if (!has(name))
-		_objList.push_back(name);
+		_objList.push_back(pair_t(name, obj));
+	else
+	{
+		FOREACH_T(list_t, it, _objList)
+		{
+			if (it->first == name)
+			{
+				it->second = obj;
+				break;
+			}
+		}
+	}
 
 	_objMap[name] = obj;
 }
@@ -52,9 +63,9 @@ void LevelObjectMap::del(name_t const & name)
 {
 	_objMap.erase(name);
 
-	for(list_t::iterator it = _objList.begin(); it != _objList.end(); ++it)
+	FOREACH_T(list_t, it, _objList)
 	{
-		if (*it == name)
+		if (it->first == name)
 		{
 			_objList.erase(it);
 			break;
@@ -79,7 +90,7 @@ bool LevelObjectMap::has(name_t const & name) const
 LevelObjectMap & LevelObjectMap::operator += (LevelObjectMap & other)
 {
 	FOREACH_T(LevelObjectMap, it, other)
-		add(*it, other.get(*it));
+		add(it->first, other.get(it->first));
 
 	return *this;
 }

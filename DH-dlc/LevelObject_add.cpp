@@ -394,8 +394,8 @@ void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 		{
 			FOREACH_T(objmap_t, it, _data.getObjMap())
 			{
-				if (it->isVolatile())
-					_data.getObjMap().del(*(it--));
+				if (it->first.isVolatile())
+					_data.getObjMap().del((it--)->first);
 			}
 
 			clean_objects();
@@ -407,10 +407,10 @@ void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 		{
 			FOREACH_T(objmap_t, it, _data.getObjMap())
 			{
-				std::string itName = it->getString();
+				std::string itName = it->first.getString();
 
 				if (itName.size() > 1 && itName[0] == '_' && itName[1] != '_')
-					_data.getObjMap().del(*it);
+					_data.getObjMap().del(it->first);
 			}
 
 			clean_objects();

@@ -29,14 +29,16 @@
 
 #include <list>
 #include <map>
+#include <utility>
 
 
 
 class LevelObjectMap
 {
 	public:
+		typedef std::pair<name_t, obj_t> pair_t;
+		typedef std::list<pair_t> list_t;
 		typedef std::map<name_t, obj_t> map_t;
-		typedef std::list<name_t> list_t;
 		typedef list_t::const_iterator const_iterator;
 		typedef list_t::iterator iterator;
 
@@ -44,6 +46,7 @@ class LevelObjectMap
 		         LevelObjectMap(LevelObjectMap const &);
 
 		void  add(name_t const &, obj_t);
+		void  add(obj_t);
 		void  del(name_t const &);
 		obj_t get(name_t const &);
 		bool  has(name_t const &) const;

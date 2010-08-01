@@ -300,8 +300,8 @@ std::ostream & LevelObject::printOn (std::ostream & out, int indent)
 		{
 			for (int i = indent + 1; i; --i) out << "  ";
 
-			out << *it << '=';
-			_data.getObjMap().get(*it)->printOn(out, indent+1);
+			out << it->first << '=';
+			it->second->printOn(out, indent+1);
 		}
 
 		for (int i = indent; i; --i) out << "  ";
