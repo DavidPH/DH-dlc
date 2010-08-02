@@ -80,9 +80,15 @@ public:
 	static LevelObjectType type_longfloat();
 	static LevelObjectType type_string();
 	static LevelObjectType type_string8();
-	static LevelObjectType type_sword();
+	static LevelObjectType type_string16();
+	static LevelObjectType type_string32();
+	static LevelObjectType type_string80();
+	static LevelObjectType type_string320();
 	static LevelObjectType type_ubyte();
+	static LevelObjectType type_sword();
 	static LevelObjectType type_uword();
+	static LevelObjectType type_sdword();
+	static LevelObjectType type_udword();
 	static LevelObjectType type_linedef();
 	static LevelObjectType type_sector();
 	static LevelObjectType type_sidedef();

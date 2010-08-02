@@ -236,6 +236,26 @@ static bool check_math(ParsingData<string8_t> * data)
 {
 	return check_math_string<string8_t, parse_string8>(data);
 }
+template <class T, T (Tparse)(std::string const &)>
+static bool check_math(ParsingData<string16_t> * data)
+{
+	return check_math_string<string16_t, parse_string16>(data);
+}
+template <class T, T (Tparse)(std::string const &)>
+static bool check_math(ParsingData<string32_t> * data)
+{
+	return check_math_string<string32_t, parse_string32>(data);
+}
+template <class T, T (Tparse)(std::string const &)>
+static bool check_math(ParsingData<string80_t> * data)
+{
+	return check_math_string<string80_t, parse_string80>(data);
+}
+template <class T, T (Tparse)(std::string const &)>
+static bool check_math(ParsingData<string320_t> * data)
+{
+	return check_math_string<string320_t, parse_string320>(data);
+}
 
 template <class T, T (Tconv)(any_t const &)>
 static bool check_typecast(ParsingData<T> * data)
@@ -728,14 +748,37 @@ string8_t parse_string8(std::string const & value)
 {
 	return parse_string_base<string8_t, parse_string8, to_string8, parse_string8_unary, parse_string8_unary, parse_string8_function>(value);
 }
-
-sword_t parse_sword(SourceScannerDHLX & sc)
+string16_t parse_string16(SourceScannerDHLX & sc)
 {
-	return parse_int_base<sword_t, to_sword>(sc);
+	return parse_string_base<string16_t, to_string16>(sc);
 }
-sword_t parse_sword(std::string const & value)
+string16_t parse_string16(std::string const & value)
 {
-	return parse_num_base<sword_t, parse_sword, to_sword, parse_sword_unary, parse_sword_unary, parse_sword_function>(value);
+	return parse_string_base<string16_t, parse_string16, to_string16, parse_string16_unary, parse_string16_unary, parse_string16_function>(value);
+}
+string32_t parse_string32(SourceScannerDHLX & sc)
+{
+	return parse_string_base<string32_t, to_string32>(sc);
+}
+string32_t parse_string32(std::string const & value)
+{
+	return parse_string_base<string32_t, parse_string32, to_string32, parse_string32_unary, parse_string32_unary, parse_string32_function>(value);
+}
+string80_t parse_string80(SourceScannerDHLX & sc)
+{
+	return parse_string_base<string80_t, to_string80>(sc);
+}
+string80_t parse_string80(std::string const & value)
+{
+	return parse_string_base<string80_t, parse_string80, to_string80, parse_string80_unary, parse_string80_unary, parse_string80_function>(value);
+}
+string320_t parse_string320(SourceScannerDHLX & sc)
+{
+	return parse_string_base<string320_t, to_string320>(sc);
+}
+string320_t parse_string320(std::string const & value)
+{
+	return parse_string_base<string320_t, parse_string320, to_string320, parse_string320_unary, parse_string320_unary, parse_string320_function>(value);
 }
 
 ubyte_t parse_ubyte(SourceScannerDHLX & sc)
@@ -746,7 +789,14 @@ ubyte_t parse_ubyte(std::string const & value)
 {
 	return parse_num_base<ubyte_t, parse_ubyte, to_ubyte, parse_ubyte_unary, parse_ubyte_unary, parse_ubyte_function>(value);
 }
-
+sword_t parse_sword(SourceScannerDHLX & sc)
+{
+	return parse_int_base<sword_t, to_sword>(sc);
+}
+sword_t parse_sword(std::string const & value)
+{
+	return parse_num_base<sword_t, parse_sword, to_sword, parse_sword_unary, parse_sword_unary, parse_sword_function>(value);
+}
 uword_t parse_uword(SourceScannerDHLX & sc)
 {
 	return parse_int_base<uword_t, to_uword>(sc);
@@ -754,6 +804,22 @@ uword_t parse_uword(SourceScannerDHLX & sc)
 uword_t parse_uword(std::string const & value)
 {
 	return parse_num_base<uword_t, parse_uword, to_uword, parse_uword_unary, parse_uword_unary, parse_uword_function>(value);
+}
+sdword_t parse_sdword(SourceScannerDHLX & sc)
+{
+	return parse_int_base<sdword_t, to_sdword>(sc);
+}
+sdword_t parse_sdword(std::string const & value)
+{
+	return parse_num_base<sdword_t, parse_sdword, to_sdword, parse_sdword_unary, parse_sdword_unary, parse_sdword_function>(value);
+}
+udword_t parse_udword(SourceScannerDHLX & sc)
+{
+	return parse_int_base<udword_t, to_udword>(sc);
+}
+udword_t parse_udword(std::string const & value)
+{
+	return parse_num_base<udword_t, parse_udword, to_udword, parse_udword_unary, parse_udword_unary, parse_udword_function>(value);
 }
 
 

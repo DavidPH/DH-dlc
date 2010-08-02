@@ -79,12 +79,16 @@ LevelObject::LevelObject(type_t const type) : LevelObject_INIT_LIST(type, false)
 
 	else if (_type == type_t::type_string())     _data = string_t("");
 	else if (_type == type_t::type_string8())    _data = string8_t("");
-
-	else if (_type == type_t::type_sword())      _data = sword_t(0);
+	else if (_type == type_t::type_string16())   _data = string16_t("");
+	else if (_type == type_t::type_string32())   _data = string32_t("");
+	else if (_type == type_t::type_string80())   _data = string80_t("");
+	else if (_type == type_t::type_string320())  _data = string320_t("");
 
 	else if (_type == type_t::type_ubyte())      _data = ubyte_t(0);
-
+	else if (_type == type_t::type_sword())      _data = sword_t(0);
 	else if (_type == type_t::type_uword())      _data = uword_t(0);
+	else if (_type == type_t::type_sdword())     _data = sdword_t(0);
+	else if (_type == type_t::type_udword())     _data = udword_t(0);
 
 	else                                         _data = objmap_t();
 }
@@ -103,12 +107,16 @@ LevelObject::LevelObject(type_t const type, SourceScannerDHLX & sc) : LevelObjec
 
 	else if (_type == type_t::type_string())     _data = parse_string(sc);
 	else if (_type == type_t::type_string8())    _data = parse_string8(sc);
-
-	else if (_type == type_t::type_sword())      _data = parse_sword(sc);
+	else if (_type == type_t::type_string16())   _data = parse_string16(sc);
+	else if (_type == type_t::type_string32())   _data = parse_string32(sc);
+	else if (_type == type_t::type_string80())   _data = parse_string80(sc);
+	else if (_type == type_t::type_string320())  _data = parse_string320(sc);
 
 	else if (_type == type_t::type_ubyte())      _data = parse_ubyte(sc);
-
+	else if (_type == type_t::type_sword())      _data = parse_sword(sc);
 	else if (_type == type_t::type_uword())      _data = parse_uword(sc);
+	else if (_type == type_t::type_sdword())     _data = parse_sdword(sc);
+	else if (_type == type_t::type_udword())     _data = parse_udword(sc);
 
 	else                                         _data = objmap_t();
 }
@@ -126,12 +134,16 @@ LevelObject::LevelObject(type_t const type, std::string const & value) : LevelOb
 
 	else if (_type == type_t::type_string())     _data = parse_string(value);
 	else if (_type == type_t::type_string8())    _data = parse_string8(value);
-
-	else if (_type == type_t::type_sword())      _data = parse_sword(value);
+	else if (_type == type_t::type_string16())   _data = parse_string16(value);
+	else if (_type == type_t::type_string32())   _data = parse_string32(value);
+	else if (_type == type_t::type_string80())   _data = parse_string80(value);
+	else if (_type == type_t::type_string320())  _data = parse_string320(value);
 
 	else if (_type == type_t::type_ubyte())      _data = parse_ubyte(value);
-
+	else if (_type == type_t::type_sword())      _data = parse_sword(value);
 	else if (_type == type_t::type_uword())      _data = parse_uword(value);
+	else if (_type == type_t::type_sdword())     _data = parse_sdword(value);
+	else if (_type == type_t::type_udword())     _data = parse_udword(value);
 
 	else                                         _data = objmap_t();
 }
@@ -264,12 +276,16 @@ void LevelObject::setType(type_t const newType, std::string const & value)
 
 	else if (_type == type_t::type_string())     _data = parse_string(value);
 	else if (_type == type_t::type_string8())    _data = parse_string8(value);
-
-	else if (_type == type_t::type_sword())      _data = parse_sword(value);
+	else if (_type == type_t::type_string16())   _data = parse_string16(value);
+	else if (_type == type_t::type_string32())   _data = parse_string32(value);
+	else if (_type == type_t::type_string80())   _data = parse_string80(value);
+	else if (_type == type_t::type_string320())  _data = parse_string320(value);
 
 	else if (_type == type_t::type_ubyte())      _data = parse_ubyte(value);
-
+	else if (_type == type_t::type_sword())      _data = parse_sword(value);
 	else if (_type == type_t::type_uword())      _data = parse_uword(value);
+	else if (_type == type_t::type_sdword())     _data = parse_sdword(value);
+	else if (_type == type_t::type_udword())     _data = parse_udword(value);
 
 	else if (_data.getType() != any_t::OBJMAP_T) _data = to_obj(_data)->_data.getObjMap();
 

@@ -45,43 +45,51 @@
 
 static std::map< std::string, std::map<std::string, std::string> > custom_function_map;
 
-typedef bool_t    (*bool_func_t)    (std::vector<std::string> const &);
+typedef bool_t      (*bool_func_t)      (std::vector<std::string> const &);
 
-typedef int_s_t   (*int_s_func_t)   (std::vector<std::string> const &);
-typedef int_t     (*int_func_t)     (std::vector<std::string> const &);
-typedef int_l_t   (*int_l_func_t)   (std::vector<std::string> const &);
+typedef int_s_t     (*int_s_func_t)     (std::vector<std::string> const &);
+typedef int_t       (*int_func_t)       (std::vector<std::string> const &);
+typedef int_l_t     (*int_l_func_t)     (std::vector<std::string> const &);
 
-typedef real_s_t  (*real_s_func_t)  (std::vector<std::string> const &);
-typedef real_t    (*real_func_t)    (std::vector<std::string> const &);
-typedef real_l_t  (*real_l_func_t)  (std::vector<std::string> const &);
+typedef real_s_t    (*real_s_func_t)    (std::vector<std::string> const &);
+typedef real_t      (*real_func_t)      (std::vector<std::string> const &);
+typedef real_l_t    (*real_l_func_t)    (std::vector<std::string> const &);
 
-typedef string_t  (*string_func_t)  (std::vector<std::string> const &);
-typedef string8_t (*string8_func_t) (std::vector<std::string> const &);
+typedef string_t    (*string_func_t)    (std::vector<std::string> const &);
+typedef string8_t   (*string8_func_t)   (std::vector<std::string> const &);
+typedef string16_t  (*string16_func_t)  (std::vector<std::string> const &);
+typedef string32_t  (*string32_func_t)  (std::vector<std::string> const &);
+typedef string80_t  (*string80_func_t)  (std::vector<std::string> const &);
+typedef string320_t (*string320_func_t) (std::vector<std::string> const &);
 
-typedef sword_t   (*sword_func_t)   (std::vector<std::string> const &);
+typedef ubyte_t     (*ubyte_func_t)     (std::vector<std::string> const &);
+typedef sword_t     (*sword_func_t)     (std::vector<std::string> const &);
+typedef uword_t     (*uword_func_t)     (std::vector<std::string> const &);
+typedef sdword_t    (*sdword_func_t)    (std::vector<std::string> const &);
+typedef udword_t    (*udword_func_t)    (std::vector<std::string> const &);
 
-typedef ubyte_t   (*ubyte_func_t)   (std::vector<std::string> const &);
+std::map<std::string, bool_func_t>      bool_func_map;
 
-typedef uword_t   (*uword_func_t)   (std::vector<std::string> const &);
+std::map<std::string, int_s_func_t>     int_s_func_map;
+std::map<std::string, int_func_t>       int_func_map;
+std::map<std::string, int_l_func_t>     int_l_func_map;
 
-std::map<std::string, bool_func_t>    bool_func_map;
+std::map<std::string, real_s_func_t>    real_s_func_map;
+std::map<std::string, real_func_t>      real_func_map;
+std::map<std::string, real_l_func_t>    real_l_func_map;
 
-std::map<std::string, int_s_func_t>   int_s_func_map;
-std::map<std::string, int_func_t>     int_func_map;
-std::map<std::string, int_l_func_t>   int_l_func_map;
+std::map<std::string, string_func_t>    string_func_map;
+std::map<std::string, string8_func_t>   string8_func_map;
+std::map<std::string, string16_func_t>  string16_func_map;
+std::map<std::string, string32_func_t>  string32_func_map;
+std::map<std::string, string80_func_t>  string80_func_map;
+std::map<std::string, string320_func_t> string320_func_map;
 
-std::map<std::string, real_s_func_t>  real_s_func_map;
-std::map<std::string, real_func_t>    real_func_map;
-std::map<std::string, real_l_func_t>  real_l_func_map;
-
-std::map<std::string, string_func_t>  string_func_map;
-std::map<std::string, string8_func_t> string8_func_map;
-
-std::map<std::string, sword_func_t>   sword_func_map;
-
-std::map<std::string, ubyte_func_t>   ubyte_func_map;
-
-std::map<std::string, uword_func_t>   uword_func_map;
+std::map<std::string, ubyte_func_t>     ubyte_func_map;
+std::map<std::string, sword_func_t>     sword_func_map;
+std::map<std::string, uword_func_t>     uword_func_map;
+std::map<std::string, sdword_func_t>    sdword_func_map;
+std::map<std::string, udword_func_t>    udword_func_map;
 
 
 
@@ -122,12 +130,14 @@ ADD_FUNC_STRING(FUNC, NAME)
 ADD_FUNCTION(bool,   FUNC, NAME)
 
 #define ADD_FUNC_INT(FUNC, NAME) \
-ADD_FUNCTION(int_s, FUNC, NAME); \
-ADD_FUNCTION(int,   FUNC, NAME); \
-ADD_FUNCTION(int_l, FUNC, NAME); \
-ADD_FUNCTION(sword, FUNC, NAME); \
-ADD_FUNCTION(ubyte, FUNC, NAME); \
-ADD_FUNCTION(uword, FUNC, NAME)
+ADD_FUNCTION(int_s,  FUNC, NAME); \
+ADD_FUNCTION(int,    FUNC, NAME); \
+ADD_FUNCTION(int_l,  FUNC, NAME); \
+ADD_FUNCTION(ubyte,  FUNC, NAME); \
+ADD_FUNCTION(sword,  FUNC, NAME); \
+ADD_FUNCTION(uword,  FUNC, NAME); \
+ADD_FUNCTION(sdword, FUNC, NAME); \
+ADD_FUNCTION(udword, FUNC, NAME)
 
 #define ADD_FUNC_NUMBER(FUNC, NAME) \
 ADD_FUNC_INT (FUNC, NAME); \
@@ -139,8 +149,12 @@ ADD_FUNCTION(real,   FUNC, NAME); \
 ADD_FUNCTION(real_l, FUNC, NAME)
 
 #define ADD_FUNC_STRING(FUNC, NAME) \
-ADD_FUNCTION(string,   FUNC, NAME); \
-ADD_FUNCTION(string8,  FUNC, NAME)
+ADD_FUNCTION(string,    FUNC, NAME); \
+ADD_FUNCTION(string8,   FUNC, NAME); \
+ADD_FUNCTION(string16,  FUNC, NAME); \
+ADD_FUNCTION(string32,  FUNC, NAME); \
+ADD_FUNCTION(string80,  FUNC, NAME); \
+ADD_FUNCTION(string320, FUNC, NAME)
 
 #define DEFINE_FUNCTION2(TYPE, FUNC) \
 template <class T, T(Tconv)(any_t const &), T(Tparse)(std::string const &)> \
@@ -374,14 +388,18 @@ PARSE_FUNCTION(real_s, type_name_shortfloat());
 PARSE_FUNCTION(real,   type_name_float());
 PARSE_FUNCTION(real_l, type_name_longfloat());
 
-PARSE_FUNCTION(string,  type_name_string());
-PARSE_FUNCTION(string8, type_name_string8());
+PARSE_FUNCTION(string,    type_name_string());
+PARSE_FUNCTION(string8,   type_name_string8());
+PARSE_FUNCTION(string16,  type_name_string16());
+PARSE_FUNCTION(string32,  type_name_string32());
+PARSE_FUNCTION(string80,  type_name_string80());
+PARSE_FUNCTION(string320, type_name_string320());
 
-PARSE_FUNCTION(sword, type_name_sword());
-
-PARSE_FUNCTION(ubyte, type_name_ubyte());
-
-PARSE_FUNCTION(uword, type_name_uword());
+PARSE_FUNCTION(ubyte,  type_name_ubyte());
+PARSE_FUNCTION(sword,  type_name_sword());
+PARSE_FUNCTION(uword,  type_name_uword());
+PARSE_FUNCTION(sdword, type_name_sdword());
+PARSE_FUNCTION(udword, type_name_udword());
 
 
 

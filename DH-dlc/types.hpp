@@ -18,8 +18,8 @@
 */
 
 /*
-	Defines fundamental internal types. Also defines the functions for
-	using them like normal types, and converting between one another.
+	Declares fundamental internal types. Also declares the functions for
+	converting between one another.
 
 	2010/02/03 - Added name_t class to try and make name handling simpler.
 	2010/02/19 - Use the more standard ptrdiff_t for int_s_t instead of
@@ -37,16 +37,12 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-//#define __STDC_LIMIT_MACROS
+#include "types_limits.hpp"
 
 #include <cfloat>
 #include <climits>
-#include <map>
-#include <ostream>
 #include <sstream>
 #include <string>
-
-#include "types_limits.hpp"
 
 
 
@@ -94,6 +90,9 @@ class LevelObjectName;
 class LevelObjectPointer;
 class LevelObjectType;
 
+template <size_t S>
+class stringf_t;
+
 typedef LevelObjectData    any_t;
 typedef bool               bool_t;
 typedef ptrdiff_t          int_s_t;
@@ -105,10 +104,16 @@ typedef double             real_s_t;
 class                      real_t;
 class                      real_l_t;
 class                      string_t;
-class                      string8_t;
-class                      sword_t;
+typedef stringf_t<  8U>    string8_t;
+typedef stringf_t< 16U>    string16_t;
+typedef stringf_t< 32U>    string32_t;
+typedef stringf_t< 80U>    string80_t;
+typedef stringf_t<320U>    string320_t;
 class                      ubyte_t;
+class                      sword_t;
 class                      uword_t;
+class                      sdword_t;
+class                      udword_t;
 
 typedef LevelObjectName name_t;
 typedef LevelObjectType type_t;
@@ -126,217 +131,65 @@ std::string make_string(T const & in)
 
 	return oss.str();
 }
-std::string make_string(bool);
+template<>
+std::string make_string<bool_t>(bool_t const & in);
+template<>
+std::string make_string<string_t>(string_t const & in);
+template<>
+std::string make_string<string8_t>(string8_t const & in);
+template<>
+std::string make_string<string16_t>(string16_t const & in);
+template<>
+std::string make_string<string32_t>(string32_t const & in);
+template<>
+std::string make_string<string80_t>(string80_t const & in);
+template<>
+std::string make_string<string320_t>(string320_t const & in);
 
-any_t to_any(any_t     const &);
-any_t to_any(bool_t    const &);
-any_t to_any(int_s_t   const &);
-any_t to_any(int_t     const &);
-any_t to_any(int_l_t   const &);
-any_t to_any(obj_t            );
-any_t to_any(real_s_t  const &);
-any_t to_any(real_t    const &);
-any_t to_any(real_l_t  const &);
-any_t to_any(string_t  const &);
-any_t to_any(string8_t const &);
-any_t to_any(sword_t   const &);
-any_t to_any(ubyte_t   const &);
-any_t to_any(uword_t   const &);
+#define DECLARE_CONVERT(TYPE) \
+TYPE##_t to_##TYPE(any_t       const &); \
+TYPE##_t to_##TYPE(bool_t      const &); \
+TYPE##_t to_##TYPE(int_s_t     const &); \
+TYPE##_t to_##TYPE(int_t       const &); \
+TYPE##_t to_##TYPE(int_l_t     const &); \
+TYPE##_t to_##TYPE(obj_t              ); \
+TYPE##_t to_##TYPE(real_s_t    const &); \
+TYPE##_t to_##TYPE(real_t      const &); \
+TYPE##_t to_##TYPE(real_l_t    const &); \
+TYPE##_t to_##TYPE(string_t    const &); \
+TYPE##_t to_##TYPE(string8_t   const &); \
+TYPE##_t to_##TYPE(string16_t  const &); \
+TYPE##_t to_##TYPE(string32_t  const &); \
+TYPE##_t to_##TYPE(string80_t  const &); \
+TYPE##_t to_##TYPE(string320_t const &); \
+TYPE##_t to_##TYPE(ubyte_t     const &); \
+TYPE##_t to_##TYPE(sword_t     const &); \
+TYPE##_t to_##TYPE(uword_t     const &); \
+TYPE##_t to_##TYPE(sdword_t    const &); \
+TYPE##_t to_##TYPE(udword_t    const &); \
 
-bool_t to_bool(any_t     const &);
-bool_t to_bool(bool_t    const &);
-bool_t to_bool(int_s_t   const &);
-bool_t to_bool(int_t     const &);
-bool_t to_bool(int_l_t   const &);
-bool_t to_bool(obj_t            );
-bool_t to_bool(real_s_t  const &);
-bool_t to_bool(real_t    const &);
-bool_t to_bool(real_l_t  const &);
-bool_t to_bool(string_t  const &);
-bool_t to_bool(string8_t const &);
-bool_t to_bool(sword_t   const &);
-bool_t to_bool(ubyte_t   const &);
-bool_t to_bool(uword_t   const &);
+DECLARE_CONVERT(any)
+DECLARE_CONVERT(bool)
+DECLARE_CONVERT(int_s)
+DECLARE_CONVERT(int)
+DECLARE_CONVERT(int_l)
+DECLARE_CONVERT(obj)
+DECLARE_CONVERT(real_s)
+DECLARE_CONVERT(real)
+DECLARE_CONVERT(real_l)
+DECLARE_CONVERT(string)
+DECLARE_CONVERT(string8)
+DECLARE_CONVERT(string16)
+DECLARE_CONVERT(string32)
+DECLARE_CONVERT(string80)
+DECLARE_CONVERT(string320)
+DECLARE_CONVERT(ubyte)
+DECLARE_CONVERT(sword)
+DECLARE_CONVERT(uword)
+DECLARE_CONVERT(sdword)
+DECLARE_CONVERT(udword)
 
-int_s_t to_int_s(any_t     const &);
-int_s_t to_int_s(bool_t    const &);
-int_s_t to_int_s(int_s_t   const &);
-int_s_t to_int_s(int_t     const &);
-int_s_t to_int_s(int_l_t   const &);
-int_s_t to_int_s(obj_t            );
-int_s_t to_int_s(real_s_t  const &);
-int_s_t to_int_s(real_t    const &);
-int_s_t to_int_s(real_l_t  const &);
-int_s_t to_int_s(string_t  const &);
-int_s_t to_int_s(string8_t const &);
-int_s_t to_int_s(sword_t   const &);
-int_s_t to_int_s(ubyte_t   const &);
-int_s_t to_int_s(uword_t   const &);
-
-int_t to_int(any_t     const &);
-int_t to_int(bool_t    const &);
-int_t to_int(int_s_t   const &);
-int_t to_int(int_t     const &);
-int_t to_int(int_l_t   const &);
-int_t to_int(obj_t            );
-int_t to_int(real_s_t  const &);
-int_t to_int(real_t    const &);
-int_t to_int(real_l_t  const &);
-int_t to_int(string_t  const &);
-int_t to_int(string8_t const &);
-int_t to_int(sword_t   const &);
-int_t to_int(ubyte_t   const &);
-int_t to_int(uword_t   const &);
-
-int_l_t to_int_l(any_t     const &);
-int_l_t to_int_l(bool_t    const &);
-int_l_t to_int_l(int_s_t   const &);
-int_l_t to_int_l(int_t     const &);
-int_l_t to_int_l(int_l_t   const &);
-int_l_t to_int_l(obj_t            );
-int_l_t to_int_l(real_s_t  const &);
-int_l_t to_int_l(real_t    const &);
-int_l_t to_int_l(real_l_t  const &);
-int_l_t to_int_l(string_t  const &);
-int_l_t to_int_l(string8_t const &);
-int_l_t to_int_l(sword_t   const &);
-int_l_t to_int_l(ubyte_t   const &);
-int_l_t to_int_l(uword_t   const &);
-
-obj_t to_obj(any_t     const &);
-obj_t to_obj(bool_t    const &);
-obj_t to_obj(int_s_t   const &);
-obj_t to_obj(int_t     const &);
-obj_t to_obj(int_l_t   const &);
-obj_t to_obj(obj_t            );
-obj_t to_obj(real_s_t  const &);
-obj_t to_obj(real_t    const &);
-obj_t to_obj(real_l_t  const &);
-obj_t to_obj(string_t  const &);
-obj_t to_obj(string8_t const &);
-obj_t to_obj(sword_t   const &);
-obj_t to_obj(ubyte_t   const &);
-obj_t to_obj(uword_t   const &);
-
-real_s_t to_real_s(any_t     const &);
-real_s_t to_real_s(bool_t    const &);
-real_s_t to_real_s(int_s_t   const &);
-real_s_t to_real_s(int_t     const &);
-real_s_t to_real_s(int_l_t   const &);
-real_s_t to_real_s(obj_t            );
-real_s_t to_real_s(real_s_t  const &);
-real_s_t to_real_s(real_t    const &);
-real_s_t to_real_s(real_l_t  const &);
-real_s_t to_real_s(string_t  const &);
-real_s_t to_real_s(string8_t const &);
-real_s_t to_real_s(sword_t   const &);
-real_s_t to_real_s(ubyte_t   const &);
-real_s_t to_real_s(uword_t   const &);
-
-real_t to_real(any_t     const &);
-real_t to_real(bool_t    const &);
-real_t to_real(int_s_t   const &);
-real_t to_real(int_t     const &);
-real_t to_real(int_l_t   const &);
-real_t to_real(obj_t            );
-real_t to_real(real_s_t  const &);
-real_t to_real(real_t    const &);
-real_t to_real(real_l_t  const &);
-real_t to_real(string_t  const &);
-real_t to_real(string8_t const &);
-real_t to_real(sword_t   const &);
-real_t to_real(ubyte_t   const &);
-real_t to_real(uword_t   const &);
-
-real_l_t to_real_l(any_t     const &);
-real_l_t to_real_l(bool_t    const &);
-real_l_t to_real_l(int_s_t   const &);
-real_l_t to_real_l(int_t     const &);
-real_l_t to_real_l(int_l_t   const &);
-real_l_t to_real_l(obj_t            );
-real_l_t to_real_l(real_s_t  const &);
-real_l_t to_real_l(real_t    const &);
-real_l_t to_real_l(real_l_t  const &);
-real_l_t to_real_l(string_t  const &);
-real_l_t to_real_l(string8_t const &);
-real_l_t to_real_l(sword_t   const &);
-real_l_t to_real_l(ubyte_t   const &);
-real_l_t to_real_l(uword_t   const &);
-
-string_t to_string(any_t     const &);
-string_t to_string(bool_t    const &);
-string_t to_string(int_s_t   const &);
-string_t to_string(int_t     const &);
-string_t to_string(int_l_t   const &);
-string_t to_string(obj_t            );
-string_t to_string(real_s_t  const &);
-string_t to_string(real_t    const &);
-string_t to_string(real_l_t  const &);
-string_t to_string(string_t  const &);
-string_t to_string(string8_t const &);
-string_t to_string(sword_t   const &);
-string_t to_string(ubyte_t   const &);
-string_t to_string(uword_t   const &);
-
-string8_t to_string8(any_t     const &);
-string8_t to_string8(bool_t    const &);
-string8_t to_string8(int_s_t   const &);
-string8_t to_string8(int_t     const &);
-string8_t to_string8(int_l_t   const &);
-string8_t to_string8(obj_t            );
-string8_t to_string8(real_s_t  const &);
-string8_t to_string8(real_t    const &);
-string8_t to_string8(real_l_t  const &);
-string8_t to_string8(string_t  const &);
-string8_t to_string8(string8_t const &);
-string8_t to_string8(sword_t   const &);
-string8_t to_string8(ubyte_t   const &);
-string8_t to_string8(uword_t   const &);
-
-sword_t to_sword(any_t     const &);
-sword_t to_sword(bool_t    const &);
-sword_t to_sword(int_s_t   const &);
-sword_t to_sword(int_t     const &);
-sword_t to_sword(int_l_t   const &);
-sword_t to_sword(obj_t            );
-sword_t to_sword(real_s_t  const &);
-sword_t to_sword(real_t    const &);
-sword_t to_sword(real_l_t  const &);
-sword_t to_sword(string_t  const &);
-sword_t to_sword(string8_t const &);
-sword_t to_sword(sword_t   const &);
-sword_t to_sword(ubyte_t   const &);
-sword_t to_sword(uword_t   const &);
-
-ubyte_t to_ubyte(any_t     const &);
-ubyte_t to_ubyte(bool_t    const &);
-ubyte_t to_ubyte(int_s_t   const &);
-ubyte_t to_ubyte(int_t     const &);
-ubyte_t to_ubyte(int_l_t   const &);
-ubyte_t to_ubyte(obj_t            );
-ubyte_t to_ubyte(real_s_t  const &);
-ubyte_t to_ubyte(real_t    const &);
-ubyte_t to_ubyte(real_l_t  const &);
-ubyte_t to_ubyte(string_t  const &);
-ubyte_t to_ubyte(string8_t const &);
-ubyte_t to_ubyte(sword_t   const &);
-ubyte_t to_ubyte(ubyte_t   const &);
-ubyte_t to_ubyte(uword_t   const &);
-
-uword_t to_uword(any_t     const &);
-uword_t to_uword(bool_t    const &);
-uword_t to_uword(int_s_t   const &);
-uword_t to_uword(int_t     const &);
-uword_t to_uword(int_l_t   const &);
-uword_t to_uword(obj_t            );
-uword_t to_uword(real_s_t  const &);
-uword_t to_uword(real_t    const &);
-uword_t to_uword(real_l_t  const &);
-uword_t to_uword(string_t  const &);
-uword_t to_uword(string8_t const &);
-uword_t to_uword(sword_t   const &);
-uword_t to_uword(ubyte_t   const &);
-uword_t to_uword(uword_t   const &);
+#undef DECLARE_CONVERT
 
 
 

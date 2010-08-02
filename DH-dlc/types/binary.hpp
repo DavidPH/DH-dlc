@@ -44,29 +44,84 @@
 /*
 	Fixed length string. (Doom)
 */
-class string8_t
+template <size_t S>
+class stringf_t
 {
 	public:
-		explicit string8_t();
-		         string8_t(string8_t const &);
-		explicit string8_t(char const *);
-		explicit string8_t(std::string const &);
+		explicit stringf_t();
+		         stringf_t(stringf_t<S> const &);
+		explicit stringf_t(char const *);
+		explicit stringf_t(std::string const &);
 
 		void clear();
 
 		void encodeBinary(std::ostream & out);
 		void encodeText  (std::ostream & out);
 
-		std::string makeString() const {return std::string(_data, 8);}
+		std::string makeString() const {return std::string(_data, S);}
 
-		char const operator [] (size_t index) const {return _data[index];}
-		char       operator [] (size_t index)       {return _data[index];}
+		char const & operator [] (size_t index) const {return _data[index];}
+		char       & operator [] (size_t index)       {return _data[index];}
 
-		string8_t & operator += (string8_t const &);
-		string8_t & operator  = (string8_t const &);
+		stringf_t & operator += (stringf_t<S> const &);
+		stringf_t & operator  = (stringf_t<S> const &);
 
 	private:
-		char _data[8];
+		char _data[S];
+};
+/*
+	8-char string. (Doom)
+*/
+typedef stringf_t<8U> string8_t;
+/*
+	16-char string. (Strife)
+*/
+typedef stringf_t<16U> string16_t;
+/*
+	32-char string. (Strife)
+*/
+typedef stringf_t<32U> string32_t;
+/*
+	80-char string. (Strife)
+*/
+typedef stringf_t<80U> string80_t;
+/*
+	320-char string. (Strife)
+*/
+typedef stringf_t<320U> string320_t;
+
+/*
+	8-bit unsigned. (Hexen)
+*/
+class ubyte_t
+{
+	public:
+		explicit ubyte_t();
+		         ubyte_t(ubyte_t const &);
+		explicit ubyte_t(unsigned char);
+
+		void encodeBinary(std::ostream & out);
+		void encodeText  (std::ostream & out);
+
+		unsigned char makeInt() const {return _data;}
+
+		ubyte_t & operator &= (ubyte_t const & v) {_data &= v._data; return *this;}
+		ubyte_t & operator |= (ubyte_t const & v) {_data |= v._data; return *this;}
+		ubyte_t & operator *= (ubyte_t const & v) {_data *= v._data; return *this;}
+		ubyte_t & operator /= (ubyte_t const & v) {_data /= v._data; return *this;}
+		ubyte_t & operator %= (ubyte_t const & v) {_data %= v._data; return *this;}
+		ubyte_t & operator += (ubyte_t const & v) {_data += v._data; return *this;}
+		ubyte_t & operator -= (ubyte_t const & v) {_data -= v._data; return *this;}
+		ubyte_t & operator  = (ubyte_t const & v) {_data  = v._data; return *this;}
+
+
+
+		friend int cmp(ubyte_t const &, ubyte_t const &);
+
+		friend std::ostream& operator << (std::ostream &, ubyte_t const &);
+
+	private:
+		unsigned _data : 8;
 };
 
 /*
@@ -104,40 +159,6 @@ class sword_t
 };
 
 /*
-	8-bit unsigned. (Hexen)
-*/
-class ubyte_t
-{
-	public:
-		explicit ubyte_t();
-		         ubyte_t(ubyte_t const &);
-		explicit ubyte_t(unsigned char);
-
-		void encodeBinary(std::ostream & out);
-		void encodeText  (std::ostream & out);
-
-		unsigned char makeInt() const {return _data;}
-
-		ubyte_t & operator &= (ubyte_t const & v) {_data &= v._data; return *this;}
-		ubyte_t & operator |= (ubyte_t const & v) {_data |= v._data; return *this;}
-		ubyte_t & operator *= (ubyte_t const & v) {_data *= v._data; return *this;}
-		ubyte_t & operator /= (ubyte_t const & v) {_data /= v._data; return *this;}
-		ubyte_t & operator %= (ubyte_t const & v) {_data %= v._data; return *this;}
-		ubyte_t & operator += (ubyte_t const & v) {_data += v._data; return *this;}
-		ubyte_t & operator -= (ubyte_t const & v) {_data -= v._data; return *this;}
-		ubyte_t & operator  = (ubyte_t const & v) {_data  = v._data; return *this;}
-
-
-
-		friend int cmp(ubyte_t const &, ubyte_t const &);
-
-		friend std::ostream& operator << (std::ostream &, ubyte_t const &);
-
-	private:
-		unsigned _data : 8;
-};
-
-/*
 	16-bit unsigned. (Doom)
 */
 class uword_t
@@ -171,161 +192,313 @@ class uword_t
 		unsigned _data : 16;
 };
 
+/*
+	32-bit signed. (Strife)
+*/
+class sdword_t
+{
+	public:
+		explicit sdword_t();
+		         sdword_t(sdword_t const &);
+		explicit sdword_t(signed long int);
 
+		void encodeBinary(std::ostream & out);
+		void encodeText  (std::ostream & out);
 
-sword_t abs(sword_t const &);
-ubyte_t abs(ubyte_t const &);
-uword_t abs(uword_t const &);
+		signed long int makeInt() const {return _data;}
 
-int cmp(string8_t const &, string8_t const &);
-int cmp(sword_t   const &, sword_t   const &);
-int cmp(ubyte_t   const &, ubyte_t   const &);
-int cmp(uword_t   const &, uword_t   const &);
-
-sword_t hypot(sword_t const &, sword_t const &);
-ubyte_t hypot(ubyte_t const &, ubyte_t const &);
-uword_t hypot(uword_t const &, uword_t const &);
-
-bool operator == (string8_t const &, string8_t const &);
-bool operator == (sword_t   const &, sword_t   const &);
-bool operator == (ubyte_t   const &, ubyte_t   const &);
-bool operator == (uword_t   const &, uword_t   const &);
-
-bool operator != (string8_t const &, string8_t const &);
-bool operator != (sword_t   const &, sword_t   const &);
-bool operator != (ubyte_t   const &, ubyte_t   const &);
-bool operator != (uword_t   const &, uword_t   const &);
-
-bool operator >= (string8_t const &, string8_t const &);
-bool operator >= (sword_t   const &, sword_t   const &);
-bool operator >= (ubyte_t   const &, ubyte_t   const &);
-bool operator >= (uword_t   const &, uword_t   const &);
-
-bool operator >  (string8_t const &, string8_t const &);
-bool operator >  (sword_t   const &, sword_t   const &);
-bool operator >  (ubyte_t   const &, ubyte_t   const &);
-bool operator >  (uword_t   const &, uword_t   const &);
-
-bool operator <= (string8_t const &, string8_t const &);
-bool operator <= (sword_t   const &, sword_t   const &);
-bool operator <= (ubyte_t   const &, ubyte_t   const &);
-bool operator <= (uword_t   const &, uword_t   const &);
-
-bool operator <  (string8_t const &, string8_t const &);
-bool operator <  (sword_t   const &, sword_t   const &);
-bool operator <  (ubyte_t   const &, ubyte_t   const &);
-bool operator <  (uword_t   const &, uword_t   const &);
-
-sword_t   operator & (sword_t   const &, sword_t   const &);
-ubyte_t   operator & (ubyte_t   const &, ubyte_t   const &);
-uword_t   operator & (uword_t   const &, uword_t   const &);
-
-sword_t   operator | (sword_t   const &, sword_t   const &);
-ubyte_t   operator | (ubyte_t   const &, ubyte_t   const &);
-uword_t   operator | (uword_t   const &, uword_t   const &);
-
-sword_t   operator * (sword_t   const &, sword_t   const &);
-ubyte_t   operator * (ubyte_t   const &, ubyte_t   const &);
-uword_t   operator * (uword_t   const &, uword_t   const &);
-
-sword_t   operator / (sword_t   const &, sword_t   const &);
-ubyte_t   operator / (ubyte_t   const &, ubyte_t   const &);
-uword_t   operator / (uword_t   const &, uword_t   const &);
-
-sword_t   operator % (sword_t   const &, sword_t   const &);
-ubyte_t   operator % (ubyte_t   const &, ubyte_t   const &);
-uword_t   operator % (uword_t   const &, uword_t   const &);
-
-string8_t operator + (string8_t const &, string8_t const &);
-sword_t   operator + (sword_t   const &, sword_t   const &);
-ubyte_t   operator + (ubyte_t   const &, ubyte_t   const &);
-uword_t   operator + (uword_t   const &, uword_t   const &);
-
-sword_t   operator - (sword_t   const &, sword_t   const &);
-ubyte_t   operator - (ubyte_t   const &, ubyte_t   const &);
-uword_t   operator - (uword_t   const &, uword_t   const &);
-
-std::ostream& operator << (std::ostream &, string8_t const &);
-std::ostream& operator << (std::ostream &, sword_t   const &);
-std::ostream& operator << (std::ostream &, ubyte_t   const &);
-std::ostream& operator << (std::ostream &, uword_t   const &);
-
-sword_t sqrt(sword_t const &);
-ubyte_t sqrt(ubyte_t const &);
-uword_t sqrt(uword_t const &);
+		sdword_t & operator &= (sdword_t const & v) {_data &= v._data; return *this;}
+		sdword_t & operator |= (sdword_t const & v) {_data |= v._data; return *this;}
+		sdword_t & operator *= (sdword_t const & v) {_data *= v._data; return *this;}
+		sdword_t & operator /= (sdword_t const & v) {_data /= v._data; return *this;}
+		sdword_t & operator %= (sdword_t const & v) {_data %= v._data; return *this;}
+		sdword_t & operator += (sdword_t const & v) {_data += v._data; return *this;}
+		sdword_t & operator -= (sdword_t const & v) {_data -= v._data; return *this;}
+		sdword_t & operator  = (sdword_t const & v) {_data  = v._data; return *this;}
 
 
 
-inline sword_t abs(sword_t const & i) {return (i < sword_t(0)) ? (i * sword_t(-1)) : (i);}
-inline ubyte_t abs(ubyte_t const & i) {return i;}
-inline uword_t abs(uword_t const & i) {return i;}
+		friend int cmp(sdword_t const &, sdword_t const &);
 
-inline sword_t hypot(sword_t const & l, sword_t const & r) {return sqrt((l * l) + (r * r));}
-inline ubyte_t hypot(ubyte_t const & l, ubyte_t const & r) {return sqrt((l * l) + (r * r));}
-inline uword_t hypot(uword_t const & l, uword_t const & r) {return sqrt((l * l) + (r * r));}
+		friend std::ostream & operator << (std::ostream &, sdword_t const &);
 
-inline bool operator == (string8_t const & l, string8_t const & r) {return cmp(l, r) == 0;}
-inline bool operator == (sword_t   const & l, sword_t   const & r) {return cmp(l, r) == 0;}
-inline bool operator == (ubyte_t   const & l, ubyte_t   const & r) {return cmp(l, r) == 0;}
-inline bool operator == (uword_t   const & l, uword_t   const & r) {return cmp(l, r) == 0;}
+	private:
+		signed _data : 32;
+};
 
-inline bool operator != (string8_t const & l, string8_t const & r) {return cmp(l, r) != 0;}
-inline bool operator != (sword_t   const & l, sword_t   const & r) {return cmp(l, r) != 0;}
-inline bool operator != (ubyte_t   const & l, ubyte_t   const & r) {return cmp(l, r) != 0;}
-inline bool operator != (uword_t   const & l, uword_t   const & r) {return cmp(l, r) != 0;}
+/*
+	32-bit unsigned. (Strife)
+*/
+class udword_t
+{
+	public:
+		explicit udword_t();
+		         udword_t(udword_t const &);
+		explicit udword_t(unsigned long int);
 
-inline bool operator >= (string8_t const & l, string8_t const & r) {return cmp(l, r) >= 0;}
-inline bool operator >= (sword_t   const & l, sword_t   const & r) {return cmp(l, r) >= 0;}
-inline bool operator >= (ubyte_t   const & l, ubyte_t   const & r) {return cmp(l, r) >= 0;}
-inline bool operator >= (uword_t   const & l, uword_t   const & r) {return cmp(l, r) >= 0;}
+		void encodeBinary(std::ostream & out);
+		void encodeText  (std::ostream & out);
 
-inline bool operator >  (string8_t const & l, string8_t const & r) {return cmp(l, r) >  0;}
-inline bool operator >  (sword_t   const & l, sword_t   const & r) {return cmp(l, r) >  0;}
-inline bool operator >  (ubyte_t   const & l, ubyte_t   const & r) {return cmp(l, r) >  0;}
-inline bool operator >  (uword_t   const & l, uword_t   const & r) {return cmp(l, r) >  0;}
+		unsigned long int makeInt() const {return _data;}
 
-inline bool operator <= (string8_t const & l, string8_t const & r) {return cmp(l, r) <= 0;}
-inline bool operator <= (sword_t   const & l, sword_t   const & r) {return cmp(l, r) <= 0;}
-inline bool operator <= (ubyte_t   const & l, ubyte_t   const & r) {return cmp(l, r) <= 0;}
-inline bool operator <= (uword_t   const & l, uword_t   const & r) {return cmp(l, r) <= 0;}
+		udword_t & operator &= (udword_t const & v) {_data &= v._data; return *this;}
+		udword_t & operator |= (udword_t const & v) {_data |= v._data; return *this;}
+		udword_t & operator *= (udword_t const & v) {_data *= v._data; return *this;}
+		udword_t & operator /= (udword_t const & v) {_data /= v._data; return *this;}
+		udword_t & operator %= (udword_t const & v) {_data %= v._data; return *this;}
+		udword_t & operator += (udword_t const & v) {_data += v._data; return *this;}
+		udword_t & operator -= (udword_t const & v) {_data -= v._data; return *this;}
+		udword_t & operator  = (udword_t const & v) {_data  = v._data; return *this;}
 
-inline bool operator <  (string8_t const & l, string8_t const & r) {return cmp(l, r) <  0;}
-inline bool operator <  (sword_t   const & l, sword_t   const & r) {return cmp(l, r) <  0;}
-inline bool operator <  (ubyte_t   const & l, ubyte_t   const & r) {return cmp(l, r) <  0;}
-inline bool operator <  (uword_t   const & l, uword_t   const & r) {return cmp(l, r) <  0;}
 
-inline sword_t   operator & (sword_t   const & l, sword_t   const & r) {return sword_t  (l) &= r;}
-inline ubyte_t   operator & (ubyte_t   const & l, ubyte_t   const & r) {return ubyte_t  (l) &= r;}
-inline uword_t   operator & (uword_t   const & l, uword_t   const & r) {return uword_t  (l) &= r;}
 
-inline sword_t   operator | (sword_t   const & l, sword_t   const & r) {return sword_t  (l) |= r;}
-inline ubyte_t   operator | (ubyte_t   const & l, ubyte_t   const & r) {return ubyte_t  (l) |= r;}
-inline uword_t   operator | (uword_t   const & l, uword_t   const & r) {return uword_t  (l) |= r;}
+		friend int cmp(udword_t const &, udword_t const &);
 
-inline sword_t   operator * (sword_t   const & l, sword_t   const & r) {return sword_t  (l) *= r;}
-inline ubyte_t   operator * (ubyte_t   const & l, ubyte_t   const & r) {return ubyte_t  (l) *= r;}
-inline uword_t   operator * (uword_t   const & l, uword_t   const & r) {return uword_t  (l) *= r;}
+		friend std::ostream & operator << (std::ostream &, udword_t const &);
 
-inline sword_t   operator / (sword_t   const & l, sword_t   const & r) {return sword_t  (l) /= r;}
-inline ubyte_t   operator / (ubyte_t   const & l, ubyte_t   const & r) {return ubyte_t  (l) /= r;}
-inline uword_t   operator / (uword_t   const & l, uword_t   const & r) {return uword_t  (l) /= r;}
+	private:
+		unsigned _data : 32;
+};
 
-inline sword_t   operator % (sword_t   const & l, sword_t   const & r) {return sword_t  (l) %= r;}
-inline ubyte_t   operator % (ubyte_t   const & l, ubyte_t   const & r) {return ubyte_t  (l) %= r;}
-inline uword_t   operator % (uword_t   const & l, uword_t   const & r) {return uword_t  (l) %= r;}
 
-inline string8_t operator + (string8_t const & l, string8_t const & r) {return string8_t(l) += r;}
-inline sword_t   operator + (sword_t   const & l, sword_t   const & r) {return sword_t  (l) += r;}
-inline ubyte_t   operator + (ubyte_t   const & l, ubyte_t   const & r) {return ubyte_t  (l) += r;}
-inline uword_t   operator + (uword_t   const & l, uword_t   const & r) {return uword_t  (l) += r;}
 
-inline sword_t   operator - (sword_t   const & l, sword_t   const & r) {return sword_t  (l) -= r;}
-inline ubyte_t   operator - (ubyte_t   const & l, ubyte_t   const & r) {return ubyte_t  (l) -= r;}
-inline uword_t   operator - (uword_t   const & l, uword_t   const & r) {return uword_t  (l) -= r;}
+ubyte_t  abs(ubyte_t  const &);
+sword_t  abs(sword_t  const &);
+uword_t  abs(uword_t  const &);
+sdword_t abs(sdword_t const &);
+udword_t abs(udword_t const &);
 
-inline sword_t sqrt(sword_t const & i) {return sword_t(sqrt(i.makeInt()));}
-inline ubyte_t sqrt(ubyte_t const & i) {return ubyte_t(sqrt(i.makeInt()));}
-inline uword_t sqrt(uword_t const & i) {return uword_t(sqrt(i.makeInt()));}
+template <size_t S>
+int cmp(stringf_t<S> const &, stringf_t<S> const &);
+int cmp(ubyte_t      const &, ubyte_t      const &);
+int cmp(sword_t      const &, sword_t      const &);
+int cmp(uword_t      const &, uword_t      const &);
+int cmp(sdword_t     const &, sdword_t     const &);
+int cmp(udword_t     const &, udword_t     const &);
+
+ubyte_t  hypot(ubyte_t  const &, ubyte_t  const &);
+sword_t  hypot(sword_t  const &, sword_t  const &);
+uword_t  hypot(uword_t  const &, uword_t  const &);
+sdword_t hypot(sdword_t const &, sdword_t const &);
+udword_t hypot(udword_t const &, udword_t const &);
+
+template <size_t S>
+bool operator == (stringf_t<S> const &, stringf_t<S> const &);
+bool operator == (ubyte_t      const &, ubyte_t      const &);
+bool operator == (sword_t      const &, sword_t      const &);
+bool operator == (uword_t      const &, uword_t      const &);
+bool operator == (sdword_t     const &, sdword_t     const &);
+bool operator == (udword_t     const &, udword_t     const &);
+
+template <size_t S>
+bool operator != (stringf_t<S> const &, stringf_t<S> const &);
+bool operator != (ubyte_t      const &, ubyte_t      const &);
+bool operator != (sword_t      const &, sword_t      const &);
+bool operator != (uword_t      const &, uword_t      const &);
+bool operator != (sdword_t     const &, sdword_t     const &);
+bool operator != (udword_t     const &, udword_t     const &);
+
+template <size_t S>
+bool operator >= (stringf_t<S> const &, stringf_t<S> const &);
+bool operator >= (ubyte_t      const &, ubyte_t      const &);
+bool operator >= (sword_t      const &, sword_t      const &);
+bool operator >= (uword_t      const &, uword_t      const &);
+bool operator >= (sdword_t     const &, sdword_t     const &);
+bool operator >= (udword_t     const &, udword_t     const &);
+
+template <size_t S>
+bool operator >  (stringf_t<S> const &, stringf_t<S> const &);
+bool operator >  (ubyte_t      const &, ubyte_t      const &);
+bool operator >  (sword_t      const &, sword_t      const &);
+bool operator >  (uword_t      const &, uword_t      const &);
+bool operator >  (sdword_t     const &, sdword_t     const &);
+bool operator >  (udword_t     const &, udword_t     const &);
+
+template <size_t S>
+bool operator <= (stringf_t<S> const &, stringf_t<S> const &);
+bool operator <= (ubyte_t      const &, ubyte_t      const &);
+bool operator <= (sword_t      const &, sword_t      const &);
+bool operator <= (uword_t      const &, uword_t      const &);
+bool operator <= (sdword_t     const &, sdword_t     const &);
+bool operator <= (udword_t     const &, udword_t     const &);
+
+template <size_t S>
+bool operator <  (stringf_t<S> const &, stringf_t<S> const &);
+bool operator <  (ubyte_t      const &, ubyte_t      const &);
+bool operator <  (sword_t      const &, sword_t      const &);
+bool operator <  (uword_t      const &, uword_t      const &);
+bool operator <  (sdword_t     const &, sdword_t     const &);
+bool operator <  (udword_t     const &, udword_t     const &);
+
+ubyte_t      operator & (ubyte_t      const &, ubyte_t      const &);
+sword_t      operator & (sword_t      const &, sword_t      const &);
+uword_t      operator & (uword_t      const &, uword_t      const &);
+sdword_t     operator & (sdword_t     const &, sdword_t     const &);
+udword_t     operator & (udword_t     const &, udword_t     const &);
+
+ubyte_t      operator | (ubyte_t      const &, ubyte_t      const &);
+sword_t      operator | (sword_t      const &, sword_t      const &);
+uword_t      operator | (uword_t      const &, uword_t      const &);
+sdword_t     operator | (sdword_t     const &, sdword_t     const &);
+udword_t     operator | (udword_t     const &, udword_t     const &);
+
+ubyte_t      operator * (ubyte_t      const &, ubyte_t      const &);
+sword_t      operator * (sword_t      const &, sword_t      const &);
+uword_t      operator * (uword_t      const &, uword_t      const &);
+sdword_t     operator * (sdword_t     const &, sdword_t     const &);
+udword_t     operator * (udword_t     const &, udword_t     const &);
+
+ubyte_t      operator / (ubyte_t      const &, ubyte_t      const &);
+sword_t      operator / (sword_t      const &, sword_t      const &);
+uword_t      operator / (uword_t      const &, uword_t      const &);
+sdword_t     operator / (sdword_t     const &, sdword_t     const &);
+udword_t     operator / (udword_t     const &, udword_t     const &);
+
+ubyte_t      operator % (ubyte_t      const &, ubyte_t      const &);
+sword_t      operator % (sword_t      const &, sword_t      const &);
+uword_t      operator % (uword_t      const &, uword_t      const &);
+sdword_t     operator % (sdword_t     const &, sdword_t     const &);
+udword_t     operator % (udword_t     const &, udword_t     const &);
+
+template <size_t S>
+stringf_t<S> operator + (stringf_t<S> const &, stringf_t<S> const &);
+ubyte_t      operator + (ubyte_t      const &, ubyte_t      const &);
+sword_t      operator + (sword_t      const &, sword_t      const &);
+uword_t      operator + (uword_t      const &, uword_t      const &);
+sdword_t     operator + (sdword_t     const &, sdword_t     const &);
+udword_t     operator + (udword_t     const &, udword_t     const &);
+
+ubyte_t      operator - (ubyte_t      const &, ubyte_t      const &);
+sword_t      operator - (sword_t      const &, sword_t      const &);
+uword_t      operator - (uword_t      const &, uword_t      const &);
+sdword_t     operator - (sdword_t     const &, sdword_t     const &);
+udword_t     operator - (udword_t     const &, udword_t     const &);
+
+template <size_t S>
+std::ostream & operator << (std::ostream &, stringf_t<S> const &);
+std::ostream & operator << (std::ostream &, ubyte_t      const &);
+std::ostream & operator << (std::ostream &, sword_t      const &);
+std::ostream & operator << (std::ostream &, uword_t      const &);
+std::ostream & operator << (std::ostream &, sdword_t     const &);
+std::ostream & operator << (std::ostream &, udword_t     const &);
+
+ubyte_t  sqrt(ubyte_t  const &);
+sword_t  sqrt(sword_t  const &);
+uword_t  sqrt(uword_t  const &);
+sdword_t sqrt(sdword_t const &);
+udword_t sqrt(udword_t const &);
+
+
+
+inline ubyte_t  abs(ubyte_t const & i)  {return i;}
+inline sword_t  abs(sword_t const & i)  {return (i < sword_t (0)) ? (i * sword_t (-1)) : (i);}
+inline uword_t  abs(uword_t const & i)  {return i;}
+inline sdword_t abs(sdword_t const & i) {return (i < sdword_t(0)) ? (i * sdword_t(-1)) : (i);}
+inline udword_t abs(udword_t const & i) {return i;}
+
+inline ubyte_t  hypot(ubyte_t  const & l, ubyte_t  const & r) {return sqrt((l * l) + (r * r));}
+inline sword_t  hypot(sword_t  const & l, sword_t  const & r) {return sqrt((l * l) + (r * r));}
+inline uword_t  hypot(uword_t  const & l, uword_t  const & r) {return sqrt((l * l) + (r * r));}
+inline sdword_t hypot(sdword_t const & l, sdword_t const & r) {return sqrt((l * l) + (r * r));}
+inline udword_t hypot(udword_t const & l, udword_t const & r) {return sqrt((l * l) + (r * r));}
+
+template <size_t S>
+inline bool operator == (stringf_t<S> const & l, stringf_t<S> const & r) {return cmp(l, r) == 0;}
+inline bool operator == (ubyte_t      const & l, ubyte_t      const & r) {return cmp(l, r) == 0;}
+inline bool operator == (sword_t      const & l, sword_t      const & r) {return cmp(l, r) == 0;}
+inline bool operator == (uword_t      const & l, uword_t      const & r) {return cmp(l, r) == 0;}
+inline bool operator == (sdword_t     const & l, sdword_t     const & r) {return cmp(l, r) == 0;}
+inline bool operator == (udword_t     const & l, udword_t     const & r) {return cmp(l, r) == 0;}
+
+template <size_t S>
+inline bool operator != (stringf_t<S> const & l, stringf_t<S> const & r) {return cmp(l, r) != 0;}
+inline bool operator != (ubyte_t      const & l, ubyte_t      const & r) {return cmp(l, r) != 0;}
+inline bool operator != (sword_t      const & l, sword_t      const & r) {return cmp(l, r) != 0;}
+inline bool operator != (uword_t      const & l, uword_t      const & r) {return cmp(l, r) != 0;}
+inline bool operator != (sdword_t     const & l, sdword_t     const & r) {return cmp(l, r) != 0;}
+inline bool operator != (udword_t     const & l, udword_t     const & r) {return cmp(l, r) != 0;}
+
+template <size_t S>
+inline bool operator >= (stringf_t<S> const & l, stringf_t<S> const & r) {return cmp(l, r) >= 0;}
+inline bool operator >= (ubyte_t      const & l, ubyte_t      const & r) {return cmp(l, r) >= 0;}
+inline bool operator >= (sword_t      const & l, sword_t      const & r) {return cmp(l, r) >= 0;}
+inline bool operator >= (uword_t      const & l, uword_t      const & r) {return cmp(l, r) >= 0;}
+inline bool operator >= (sdword_t     const & l, sdword_t     const & r) {return cmp(l, r) >= 0;}
+inline bool operator >= (udword_t     const & l, udword_t     const & r) {return cmp(l, r) >= 0;}
+
+template <size_t S>
+inline bool operator >  (stringf_t<S> const & l, stringf_t<S> const & r) {return cmp(l, r) >  0;}
+inline bool operator >  (ubyte_t      const & l, ubyte_t      const & r) {return cmp(l, r) >  0;}
+inline bool operator >  (sword_t      const & l, sword_t      const & r) {return cmp(l, r) >  0;}
+inline bool operator >  (uword_t      const & l, uword_t      const & r) {return cmp(l, r) >  0;}
+inline bool operator >  (sdword_t     const & l, sdword_t     const & r) {return cmp(l, r) >  0;}
+inline bool operator >  (udword_t     const & l, udword_t     const & r) {return cmp(l, r) >  0;}
+
+template <size_t S>
+inline bool operator <= (stringf_t<S> const & l, stringf_t<S> const & r) {return cmp(l, r) <= 0;}
+inline bool operator <= (ubyte_t      const & l, ubyte_t      const & r) {return cmp(l, r) <= 0;}
+inline bool operator <= (sword_t      const & l, sword_t      const & r) {return cmp(l, r) <= 0;}
+inline bool operator <= (uword_t      const & l, uword_t      const & r) {return cmp(l, r) <= 0;}
+inline bool operator <= (sdword_t     const & l, sdword_t     const & r) {return cmp(l, r) <= 0;}
+inline bool operator <= (udword_t     const & l, udword_t     const & r) {return cmp(l, r) <= 0;}
+
+template <size_t S>
+inline bool operator <  (stringf_t<S> const & l, stringf_t<S> const & r) {return cmp(l, r) <  0;}
+inline bool operator <  (ubyte_t      const & l, ubyte_t      const & r) {return cmp(l, r) <  0;}
+inline bool operator <  (sword_t      const & l, sword_t      const & r) {return cmp(l, r) <  0;}
+inline bool operator <  (uword_t      const & l, uword_t      const & r) {return cmp(l, r) <  0;}
+inline bool operator <  (sdword_t     const & l, sdword_t     const & r) {return cmp(l, r) <  0;}
+inline bool operator <  (udword_t     const & l, udword_t     const & r) {return cmp(l, r) <  0;}
+
+inline ubyte_t      operator & (ubyte_t      const & l, ubyte_t      const & r) {return ubyte_t     (l) &= r;}
+inline sword_t      operator & (sword_t      const & l, sword_t      const & r) {return sword_t     (l) &= r;}
+inline uword_t      operator & (uword_t      const & l, uword_t      const & r) {return uword_t     (l) &= r;}
+inline sdword_t     operator & (sdword_t     const & l, sdword_t     const & r) {return sdword_t    (l) &= r;}
+inline udword_t     operator & (udword_t     const & l, udword_t     const & r) {return udword_t    (l) &= r;}
+
+inline ubyte_t      operator | (ubyte_t      const & l, ubyte_t      const & r) {return ubyte_t     (l) |= r;}
+inline sword_t      operator | (sword_t      const & l, sword_t      const & r) {return sword_t     (l) |= r;}
+inline uword_t      operator | (uword_t      const & l, uword_t      const & r) {return uword_t     (l) |= r;}
+inline sdword_t     operator | (sdword_t     const & l, sdword_t     const & r) {return sdword_t    (l) |= r;}
+inline udword_t     operator | (udword_t     const & l, udword_t     const & r) {return udword_t    (l) |= r;}
+
+inline ubyte_t      operator * (ubyte_t      const & l, ubyte_t      const & r) {return ubyte_t     (l) *= r;}
+inline sword_t      operator * (sword_t      const & l, sword_t      const & r) {return sword_t     (l) *= r;}
+inline uword_t      operator * (uword_t      const & l, uword_t      const & r) {return uword_t     (l) *= r;}
+inline sdword_t     operator * (sdword_t     const & l, sdword_t     const & r) {return sdword_t    (l) *= r;}
+inline udword_t     operator * (udword_t     const & l, udword_t     const & r) {return udword_t    (l) *= r;}
+
+inline ubyte_t      operator / (ubyte_t      const & l, ubyte_t      const & r) {return ubyte_t     (l) /= r;}
+inline sword_t      operator / (sword_t      const & l, sword_t      const & r) {return sword_t     (l) /= r;}
+inline uword_t      operator / (uword_t      const & l, uword_t      const & r) {return uword_t     (l) /= r;}
+inline sdword_t     operator / (sdword_t     const & l, sdword_t     const & r) {return sdword_t    (l) /= r;}
+inline udword_t     operator / (udword_t     const & l, udword_t     const & r) {return udword_t    (l) /= r;}
+
+inline ubyte_t      operator % (ubyte_t      const & l, ubyte_t      const & r) {return ubyte_t     (l) %= r;}
+inline sword_t      operator % (sword_t      const & l, sword_t      const & r) {return sword_t     (l) %= r;}
+inline uword_t      operator % (uword_t      const & l, uword_t      const & r) {return uword_t     (l) %= r;}
+inline sdword_t     operator % (sdword_t     const & l, sdword_t     const & r) {return sdword_t    (l) %= r;}
+inline udword_t     operator % (udword_t     const & l, udword_t     const & r) {return udword_t    (l) %= r;}
+
+template <size_t S>
+inline stringf_t<S> operator + (stringf_t<S> const & l, stringf_t<S> const & r) {return stringf_t<S>(l) += r;}
+inline ubyte_t      operator + (ubyte_t      const & l, ubyte_t      const & r) {return ubyte_t     (l) += r;}
+inline sword_t      operator + (sword_t      const & l, sword_t      const & r) {return sword_t     (l) += r;}
+inline uword_t      operator + (uword_t      const & l, uword_t      const & r) {return uword_t     (l) += r;}
+inline sdword_t     operator + (sdword_t     const & l, sdword_t     const & r) {return sdword_t    (l) += r;}
+inline udword_t     operator + (udword_t     const & l, udword_t     const & r) {return udword_t    (l) += r;}
+
+inline ubyte_t      operator - (ubyte_t      const & l, ubyte_t      const & r) {return ubyte_t     (l) -= r;}
+inline sword_t      operator - (sword_t      const & l, sword_t      const & r) {return sword_t     (l) -= r;}
+inline uword_t      operator - (uword_t      const & l, uword_t      const & r) {return uword_t     (l) -= r;}
+inline sdword_t     operator - (sdword_t     const & l, sdword_t     const & r) {return sdword_t    (l) -= r;}
+inline udword_t     operator - (udword_t     const & l, udword_t     const & r) {return udword_t    (l) -= r;}
+
+inline ubyte_t  sqrt(ubyte_t const & i)  {return ubyte_t (sqrt(i.makeInt()));}
+inline sword_t  sqrt(sword_t const & i)  {return sword_t (sqrt(i.makeInt()));}
+inline uword_t  sqrt(uword_t const & i)  {return uword_t (sqrt(i.makeInt()));}
+inline sdword_t sqrt(sdword_t const & i) {return sdword_t(sqrt(i.makeInt()));}
+inline udword_t sqrt(udword_t const & i) {return udword_t(sqrt(i.makeInt()));}
 
 
 
