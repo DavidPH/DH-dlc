@@ -89,7 +89,12 @@ public:
 	static LevelObjectType type_uword();
 	static LevelObjectType type_sdword();
 	static LevelObjectType type_udword();
+	static LevelObjectType type_choice();
+	static LevelObjectType type_conversation();
+	static LevelObjectType type_cost();
+	static LevelObjectType type_ifitem();
 	static LevelObjectType type_linedef();
+	static LevelObjectType type_page();
 	static LevelObjectType type_sector();
 	static LevelObjectType type_sidedef();
 	static LevelObjectType type_thing();

@@ -925,6 +925,12 @@ void LevelObject::encodeUDMF(std::ostream & out, int depth)
 			if (_type.getMode() == type_t::MODE_COMPOUNDOBJECT) return;
 			if (_type.getMode() == type_t::MODE_VALUE) return;
 
+			if ((_type != type_t::type_linedef()) && (_type != type_t::type_sector()) && (_type != type_t::type_sidedef()) && (_type != type_t::type_thing()) && (_type != type_t::type_vertex()))
+			{
+				// TODO: Make this list configurable.
+				return;
+			}
+
 			for(int i = depth; i; --i) out.put('\t');
 			out << _type.makeString() << " /* " << get_object_index(this) << " */\n";
 
@@ -941,6 +947,58 @@ void LevelObject::encodeUDMF(std::ostream & out, int depth)
 				{
 					for(int i = depth+1; i; --i) out.put('\t');
 					out << it->first << '='; it->second->encodeUDMF(out, depth+1); out << ";\n";
+				}
+			}
+
+			for(int i = depth; i; --i) out.put('\t');
+			out << "}\n\n";
+		}
+
+		return;
+	}
+
+	if (!depth) return;
+
+	_data.encodeText(out);
+}
+
+void LevelObject::encodeUSDF(std::ostream & out, int depth)
+{
+	if (_data.getType() == any_t::OBJMAP_T)
+	{
+		if (!depth && (_type.getMode() == type_t::MODE_INLINE)) return;
+
+		if (depth && (_type.getMode() != type_t::MODE_INLINE))
+		{
+			out << get_object_index(this);
+		}
+		else
+		{
+			if (_type.getMode() == type_t::MODE_COMPOUNDOBJECT) return;
+			if (_type.getMode() == type_t::MODE_VALUE) return;
+
+			if ((_type != type_t::type_choice()) && (_type != type_t::type_conversation()) && (_type != type_t::type_cost()) && (_type != type_t::type_ifitem()) && (_type != type_t::type_page()))
+			{
+				// TODO: Make this list configurable.
+				return;
+			}
+
+			for(int i = depth; i; --i) out.put('\t');
+			out << _type.makeString() << " /* " << get_object_index(this) << " */\n";
+
+			for(int i = depth; i; --i) out.put('\t');
+			out << "{\n";
+
+			FOREACH_T(objmap_t, it, _data.getObjMap())
+			{
+				if (it->second->_type.getMode() == type_t::MODE_INLINE)
+				{
+					it->second->encodeUSDF(out, depth+1);
+				}
+				else
+				{
+					for(int i = depth+1; i; --i) out.put('\t');
+					out << it->first << '='; it->second->encodeUSDF(out, depth+1); out << ";\n";
 				}
 			}
 

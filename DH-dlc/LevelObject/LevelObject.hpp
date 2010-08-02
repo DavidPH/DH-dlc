@@ -88,6 +88,7 @@ class LevelObject
 		void encodeHexen    (std::ostream & out);
 		void encodeStrife   (std::ostream & out);
 		void encodeUDMF     (std::ostream & out, int depth = 0);
+		void encodeUSDF     (std::ostream & out, int depth = 0);
 
 		any_t const & getData() const {return _data;}
 

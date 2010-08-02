@@ -279,11 +279,16 @@ NAME_FUNC(type, sdword,     "sdword",     "SDWORD",     "sdword")
 NAME_FUNC(type, udword,     "udword",     "UDWORD",     "udword")
 
 // internal object types
-NAME_FUNC(type, linedef, "LINEDEF", "LINEDEF", "linedef")
-NAME_FUNC(type, sector,  "SECTOR",  "SECTOR",  "sector")
-NAME_FUNC(type, sidedef, "SIDEDEF", "SIDEDEF", "sidedef")
-NAME_FUNC(type, thing,   "THING",   "THING",   "thing")
-NAME_FUNC(type, vertex,  "VERTEX",  "VERTEX",  "vertex")
+NAME_FUNC(type, choice,       "CHOICE",       "CHOICE",       "choice")
+NAME_FUNC(type, conversation, "CONVERSATION", "CONVERSATION", "conversation")
+NAME_FUNC(type, cost,         "COST",         "COST",         "cost")
+NAME_FUNC(type, ifitem,       "IFITEM",       "IFITEM",       "ifitem")
+NAME_FUNC(type, linedef,      "LINEDEF",      "LINEDEF",      "linedef")
+NAME_FUNC(type, page,         "PAGE",         "PAGE",         "page")
+NAME_FUNC(type, sector,       "SECTOR",       "SECTOR",       "sector")
+NAME_FUNC(type, sidedef,      "SIDEDEF",      "SIDEDEF",      "sidedef")
+NAME_FUNC(type, thing,        "THING",        "THING",        "thing")
+NAME_FUNC(type, vertex,       "VERTEX",       "VERTEX",       "vertex")
 
 // miscellaneous
 NAME_FUNC(misc, false,  "false",  "FALSE",  "false")
