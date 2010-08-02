@@ -1,10 +1,10 @@
 // USDF for DH-dlc definitions.
 
 #typedefnew:CHOICE      :object;
-#typedefnew:CONVERSATION:object;
-#typedefnew:COST        :object;
-#typedefnew:IFITEM      :object;
-#typedefnew:PAGE        :object;
+#typedefnew:CONVERSATION:inline;
+#typedefnew:COST        :inline;
+#typedefnew:IFITEM      :inline;
+#typedefnew:PAGE        :inline;
 
 
 
