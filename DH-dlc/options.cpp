@@ -27,12 +27,14 @@
 
 #include "options.hpp"
 
+#include "main.hpp"
+
+#include "types/int_t.hpp"
+
+#include "../common/process_options.c"
+
 #include <cstdlib>
 #include <iostream>
-
-#include "main.hpp"
-#include "../common/process_options.c"
-#include "types/int_t.hpp"
 
 
 
@@ -48,6 +50,8 @@ PROCESS_OPTION_DEFINE_bool(force_default_types, false)
 PROCESS_OPTION_DEFINE_bool(lib_std,         true)
 PROCESS_OPTION_DEFINE_bool(lib_udmf,        true)
 PROCESS_OPTION_DEFINE_bool(lib_udmf_strict, false)
+PROCESS_OPTION_DEFINE_bool(lib_usdf,        false)
+PROCESS_OPTION_DEFINE_bool(lib_usdf_strict, false)
 
 PROCESS_OPTION_DEFINE_bool(output_any,       true)
 PROCESS_OPTION_DEFINE_bool(output_doom,      false)
@@ -56,6 +60,7 @@ PROCESS_OPTION_DEFINE_bool(output_heretic,   false)
 PROCESS_OPTION_DEFINE_bool(output_hexen,     false)
 PROCESS_OPTION_DEFINE_bool(output_strife,    false)
 PROCESS_OPTION_DEFINE_bool(output_udmf,      true)
+PROCESS_OPTION_DEFINE_bool(output_usdf,      false)
 
 PROCESS_OPTION_DEFINE_bool(strict_strings, true)
 PROCESS_OPTION_DEFINE_bool(strict_types,   false)
@@ -114,6 +119,8 @@ PROCESS_OPTION_LONG_DECLARE
 	PROCESS_OPTION_HANDLE_LONG_bool(lib_std,         "lib-std",          8);
 	PROCESS_OPTION_HANDLE_LONG_bool(lib_udmf,        "lib-udmf",         9);
 	PROCESS_OPTION_HANDLE_LONG_bool(lib_udmf_strict, "lib-udmf-strict", 16);
+	PROCESS_OPTION_HANDLE_LONG_bool(lib_udmf,        "lib-usdf",         9);
+	PROCESS_OPTION_HANDLE_LONG_bool(lib_udmf_strict, "lib-usdf-strict", 16);
 
 	PROCESS_OPTION_HANDLE_LONG_bool(output_any,       "output-any",       11);
 	PROCESS_OPTION_HANDLE_LONG_bool(output_doom,      "output-doom",      12);
@@ -122,6 +129,7 @@ PROCESS_OPTION_LONG_DECLARE
 	PROCESS_OPTION_HANDLE_LONG_bool(output_hexen,     "output-hexen",     13);
 	PROCESS_OPTION_HANDLE_LONG_bool(output_strife,    "output-strife",    14);
 	PROCESS_OPTION_HANDLE_LONG_bool(output_udmf,      "output-udmf",      12);
+	PROCESS_OPTION_HANDLE_LONG_bool(output_udmf,      "output-usdf",      12);
 
 	PROCESS_OPTION_HANDLE_LONG_bool(strict_strings, "strict-strings", 15);
 	PROCESS_OPTION_HANDLE_LONG_bool(strict_types,   "strict-types",   13);

@@ -106,10 +106,11 @@ void usage()
 		"\n"
 		"The Library options (lib-*) are additive (except where noted).\n"
 		"lib-udmf-strict will replace lib-udmf if both are enabled.\n"
+		"lib-usdf-strict will replace lib-usdf if both are enabled.\n"
 		"\n"
 		"The Output options (output-*) are mutually exclusive.\n"
 		"If more than one is selected, the first listed here is used.\n"
-		"Except for output-extradata which is additive for certain outputs.\n"
+		"output-extradata and output-usdf are additive.\n"
 		"\n"
 		"Options:\n"
 		"  -h, --help     displays this text and exits\n"
@@ -138,13 +139,16 @@ void usage()
 		"      --no-lib-std          do not automatically include lib-std.ddl\n"
 		"      --no-lib-udmf         do not automatically include lib-udmf.ddl\n"
 		"      --do-lib-udmf-strict  automatically include lib-udmf-strict.ddl\n"
+		"      --no-lib-usdf         automatically include lib-usdf.ddl\n"
+		"      --do-lib-usdf-strict  automatically include lib-usdf-strict.ddl\n"
 		"\n"
 		"Input:\n"
 		"  -C, --no-case-sensitive  reads source files as case insensitive\n"
 		"\n"
 		"Output:\n"
 		"      --no-output-any        disables any output\n"
-		"      --do-output-extradata  output files in ExtraData format\n"
+		"      --do-output-extradata  output ExtraData files\n"
+		"      --do-output-usdf       output USDF files\n"
 		"      --do-output-hexen      output files in Hexen format\n"
 		"      --do-output-strife     output files in Strife format\n"
 		"      --do-output-heretic    output files in Heretic format\n"
@@ -152,10 +156,11 @@ void usage()
 		"      --do-output-udmf       output files in UDMF format [default]\n"
 		"\n"
 		"Debugging:\n"
-		"      --debug       enables debugging messages\n"
-		"      --debug-dump  prints every object at the end of program\n"
-		"                    WARNING: will go into an infinite loop if an object\n"
-		"                    references itself, directly or otherwise\n"
+		"      --debug        enables debugging messages\n"
+		"      --debug-dump   prints every object at the end of program\n"
+		"                     WARNING: will go into an infinite loop if an object\n"
+		"                     references itself, directly or otherwise\n"
+		"      --debug-token  prints every token read.\n"
 	;
 }
 
@@ -250,6 +255,11 @@ int main(int argc, char** argv)
 		process_file("lib-udmf-strict.ddl");
 	else if (option_lib_udmf)
 		process_file("lib-udmf.ddl");
+
+	if (option_lib_usdf_strict)
+		process_file("lib-usdf-strict.ddl");
+	else if (option_lib_usdf)
+		process_file("lib-usdf.ddl");
 
 	FOREACH_T(std::vector<std::string>, it, option_arg)
 	{
@@ -464,7 +474,7 @@ int main(int argc, char** argv)
 	{
 		OPENFILE(TEXTMAP, ".txt");
 
-		fileTEXTMAP << "// Compiled by DH-dlc.\n\n";
+		fileTEXTMAP << "/* Compiled by DH-dlc. */\n\n";
 
 		// TODO make a command for this
 		if (global_object->hasObject(name_t("namespace")))
@@ -487,6 +497,39 @@ int main(int argc, char** argv)
 		{
 			std::cerr << e << '\n';
 		}
+
+		fileTEXTMAP.close();
+	}
+
+	if (option_output_usdf)
+	{
+		OPENFILE(DIALOG, ".txt");
+
+		fileDIALOG << "/* Compiled by DH-dlc. */\n\n";
+
+		// TODO make a command for this
+		if (global_object->hasObject(name_t("namespace")))
+		{
+			obj_t namespaceObj = global_object->getObject(name_t("namespace"));
+
+			if (namespaceObj->getType() == type_t::type_string())
+				fileDIALOG << "namespace = "; namespaceObj->encodeUSDF(fileDIALOG, 1); fileDIALOG << ";\n\n";
+		}
+
+		try
+		{
+			FOREACH_T(global_object_map_t, mapIt, global_object_map)
+			{
+				FOREACH_T(global_object_list_t, listIt, mapIt->second)
+					(*listIt)->encodeUSDF(fileDIALOG);
+			}
+		}
+		catch (CompilerException & e)
+		{
+			std::cerr << e << '\n';
+		}
+
+		fileDIALOG.close();
 	}
 
 	#undef OPENFILE

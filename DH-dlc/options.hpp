@@ -47,6 +47,8 @@ PROCESS_OPTION_EXTERN_bool(force_default_types);
 PROCESS_OPTION_EXTERN_bool(lib_std);
 PROCESS_OPTION_EXTERN_bool(lib_udmf);
 PROCESS_OPTION_EXTERN_bool(lib_udmf_strict);
+PROCESS_OPTION_EXTERN_bool(lib_usdf);
+PROCESS_OPTION_EXTERN_bool(lib_usdf_strict);
 
 PROCESS_OPTION_EXTERN_bool(output_any);
 PROCESS_OPTION_EXTERN_bool(output_doom);
@@ -55,6 +57,7 @@ PROCESS_OPTION_EXTERN_bool(output_heretic);
 PROCESS_OPTION_EXTERN_bool(output_hexen);
 PROCESS_OPTION_EXTERN_bool(output_strife);
 PROCESS_OPTION_EXTERN_bool(output_udmf);
+PROCESS_OPTION_EXTERN_bool(output_usdf);
 
 PROCESS_OPTION_EXTERN_bool(strict_strings);
 PROCESS_OPTION_EXTERN_bool(strict_types);
