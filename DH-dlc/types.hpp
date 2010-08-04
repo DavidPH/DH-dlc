@@ -196,6 +196,106 @@ DECLARE_CONVERT(udword)
 
 
 
+#define TEMPLATE_TAKE_Tconv \
+T(Tconv_any)      (any_t       const &), \
+T(Tconv_bool)     (bool_t      const &), \
+T(Tconv_int_s)    (int_s_t     const &), \
+T(Tconv_int)      (int_t       const &), \
+T(Tconv_int_l)    (int_l_t     const &), \
+T(Tconv_obj)      (obj_t              ), \
+T(Tconv_real_s)   (real_s_t    const &), \
+T(Tconv_real)     (real_t      const &), \
+T(Tconv_real_l)   (real_l_t    const &), \
+T(Tconv_string)   (string_t    const &), \
+T(Tconv_string8)  (string8_t   const &), \
+T(Tconv_string16) (string16_t  const &), \
+T(Tconv_string32) (string32_t  const &), \
+T(Tconv_string80) (string80_t  const &), \
+T(Tconv_string320)(string320_t const &), \
+T(Tconv_ubyte)    (ubyte_t     const &), \
+T(Tconv_sword)    (sword_t     const &), \
+T(Tconv_uword)    (uword_t     const &), \
+T(Tconv_sdword)   (sdword_t    const &), \
+T(Tconv_udword)   (udword_t    const &)
+#define TEMPLATE_PUSH_Tconv \
+Tconv_any,       \
+Tconv_bool,      \
+Tconv_int_s,     \
+Tconv_int,       \
+Tconv_int_l,     \
+Tconv_obj,       \
+Tconv_real_s,    \
+Tconv_real,      \
+Tconv_real_l,    \
+Tconv_string,    \
+Tconv_string8,   \
+Tconv_string16,  \
+Tconv_string32,  \
+Tconv_string80,  \
+Tconv_string320, \
+Tconv_ubyte,     \
+Tconv_sword,     \
+Tconv_uword,     \
+Tconv_sdword,    \
+Tconv_udword
+#define TEMPLATE_PUSH_Tconv_type(TYPE) \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE
+
+#define TEMPLATE_TAKE_TfuncDDL \
+T(Tfunc)(std::string const &, std::vector<std::string> const &), \
+T(Tunary)(std::string const &, std::string const &),             \
+T(Tconst)(std::string const &)
+#define TEMPLATE_TAKE_TfuncDHLX \
+T(Tfunc)(std::string const &, SourceScannerDHLX &),  \
+T(Tunary)(std::string const &, SourceScannerDHLX &), \
+T(Tconst)(std::string const &)
+#define TEMPLATE_PUSH_Tfunc \
+Tfunc,  \
+Tunary, \
+Tconst
+#define TEMPLATE_PUSH_Tfunc_type(TYPE) \
+parse_##TYPE##_function, \
+parse_##TYPE##_unary,    \
+parse_##TYPE##_unary
+
+#define TEMPLATE_TAKE_DDL \
+typename T,          \
+TEMPLATE_TAKE_Tconv, \
+TEMPLATE_TAKE_TfuncDDL
+#define TEMPLATE_TAKE_DHLX \
+typename T,          \
+TEMPLATE_TAKE_Tconv, \
+TEMPLATE_TAKE_TfuncDHLX
+#define TEMPLATE_PUSH \
+T,                   \
+TEMPLATE_PUSH_Tconv, \
+TEMPLATE_PUSH_Tfunc
+#define TEMPLATE_PUSH_type(TYPE) \
+TYPE##_t,                       \
+TEMPLATE_PUSH_Tconv_type(TYPE), \
+TEMPLATE_PUSH_Tfunc_type(TYPE)
+
+
+
 #endif /* TYPES_H */
 
 

@@ -339,6 +339,10 @@ bool has_function(std::string const & type, std::string const & name)
 
 
 #define PARSE_FUNCTION(TYPE, TYPE_NAME) \
+TYPE##_t parse_##TYPE##_function(std::string const & function, SourceScannerDHLX & sc) \
+{ \
+	throw UnknownFunctionException(function); \
+} \
 TYPE##_t parse_##TYPE##_function(std::string const & opString, std::vector<std::string> const & args) \
 { \
 	return parse__function<TYPE##_t, TYPE##_func_t, to_##TYPE>(opString, args, TYPE##_func_map, TYPE_NAME); \
