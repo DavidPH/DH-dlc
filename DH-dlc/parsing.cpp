@@ -47,9 +47,9 @@
 
 
 template <class T>
-struct ParsingData
+struct ParsingDataDDL
 {
-	ParsingData(std::string const & valueIn) :
+	ParsingDataDDL(std::string const & valueIn) :
 	valueReturn(), value(valueIn), valueLeft(), valueRight(),
 	operatorChar(-2),
 	hasBracket(0), hasExponent(0)
@@ -121,7 +121,7 @@ struct ParsingData
 };
 
 template <class T, T (Tfunc)(std::string const &, std::vector<std::string> const &)>
-static bool check_function(ParsingData<T> * data)
+static bool check_function(ParsingDataDDL<T> * data)
 {
 	if (data->value[0] != '<') return false;
 
@@ -143,7 +143,7 @@ static bool check_function(ParsingData<T> * data)
 }
 
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math_bool(ParsingData<T> * data)
+static bool check_math_bool(ParsingDataDDL<T> * data)
 {
 	switch (data->operatorChar)
 	{
@@ -156,7 +156,7 @@ static bool check_math_bool(ParsingData<T> * data)
 	}
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math_int(ParsingData<T> * data)
+static bool check_math_int(ParsingDataDDL<T> * data)
 {
 	switch (data->operatorChar)
 	{
@@ -174,7 +174,7 @@ static bool check_math_int(ParsingData<T> * data)
 	}
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math_real(ParsingData<T> * data)
+static bool check_math_real(ParsingDataDDL<T> * data)
 {
 	switch (data->operatorChar)
 	{
@@ -189,7 +189,7 @@ static bool check_math_real(ParsingData<T> * data)
 	}
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math_string(ParsingData<T> * data)
+static bool check_math_string(ParsingDataDDL<T> * data)
 {
 	switch (data->operatorChar)
 	{
@@ -202,63 +202,63 @@ static bool check_math_string(ParsingData<T> * data)
 }
 
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingData<T> * data)
+static bool check_math(ParsingDataDDL<T> * data)
 {
 	return check_math_int<T, Tparse>(data);
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingData<bool_t> * data)
+static bool check_math(ParsingDataDDL<bool_t> * data)
 {
 	return check_math_bool<bool_t, parse_bool>(data);
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingData<real_s_t> * data)
+static bool check_math(ParsingDataDDL<real_s_t> * data)
 {
 	return check_math_real<real_s_t, parse_real_s>(data);
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingData<real_t> * data)
+static bool check_math(ParsingDataDDL<real_t> * data)
 {
 	return check_math_real<real_t, parse_real>(data);
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingData<real_l_t> * data)
+static bool check_math(ParsingDataDDL<real_l_t> * data)
 {
 	return check_math_real<real_l_t, parse_real_l>(data);
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingData<string_t> * data)
+static bool check_math(ParsingDataDDL<string_t> * data)
 {
 	return check_math_string<string_t, parse_string>(data);
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingData<string8_t> * data)
+static bool check_math(ParsingDataDDL<string8_t> * data)
 {
 	return check_math_string<string8_t, parse_string8>(data);
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingData<string16_t> * data)
+static bool check_math(ParsingDataDDL<string16_t> * data)
 {
 	return check_math_string<string16_t, parse_string16>(data);
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingData<string32_t> * data)
+static bool check_math(ParsingDataDDL<string32_t> * data)
 {
 	return check_math_string<string32_t, parse_string32>(data);
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingData<string80_t> * data)
+static bool check_math(ParsingDataDDL<string80_t> * data)
 {
 	return check_math_string<string80_t, parse_string80>(data);
 }
 template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingData<string320_t> * data)
+static bool check_math(ParsingDataDDL<string320_t> * data)
 {
 	return check_math_string<string320_t, parse_string320>(data);
 }
 
 template <class T, T (Tconv)(any_t const &)>
-static bool check_typecast(ParsingData<T> * data)
+static bool check_typecast(ParsingDataDDL<T> * data)
 {
 	if (data->value[0] != '(') return false;
 
@@ -321,7 +321,7 @@ static bool check_typecast(ParsingData<T> * data)
 }
 
 template <class T, T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &)>
-static bool check_unary(ParsingData<T> * data)
+static bool check_unary(ParsingDataDDL<T> * data)
 {
 	if (data->value[0] != '[') return false;
 
@@ -340,7 +340,7 @@ static bool check_unary(ParsingData<T> * data)
 }
 
 template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &), T (Tfunc)(std::string const &, std::vector<std::string> const &)>
-static bool check_all(ParsingData<T> * data)
+static bool check_all(ParsingDataDDL<T> * data)
 {
 	if (check_math<T, Tparse>(data))
 		return true;
@@ -446,7 +446,7 @@ bool_t parse_bool(std::string const & value)
 	if (value == "false" || value == "FALSE")
 		return false;
 
-	ParsingData<bool_t> data(value);
+	ParsingDataDDL<bool_t> data(value);
 
 	if (check_all<bool_t, parse_bool, to_bool, parse_bool_unary, parse_bool_unary, parse_bool_function>(&data))
 		return data.valueReturn;
@@ -459,7 +459,7 @@ static T parse_num_base(std::string const & value)
 {
 	if (value.empty()) return T();
 
-	ParsingData<T> data(value);
+	ParsingDataDDL<T> data(value);
 
 	if (check_all<T, Tparse, Tconv, Tconst, Tunary, Tfunc>(&data))
 		return data.valueReturn;
@@ -720,7 +720,7 @@ static T parse_string_base(std::string const & value)
 	if (value[0] == '$')
 		return T(value.substr(1));
 
-	ParsingData<T> data(value);
+	ParsingDataDDL<T> data(value);
 
 	if (check_all<T, Tparse, Tconv, Tconst, Tunary, Tfunc>(&data))
 		return data.valueReturn;
