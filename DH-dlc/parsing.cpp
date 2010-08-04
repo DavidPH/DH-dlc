@@ -420,6 +420,35 @@ inline void parse__base_init<real_s_t>(real_s_t & data)
 	data = 0;
 }
 template<TEMPLATE_TAKE_DHLX>
+inline void parse__base_typecast(T & data, type_t const type, SourceScannerDHLX & sc)
+{
+	     if (type == type_t::type_bool())       data = Tconv_bool(parse_bool(sc));
+
+	else if (type == type_t::type_shortint())   data = Tconv_int_s(parse_int_s(sc));
+	else if (type == type_t::type_int())        data = Tconv_int(parse_int(sc));
+	else if (type == type_t::type_longint())    data = Tconv_int_l(parse_int_l(sc));
+
+	else if (type == type_t::type_shortfloat()) data = Tconv_real_s(parse_real_s(sc));
+	else if (type == type_t::type_float())      data = Tconv_real(parse_real(sc));
+	else if (type == type_t::type_longfloat())  data = Tconv_real_l(parse_real_l(sc));
+
+	else if (type == type_t::type_string())     data = Tconv_string(parse_string(sc));
+	else if (type == type_t::type_string8())    data = Tconv_string8(parse_string8(sc));
+	else if (type == type_t::type_string16())   data = Tconv_string16(parse_string16(sc));
+	else if (type == type_t::type_string32())   data = Tconv_string32(parse_string32(sc));
+	else if (type == type_t::type_string80())   data = Tconv_string80(parse_string80(sc));
+	else if (type == type_t::type_string320())  data = Tconv_string320(parse_string320(sc));
+
+	else if (type == type_t::type_ubyte())      data = Tconv_ubyte(parse_ubyte(sc));
+	else if (type == type_t::type_sword())      data = Tconv_sword(parse_sword(sc));
+	else if (type == type_t::type_uword())      data = Tconv_uword(parse_uword(sc));
+	else if (type == type_t::type_sdword())     data = Tconv_sdword(parse_sdword(sc));
+	else if (type == type_t::type_udword())     data = Tconv_udword(parse_udword(sc));
+
+	else
+		throw ParsingException("unknown typecast:" + type.makeString());
+}
+template<TEMPLATE_TAKE_DHLX>
 inline void parse__base_part_IDENTIFIER(T & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	sc.unget(st);
@@ -550,7 +579,13 @@ inline T parse__base_part(SourceScannerDHLX & sc)
 
 		if (st2.getType() == SourceTokenDHLX::TT_OP_PARENTHESIS_O)
 		{
-			data = Tfunc(st.getData(), sc);
+			std::string function(st.getData());
+
+			if (type_t::has_type(function))
+				parse__base_typecast<TEMPLATE_PUSH>(data, type_t::get_type(function), sc);
+			else
+				data = Tfunc(function, sc);
+
 			sc.get(SourceTokenDHLX::TT_OP_PARENTHESIS_C);
 			break;
 		}
@@ -583,6 +618,21 @@ inline T parse__base_part(SourceScannerDHLX & sc)
 		break;
 
 	case SourceTokenDHLX::TT_OP_PARENTHESIS_O:
+	{
+		SourceTokenDHLX st2(sc.get());
+		SourceTokenDHLX st3(sc.get());
+
+		if ((st2.getType() == SourceTokenDHLX::TT_IDENTIFIER) && (st3.getType() == SourceTokenDHLX::TT_OP_PARENTHESIS_C) && type_t::has_type(st2.getData()))
+		{
+			parse__base_typecast<TEMPLATE_PUSH>(data, type_t::get_type(st2.getData()), sc);
+			break;
+		}
+		else
+		{
+			sc.unget(st3);
+			sc.unget(st2);
+		}
+	}
 		data = parse__base<TEMPLATE_PUSH>(sc);
 		sc.get(SourceTokenDHLX::TT_OP_PARENTHESIS_C);
 		break;
