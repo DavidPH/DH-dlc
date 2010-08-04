@@ -275,7 +275,7 @@ Tconst
 #define TEMPLATE_PUSH_Tfunc_type(TYPE) \
 parse_##TYPE##_function, \
 parse_##TYPE##_unary,    \
-parse_##TYPE##_unary
+parse_##TYPE##_const
 
 #define TEMPLATE_TAKE_DDL \
 typename T,          \

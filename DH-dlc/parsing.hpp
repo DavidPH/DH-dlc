@@ -47,7 +47,7 @@ TYPE##_t parse_##TYPE(SourceScannerDHLX &); \
 TYPE##_t parse_##TYPE(std::string const &); \
 TYPE##_t parse_##TYPE##_function(std::string const &, SourceScannerDHLX &);              \
 TYPE##_t parse_##TYPE##_function(std::string const &, std::vector<std::string> const &); \
-TYPE##_t parse_##TYPE##_unary(std::string const &); \
+TYPE##_t parse_##TYPE##_const(std::string const &); \
 TYPE##_t parse_##TYPE##_unary(std::string const &, SourceScannerDHLX &); \
 TYPE##_t parse_##TYPE##_unary(std::string const &, std::string const &);
 

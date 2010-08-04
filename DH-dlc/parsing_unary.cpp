@@ -144,7 +144,7 @@ UNARY_TAN(TYPE)
 
 
 
-bool_t parse_bool_unary(std::string const & opString)
+bool_t parse_bool_const(std::string const & opString)
 {
 	if (opString == function_name_random())
 		return random_int_s(0, 1) != 0;
@@ -168,7 +168,7 @@ bool_t parse_bool_unary(std::string const & opString, std::string const & value)
 
 
 
-int_s_t parse_int_s_unary(std::string const & opString)
+int_s_t parse_int_s_const(std::string const & opString)
 {
 	CONST_common_int(int_s);
 
@@ -185,7 +185,7 @@ int_s_t parse_int_s_unary(std::string const & opString, std::string const & valu
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-int_t parse_int_unary(std::string const & opString)
+int_t parse_int_const(std::string const & opString)
 {
 	CONST_common_int(int);
 
@@ -202,7 +202,7 @@ int_t parse_int_unary(std::string const & opString, std::string const & value)
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-int_l_t parse_int_l_unary(std::string const & opString)
+int_l_t parse_int_l_const(std::string const & opString)
 {
 	CONST_common_int(int_l);
 
@@ -221,7 +221,7 @@ int_l_t parse_int_l_unary(std::string const & opString, std::string const & valu
 
 
 
-real_s_t parse_real_s_unary(std::string const & opString)
+real_s_t parse_real_s_const(std::string const & opString)
 {
 	CONST_common_real(real_s);
 
@@ -238,7 +238,7 @@ real_s_t parse_real_s_unary(std::string const & opString, std::string const & va
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-real_t parse_real_unary(std::string const & opString)
+real_t parse_real_const(std::string const & opString)
 {
 	CONST_common_real(real);
 
@@ -255,7 +255,7 @@ real_t parse_real_unary(std::string const & opString, std::string const & value)
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-real_l_t parse_real_l_unary(std::string const & opString)
+real_l_t parse_real_l_const(std::string const & opString)
 {
 	CONST_common_real(real_l);
 
@@ -274,7 +274,7 @@ real_l_t parse_real_l_unary(std::string const & opString, std::string const & va
 
 
 
-string_t parse_string_unary(std::string const & opString)
+string_t parse_string_const(std::string const & opString)
 {
 	if (opString == function_name_mapname())
 		return string_t(option_map_name);
@@ -343,7 +343,7 @@ string_t parse_string_unary(std::string const & opString, std::string const & va
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-string8_t parse_string8_unary(std::string const & opString)
+string8_t parse_string8_const(std::string const & opString)
 {
 	if (opString == function_name_mapname())
 		return string8_t(option_map_name);
@@ -365,7 +365,7 @@ string8_t parse_string8_unary(std::string const & opString, std::string const & 
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-string16_t parse_string16_unary(std::string const & opString)
+string16_t parse_string16_const(std::string const & opString)
 {
 	throw UnknownFunctionException("["+opString+"]");
 }
@@ -378,7 +378,7 @@ string16_t parse_string16_unary(std::string const & opString, std::string const 
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-string32_t parse_string32_unary(std::string const & opString)
+string32_t parse_string32_const(std::string const & opString)
 {
 	throw UnknownFunctionException("["+opString+"]");
 }
@@ -391,7 +391,7 @@ string32_t parse_string32_unary(std::string const & opString, std::string const 
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-string80_t parse_string80_unary(std::string const & opString)
+string80_t parse_string80_const(std::string const & opString)
 {
 	throw UnknownFunctionException("["+opString+"]");
 }
@@ -404,7 +404,7 @@ string80_t parse_string80_unary(std::string const & opString, std::string const 
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-string320_t parse_string320_unary(std::string const & opString)
+string320_t parse_string320_const(std::string const & opString)
 {
 	throw UnknownFunctionException("["+opString+"]");
 }
@@ -417,7 +417,7 @@ string320_t parse_string320_unary(std::string const & opString, std::string cons
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-ubyte_t parse_ubyte_unary(std::string const & opString)
+ubyte_t parse_ubyte_const(std::string const & opString)
 {
 	CONST_common_int(ubyte);
 
@@ -434,7 +434,7 @@ ubyte_t parse_ubyte_unary(std::string const & opString, std::string const & valu
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-sword_t parse_sword_unary(std::string const & opString)
+sword_t parse_sword_const(std::string const & opString)
 {
 	CONST_common_int(sword);
 
@@ -451,7 +451,7 @@ sword_t parse_sword_unary(std::string const & opString, std::string const & valu
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-uword_t parse_uword_unary(std::string const & opString)
+uword_t parse_uword_const(std::string const & opString)
 {
 	CONST_common_int(uword);
 
@@ -468,7 +468,7 @@ uword_t parse_uword_unary(std::string const & opString, std::string const & valu
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-sdword_t parse_sdword_unary(std::string const & opString)
+sdword_t parse_sdword_const(std::string const & opString)
 {
 	CONST_common_int(sdword);
 
@@ -485,7 +485,7 @@ sdword_t parse_sdword_unary(std::string const & opString, std::string const & va
 	throw UnknownFunctionException("["+opString+"]");
 }
 
-udword_t parse_udword_unary(std::string const & opString)
+udword_t parse_udword_const(std::string const & opString)
 {
 	CONST_common_int(udword);
 

@@ -876,7 +876,7 @@ bool_t parse_bool(std::string const & value)
 
 	ParsingDataDDL<bool_t> data(value);
 
-	if (check_all<bool_t, parse_bool, to_bool, parse_bool_unary, parse_bool_unary, parse_bool_function>(&data))
+	if (check_all<bool_t, parse_bool, to_bool, parse_bool_const, parse_bool_unary, parse_bool_function>(&data))
 		return data.valueReturn;
 
 	return to_bool(get_object(name_t(value)));
@@ -924,7 +924,7 @@ int_s_t parse_int_s(SourceScannerDHLX & sc)
 }
 int_s_t parse_int_s(std::string const & value)
 {
-	return parse_num_base<int_s_t, parse_int_s, to_int_s, parse_int_s_unary, parse_int_s_unary, parse_int_s_function>(value);
+	return parse_num_base<int_s_t, parse_int_s, to_int_s, parse_int_s_const, parse_int_s_unary, parse_int_s_function>(value);
 }
 int_t parse_int(SourceScannerDHLX & sc)
 {
@@ -932,7 +932,7 @@ int_t parse_int(SourceScannerDHLX & sc)
 }
 int_t parse_int(std::string const & value)
 {
-	return parse_num_base<int_t, parse_int, to_int, parse_int_unary, parse_int_unary, parse_int_function>(value);
+	return parse_num_base<int_t, parse_int, to_int, parse_int_const, parse_int_unary, parse_int_function>(value);
 }
 int_l_t parse_int_l(SourceScannerDHLX & sc)
 {
@@ -940,7 +940,7 @@ int_l_t parse_int_l(SourceScannerDHLX & sc)
 }
 int_l_t parse_int_l(std::string const & value)
 {
-	return parse_num_base<int_l_t, parse_int_l, to_int_l, parse_int_l_unary, parse_int_l_unary, parse_int_l_function>(value);
+	return parse_num_base<int_l_t, parse_int_l, to_int_l, parse_int_l_const, parse_int_l_unary, parse_int_l_function>(value);
 }
 
 name_t parse_name(SourceScannerDHLX & sc)
@@ -1007,7 +1007,7 @@ real_s_t parse_real_s(SourceScannerDHLX & sc)
 }
 real_s_t parse_real_s(std::string const & value)
 {
-	return parse_num_base<real_s_t, parse_real_s, to_real_s, parse_real_s_unary, parse_real_s_unary, parse_real_s_function>(value);
+	return parse_num_base<real_s_t, parse_real_s, to_real_s, parse_real_s_const, parse_real_s_unary, parse_real_s_function>(value);
 }
 real_t parse_real(SourceScannerDHLX & sc)
 {
@@ -1015,7 +1015,7 @@ real_t parse_real(SourceScannerDHLX & sc)
 }
 real_t parse_real(std::string const & value)
 {
-	return parse_num_base<real_t, parse_real, to_real, parse_real_unary, parse_real_unary, parse_real_function>(value);
+	return parse_num_base<real_t, parse_real, to_real, parse_real_const, parse_real_unary, parse_real_function>(value);
 }
 real_l_t parse_real_l(SourceScannerDHLX & sc)
 {
@@ -1023,7 +1023,7 @@ real_l_t parse_real_l(SourceScannerDHLX & sc)
 }
 real_l_t parse_real_l(std::string const & value)
 {
-	return parse_num_base<real_l_t, parse_real_l, to_real_l, parse_real_l_unary, parse_real_l_unary, parse_real_l_function>(value);
+	return parse_num_base<real_l_t, parse_real_l, to_real_l, parse_real_l_const, parse_real_l_unary, parse_real_l_function>(value);
 }
 
 template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &), T (Tfunc)(std::string const &, std::vector<std::string> const &)>
@@ -1053,7 +1053,7 @@ string_t parse_string(SourceScannerDHLX & sc)
 }
 string_t parse_string(std::string const & value)
 {
-	return parse_string_base<string_t, parse_string, to_string, parse_string_unary, parse_string_unary, parse_string_function>(value);
+	return parse_string_base<string_t, parse_string, to_string, parse_string_const, parse_string_unary, parse_string_function>(value);
 }
 string8_t parse_string8(SourceScannerDHLX & sc)
 {
@@ -1061,7 +1061,7 @@ string8_t parse_string8(SourceScannerDHLX & sc)
 }
 string8_t parse_string8(std::string const & value)
 {
-	return parse_string_base<string8_t, parse_string8, to_string8, parse_string8_unary, parse_string8_unary, parse_string8_function>(value);
+	return parse_string_base<string8_t, parse_string8, to_string8, parse_string8_const, parse_string8_unary, parse_string8_function>(value);
 }
 string16_t parse_string16(SourceScannerDHLX & sc)
 {
@@ -1069,7 +1069,7 @@ string16_t parse_string16(SourceScannerDHLX & sc)
 }
 string16_t parse_string16(std::string const & value)
 {
-	return parse_string_base<string16_t, parse_string16, to_string16, parse_string16_unary, parse_string16_unary, parse_string16_function>(value);
+	return parse_string_base<string16_t, parse_string16, to_string16, parse_string16_const, parse_string16_unary, parse_string16_function>(value);
 }
 string32_t parse_string32(SourceScannerDHLX & sc)
 {
@@ -1077,7 +1077,7 @@ string32_t parse_string32(SourceScannerDHLX & sc)
 }
 string32_t parse_string32(std::string const & value)
 {
-	return parse_string_base<string32_t, parse_string32, to_string32, parse_string32_unary, parse_string32_unary, parse_string32_function>(value);
+	return parse_string_base<string32_t, parse_string32, to_string32, parse_string32_const, parse_string32_unary, parse_string32_function>(value);
 }
 string80_t parse_string80(SourceScannerDHLX & sc)
 {
@@ -1085,7 +1085,7 @@ string80_t parse_string80(SourceScannerDHLX & sc)
 }
 string80_t parse_string80(std::string const & value)
 {
-	return parse_string_base<string80_t, parse_string80, to_string80, parse_string80_unary, parse_string80_unary, parse_string80_function>(value);
+	return parse_string_base<string80_t, parse_string80, to_string80, parse_string80_const, parse_string80_unary, parse_string80_function>(value);
 }
 string320_t parse_string320(SourceScannerDHLX & sc)
 {
@@ -1093,7 +1093,7 @@ string320_t parse_string320(SourceScannerDHLX & sc)
 }
 string320_t parse_string320(std::string const & value)
 {
-	return parse_string_base<string320_t, parse_string320, to_string320, parse_string320_unary, parse_string320_unary, parse_string320_function>(value);
+	return parse_string_base<string320_t, parse_string320, to_string320, parse_string320_const, parse_string320_unary, parse_string320_function>(value);
 }
 
 ubyte_t parse_ubyte(SourceScannerDHLX & sc)
@@ -1102,7 +1102,7 @@ ubyte_t parse_ubyte(SourceScannerDHLX & sc)
 }
 ubyte_t parse_ubyte(std::string const & value)
 {
-	return parse_num_base<ubyte_t, parse_ubyte, to_ubyte, parse_ubyte_unary, parse_ubyte_unary, parse_ubyte_function>(value);
+	return parse_num_base<ubyte_t, parse_ubyte, to_ubyte, parse_ubyte_const, parse_ubyte_unary, parse_ubyte_function>(value);
 }
 sword_t parse_sword(SourceScannerDHLX & sc)
 {
@@ -1110,7 +1110,7 @@ sword_t parse_sword(SourceScannerDHLX & sc)
 }
 sword_t parse_sword(std::string const & value)
 {
-	return parse_num_base<sword_t, parse_sword, to_sword, parse_sword_unary, parse_sword_unary, parse_sword_function>(value);
+	return parse_num_base<sword_t, parse_sword, to_sword, parse_sword_const, parse_sword_unary, parse_sword_function>(value);
 }
 uword_t parse_uword(SourceScannerDHLX & sc)
 {
@@ -1118,7 +1118,7 @@ uword_t parse_uword(SourceScannerDHLX & sc)
 }
 uword_t parse_uword(std::string const & value)
 {
-	return parse_num_base<uword_t, parse_uword, to_uword, parse_uword_unary, parse_uword_unary, parse_uword_function>(value);
+	return parse_num_base<uword_t, parse_uword, to_uword, parse_uword_const, parse_uword_unary, parse_uword_function>(value);
 }
 sdword_t parse_sdword(SourceScannerDHLX & sc)
 {
@@ -1126,7 +1126,7 @@ sdword_t parse_sdword(SourceScannerDHLX & sc)
 }
 sdword_t parse_sdword(std::string const & value)
 {
-	return parse_num_base<sdword_t, parse_sdword, to_sdword, parse_sdword_unary, parse_sdword_unary, parse_sdword_function>(value);
+	return parse_num_base<sdword_t, parse_sdword, to_sdword, parse_sdword_const, parse_sdword_unary, parse_sdword_function>(value);
 }
 udword_t parse_udword(SourceScannerDHLX & sc)
 {
@@ -1134,7 +1134,7 @@ udword_t parse_udword(SourceScannerDHLX & sc)
 }
 udword_t parse_udword(std::string const & value)
 {
-	return parse_num_base<udword_t, parse_udword, to_udword, parse_udword_unary, parse_udword_unary, parse_udword_function>(value);
+	return parse_num_base<udword_t, parse_udword, to_udword, parse_udword_const, parse_udword_unary, parse_udword_function>(value);
 }
 
 
