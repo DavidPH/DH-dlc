@@ -396,44 +396,395 @@ std::vector<std::string> parse_args(std::string const & value)
 
 
 
-bool_t parse_bool(SourceScannerDHLX & sc)
+#define TEMPLATE_TAKE_Tconv \
+T(Tconv_any)      (any_t       const &), \
+T(Tconv_bool)     (bool_t      const &), \
+T(Tconv_int_s)    (int_s_t     const &), \
+T(Tconv_int)      (int_t       const &), \
+T(Tconv_int_l)    (int_l_t     const &), \
+T(Tconv_obj)      (obj_t              ), \
+T(Tconv_real_s)   (real_s_t    const &), \
+T(Tconv_real)     (real_t      const &), \
+T(Tconv_real_l)   (real_l_t    const &), \
+T(Tconv_string)   (string_t    const &), \
+T(Tconv_string8)  (string8_t   const &), \
+T(Tconv_string16) (string16_t  const &), \
+T(Tconv_string32) (string32_t  const &), \
+T(Tconv_string80) (string80_t  const &), \
+T(Tconv_string320)(string320_t const &), \
+T(Tconv_ubyte)    (ubyte_t     const &), \
+T(Tconv_sword)    (sword_t     const &), \
+T(Tconv_uword)    (uword_t     const &), \
+T(Tconv_sdword)   (sdword_t    const &), \
+T(Tconv_udword)   (udword_t    const &)
+#define TEMPLATE_PUSH_Tconv \
+Tconv_any,       \
+Tconv_bool,      \
+Tconv_int_s,     \
+Tconv_int,       \
+Tconv_int_l,     \
+Tconv_obj,       \
+Tconv_real_s,    \
+Tconv_real,      \
+Tconv_real_l,    \
+Tconv_string,    \
+Tconv_string8,   \
+Tconv_string16,  \
+Tconv_string32,  \
+Tconv_string80,  \
+Tconv_string320, \
+Tconv_ubyte,     \
+Tconv_sword,     \
+Tconv_uword,     \
+Tconv_sdword,    \
+Tconv_udword
+#define TEMPLATE_PUSH_Tconv_type(TYPE) \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE, \
+to_##TYPE
+
+// This will be removed once all LevelObjectData types are class'd.
+template<typename T>
+inline void parse__base_init(T & data)
 {
-	bool_t data(0);
+
+}
+template<>
+inline void parse__base_init<bool_t>(bool_t & data)
+{
+	data = false;
+}
+template<>
+inline void parse__base_init<int_s_t>(int_s_t & data)
+{
+	data = 0;
+}
+template<>
+inline void parse__base_init<real_s_t>(real_s_t & data)
+{
+	data = 0;
+}
+template<typename T, TEMPLATE_TAKE_Tconv>
+inline void parse__base_part_IDENTIFIER(T & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	sc.unget(st);
+	data = Tconv_obj(get_object(parse_name(sc)));
+}
+template<>
+inline void parse__base_part_IDENTIFIER<bool_t, TEMPLATE_PUSH_Tconv_type(bool)>(bool_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	if (st.getData() == "true")
+		data = true;
+	else if (st.getData() == "false")
+		data = false;
+	else
+	{
+		sc.unget(st);
+		data = to_bool(get_object(parse_name(sc)));
+	}
+}
+template<typename T, TEMPLATE_TAKE_Tconv>
+inline void parse__base_part_NUMBER(T & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	sc.unget(st);
+}
+template<>
+inline void parse__base_part_NUMBER<int_s_t, TEMPLATE_PUSH_Tconv_type(int_s)>(int_s_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = num_from_string<int_s_t>(st.getData());
+}
+template<>
+inline void parse__base_part_NUMBER<int_t, TEMPLATE_PUSH_Tconv_type(int)>(int_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = num_from_string<int_t>(st.getData());
+}
+template<>
+inline void parse__base_part_NUMBER<int_l_t, TEMPLATE_PUSH_Tconv_type(int_l)>(int_l_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = num_from_string<int_l_t>(st.getData());
+}
+template<>
+inline void parse__base_part_NUMBER<real_s_t, TEMPLATE_PUSH_Tconv_type(real_s)>(real_s_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = num_from_string<real_s_t>(st.getData());
+}
+template<>
+inline void parse__base_part_NUMBER<real_t, TEMPLATE_PUSH_Tconv_type(real)>(real_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = num_from_string<real_t>(st.getData());
+}
+template<>
+inline void parse__base_part_NUMBER<real_l_t, TEMPLATE_PUSH_Tconv_type(real_l)>(real_l_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = num_from_string<real_l_t>(st.getData());
+}
+template<>
+inline void parse__base_part_NUMBER<ubyte_t, TEMPLATE_PUSH_Tconv_type(ubyte)>(ubyte_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = num_from_string<ubyte_t>(st.getData());
+}
+template<>
+inline void parse__base_part_NUMBER<sword_t, TEMPLATE_PUSH_Tconv_type(sword)>(sword_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = num_from_string<sword_t>(st.getData());
+}
+template<>
+inline void parse__base_part_NUMBER<uword_t, TEMPLATE_PUSH_Tconv_type(uword)>(uword_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = num_from_string<uword_t>(st.getData());
+}
+template<>
+inline void parse__base_part_NUMBER<sdword_t, TEMPLATE_PUSH_Tconv_type(sdword)>(sdword_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = num_from_string<sdword_t>(st.getData());
+}
+template<>
+inline void parse__base_part_NUMBER<udword_t, TEMPLATE_PUSH_Tconv_type(udword)>(udword_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = num_from_string<udword_t>(st.getData());
+}
+template<typename T, TEMPLATE_TAKE_Tconv>
+inline void parse__base_part_STRING(T & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	sc.unget(st);
+}
+template<typename T, TEMPLATE_TAKE_Tconv>
+inline T parse__base_part(SourceScannerDHLX & sc)
+{
+	T data;
+
+	parse__base_init<T>(data);
+
 	SourceTokenDHLX st(sc.get());
 
 	switch (st.getType())
 	{
 	case SourceTokenDHLX::TT_IDENTIFIER:
-		if (st.getData() == "true")
-		{
-			data = true;
-		}
-		else if (st.getData() == "false")
-		{
-			data = false;
-		}
-		else
-		{
-			sc.unget(st);
-			data = to_bool(get_object(parse_name(sc)));
-		}
+		parse__base_part_IDENTIFIER<T, TEMPLATE_PUSH_Tconv>(data, st, sc);
+		break;
+
+	case SourceTokenDHLX::TT_NUMBER:
+		parse__base_part_NUMBER<T, TEMPLATE_PUSH_Tconv>(data, st, sc);
+		break;
+
+	case SourceTokenDHLX::TT_STRING:
+		parse__base_part_STRING<T, TEMPLATE_PUSH_Tconv>(data, st, sc);
 		break;
 
 	default:
 		sc.unget(st);
-		return data;
-	}
-
-	st = sc.get();
-
-	switch (st.getType())
-	{
-	default:
-		sc.unget(st);
-		return data;
+		break;
 	}
 
 	return data;
+}
+template<typename T, TEMPLATE_TAKE_Tconv>
+inline bool parse__base_math__bool(T & data, SourceScannerDHLX & sc)
+{
+	SourceTokenDHLX st(sc.get());
+
+	switch (st.getType())
+	{
+	case SourceTokenDHLX::TT_OP_AND2:
+		data = data && parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
+	case SourceTokenDHLX::TT_OP_PIPE2:
+		data = data || parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
+	default:
+		sc.unget(st);
+		return false;
+	}
+}
+template<typename T, TEMPLATE_TAKE_Tconv>
+inline bool parse__base_math__int(T & data, SourceScannerDHLX & sc)
+{
+	SourceTokenDHLX st(sc.get());
+
+	switch (st.getType())
+	{
+	case SourceTokenDHLX::TT_OP_MINUS:
+		data -= parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
+	case SourceTokenDHLX::TT_OP_PLUS:
+		data += parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
+	default:
+		sc.unget(st);
+		return false;
+	}
+}
+template<typename T, TEMPLATE_TAKE_Tconv>
+inline bool parse__base_math__real(T & data, SourceScannerDHLX & sc)
+{
+	SourceTokenDHLX st(sc.get());
+
+	switch (st.getType())
+	{
+	case SourceTokenDHLX::TT_OP_MINUS:
+		data -= parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
+	case SourceTokenDHLX::TT_OP_PLUS:
+		data += parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
+	default:
+		sc.unget(st);
+		return false;
+	}
+}
+template<typename T, TEMPLATE_TAKE_Tconv>
+inline bool parse__base_math__string(T & data, SourceScannerDHLX & sc)
+{
+	SourceTokenDHLX st(sc.get());
+
+	switch (st.getType())
+	{
+	case SourceTokenDHLX::TT_OP_PLUS:
+		data += parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
+	default:
+		sc.unget(st);
+		return false;
+	}
+}
+template<typename T, TEMPLATE_TAKE_Tconv>
+inline bool parse__base_math(T & data, SourceScannerDHLX & sc)
+{
+	return false;
+}
+template<>
+inline bool parse__base_math<bool_t, TEMPLATE_PUSH_Tconv_type(bool)>(bool_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__bool<bool_t, TEMPLATE_PUSH_Tconv_type(bool)>(data, sc);
+}
+template<>
+inline bool parse__base_math<int_s_t, TEMPLATE_PUSH_Tconv_type(int_s)>(int_s_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__int<int_s_t, TEMPLATE_PUSH_Tconv_type(int_s)>(data, sc);
+}
+template<>
+inline bool parse__base_math<int_t, TEMPLATE_PUSH_Tconv_type(int)>(int_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__int<int_t, TEMPLATE_PUSH_Tconv_type(int)>(data, sc);
+}
+template<>
+inline bool parse__base_math<int_l_t, TEMPLATE_PUSH_Tconv_type(int_l)>(int_l_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__int<int_l_t, TEMPLATE_PUSH_Tconv_type(int_l)>(data, sc);
+}
+template<>
+inline bool parse__base_math<real_s_t, TEMPLATE_PUSH_Tconv_type(real_s)>(real_s_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__real<real_s_t, TEMPLATE_PUSH_Tconv_type(real_s)>(data, sc);
+}
+template<>
+inline bool parse__base_math<real_t, TEMPLATE_PUSH_Tconv_type(real)>(real_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__real<real_t, TEMPLATE_PUSH_Tconv_type(real)>(data, sc);
+}
+template<>
+inline bool parse__base_math<real_l_t, TEMPLATE_PUSH_Tconv_type(real_l)>(real_l_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__real<real_l_t, TEMPLATE_PUSH_Tconv_type(real_l)>(data, sc);
+}
+template<>
+inline bool parse__base_math<string_t, TEMPLATE_PUSH_Tconv_type(string)>(string_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__string<string_t, TEMPLATE_PUSH_Tconv_type(string)>(data, sc);
+}
+template<>
+inline bool parse__base_math<string8_t, TEMPLATE_PUSH_Tconv_type(string8)>(string8_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__string<string8_t, TEMPLATE_PUSH_Tconv_type(string8)>(data, sc);
+}
+template<>
+inline bool parse__base_math<string16_t, TEMPLATE_PUSH_Tconv_type(string16)>(string16_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__string<string16_t, TEMPLATE_PUSH_Tconv_type(string16)>(data, sc);
+}
+template<>
+inline bool parse__base_math<string32_t, TEMPLATE_PUSH_Tconv_type(string32)>(string32_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__string<string32_t, TEMPLATE_PUSH_Tconv_type(string32)>(data, sc);
+}
+template<>
+inline bool parse__base_math<string80_t, TEMPLATE_PUSH_Tconv_type(string80)>(string80_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__string<string80_t, TEMPLATE_PUSH_Tconv_type(string80)>(data, sc);
+}
+template<>
+inline bool parse__base_math<string320_t, TEMPLATE_PUSH_Tconv_type(string320)>(string320_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__string<string320_t, TEMPLATE_PUSH_Tconv_type(string320)>(data, sc);
+}
+template<>
+inline bool parse__base_math<ubyte_t, TEMPLATE_PUSH_Tconv_type(ubyte)>(ubyte_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__int<ubyte_t, TEMPLATE_PUSH_Tconv_type(ubyte)>(data, sc);
+}
+template<>
+inline bool parse__base_math<sword_t, TEMPLATE_PUSH_Tconv_type(sword)>(sword_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__int<sword_t, TEMPLATE_PUSH_Tconv_type(sword)>(data, sc);
+}
+template<>
+inline bool parse__base_math<uword_t, TEMPLATE_PUSH_Tconv_type(uword)>(uword_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__int<uword_t, TEMPLATE_PUSH_Tconv_type(uword)>(data, sc);
+}
+template<>
+inline bool parse__base_math<sdword_t, TEMPLATE_PUSH_Tconv_type(sdword)>(sdword_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__int<sdword_t, TEMPLATE_PUSH_Tconv_type(sdword)>(data, sc);
+}
+template<>
+inline bool parse__base_math<udword_t, TEMPLATE_PUSH_Tconv_type(udword)>(udword_t & data, SourceScannerDHLX & sc)
+{
+	return parse__base_math__int<udword_t, TEMPLATE_PUSH_Tconv_type(udword)>(data, sc);
+}
+template<typename T, TEMPLATE_TAKE_Tconv>
+inline T parse__base(SourceScannerDHLX & sc)
+{
+	T data;
+
+	parse__base_init<T>(data);
+
+	data = parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+
+	while (parse__base_math<T, TEMPLATE_PUSH_Tconv>(data, sc));
+
+	return data;
+}
+
+
+
+bool_t parse_bool(SourceScannerDHLX & sc)
+{
+	return parse__base<bool_t, TEMPLATE_PUSH_Tconv_type(bool)>(sc);
 }
 bool_t parse_bool(std::string const & value)
 {
@@ -490,51 +841,9 @@ static T parse_num_base(std::string const & value)
 	return Tconv(get_object(name_t(value)));
 }
 
-template <typename T, T (Tconv)(any_t const &)>
-T parse_int_base(SourceScannerDHLX & sc)
-{
-	T data(0);
-	SourceTokenDHLX st(sc.get());
-
-	switch (st.getType())
-	{
-	case SourceTokenDHLX::TT_IDENTIFIER:
-		sc.unget(st);
-		data = Tconv(get_object(parse_name(sc)));
-		break;
-
-	case SourceTokenDHLX::TT_NUMBER:
-		data = Tconv(string_t(st.getData()));
-		break;
-
-	default:
-		sc.unget(st);
-		return data;
-	}
-
-	st = sc.get();
-
-	switch (st.getType())
-	{
-	case SourceTokenDHLX::TT_OP_MINUS:
-		data -= parse_int_base<T, Tconv>(sc);
-		break;
-
-	case SourceTokenDHLX::TT_OP_PLUS:
-		data += parse_int_base<T, Tconv>(sc);
-		break;
-
-	default:
-		sc.unget(st);
-		return data;
-	}
-
-	return data;
-}
-
 int_s_t parse_int_s(SourceScannerDHLX & sc)
 {
-	return parse_int_base<int_s_t, to_int_s>(sc);
+	return parse__base<int_s_t, TEMPLATE_PUSH_Tconv_type(int_s)>(sc);
 }
 int_s_t parse_int_s(std::string const & value)
 {
@@ -542,7 +851,7 @@ int_s_t parse_int_s(std::string const & value)
 }
 int_t parse_int(SourceScannerDHLX & sc)
 {
-	return parse_int_base<int_t, to_int>(sc);
+	return parse__base<int_t, TEMPLATE_PUSH_Tconv_type(int)>(sc);
 }
 int_t parse_int(std::string const & value)
 {
@@ -550,7 +859,7 @@ int_t parse_int(std::string const & value)
 }
 int_l_t parse_int_l(SourceScannerDHLX & sc)
 {
-	return parse_int_base<int_l_t, to_int_l>(sc);
+	return parse__base<int_l_t, TEMPLATE_PUSH_Tconv_type(int_l)>(sc);
 }
 int_l_t parse_int_l(std::string const & value)
 {
@@ -607,51 +916,9 @@ obj_t parse_obj(std::string const & value, type_t const type)
 	return get_object(parse_int_s(value), type);
 }
 
-template <typename T, T (Tconv)(any_t const &)>
-T parse_real_base(SourceScannerDHLX & sc)
-{
-	T data(0);
-	SourceTokenDHLX st(sc.get());
-
-	switch (st.getType())
-	{
-	case SourceTokenDHLX::TT_IDENTIFIER:
-		sc.unget(st);
-		data = Tconv(get_object(parse_name(sc)));
-		break;
-
-	case SourceTokenDHLX::TT_NUMBER:
-		data = Tconv(string_t(st.getData()));
-		break;
-
-	default:
-		sc.unget(st);
-		return data;
-	}
-
-	st = sc.get();
-
-	switch (st.getType())
-	{
-	case SourceTokenDHLX::TT_OP_MINUS:
-		data -= parse_int_base<T, Tconv>(sc);
-		break;
-
-	case SourceTokenDHLX::TT_OP_PLUS:
-		data += parse_int_base<T, Tconv>(sc);
-		break;
-
-	default:
-		sc.unget(st);
-		return data;
-	}
-
-	return data;
-}
-
 real_s_t parse_real_s(SourceScannerDHLX & sc)
 {
-	return parse_real_base<real_s_t, to_real_s>(sc);
+	return parse__base<real_s_t, TEMPLATE_PUSH_Tconv_type(real_s)>(sc);
 }
 real_s_t parse_real_s(std::string const & value)
 {
@@ -659,7 +926,7 @@ real_s_t parse_real_s(std::string const & value)
 }
 real_t parse_real(SourceScannerDHLX & sc)
 {
-	return parse_real_base<real_t, to_real>(sc);
+	return parse__base<real_t, TEMPLATE_PUSH_Tconv_type(real)>(sc);
 }
 real_t parse_real(std::string const & value)
 {
@@ -667,50 +934,13 @@ real_t parse_real(std::string const & value)
 }
 real_l_t parse_real_l(SourceScannerDHLX & sc)
 {
-	return parse_real_base<real_l_t, to_real_l>(sc);
+	return parse__base<real_l_t, TEMPLATE_PUSH_Tconv_type(real_l)>(sc);
 }
 real_l_t parse_real_l(std::string const & value)
 {
 	return parse_num_base<real_l_t, parse_real_l, to_real_l, parse_real_l_unary, parse_real_l_unary, parse_real_l_function>(value);
 }
 
-template <typename T, T (Tconv)(any_t const &)>
-static T parse_string_base(SourceScannerDHLX & sc)
-{
-	T data;
-	SourceTokenDHLX st(sc.get());
-
-	switch (st.getType())
-	{
-	case SourceTokenDHLX::TT_IDENTIFIER:
-		sc.unget(st);
-		data = Tconv(get_object(parse_name(sc)));
-		break;
-
-	case SourceTokenDHLX::TT_STRING:
-		data = T(st.getData());
-		break;
-
-	default:
-		sc.unget(st);
-		return data;
-	}
-
-	st = sc.get();
-
-	switch (st.getType())
-	{
-	case SourceTokenDHLX::TT_OP_PLUS:
-		data += parse_string_base<T, Tconv>(sc);
-		break;
-
-	default:
-		sc.unget(st);
-		return data;
-	}
-
-	return data;
-}
 template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &), T (Tfunc)(std::string const &, std::vector<std::string> const &)>
 static T parse_string_base(std::string const & value)
 {
@@ -734,7 +964,7 @@ static T parse_string_base(std::string const & value)
 
 string_t parse_string(SourceScannerDHLX & sc)
 {
-	return parse_string_base<string_t, to_string>(sc);
+	return parse__base<string_t, TEMPLATE_PUSH_Tconv_type(string)>(sc);
 }
 string_t parse_string(std::string const & value)
 {
@@ -742,7 +972,7 @@ string_t parse_string(std::string const & value)
 }
 string8_t parse_string8(SourceScannerDHLX & sc)
 {
-	return parse_string_base<string8_t, to_string8>(sc);
+	return parse__base<string8_t, TEMPLATE_PUSH_Tconv_type(string8)>(sc);
 }
 string8_t parse_string8(std::string const & value)
 {
@@ -750,7 +980,7 @@ string8_t parse_string8(std::string const & value)
 }
 string16_t parse_string16(SourceScannerDHLX & sc)
 {
-	return parse_string_base<string16_t, to_string16>(sc);
+	return parse__base<string16_t, TEMPLATE_PUSH_Tconv_type(string16)>(sc);
 }
 string16_t parse_string16(std::string const & value)
 {
@@ -758,7 +988,7 @@ string16_t parse_string16(std::string const & value)
 }
 string32_t parse_string32(SourceScannerDHLX & sc)
 {
-	return parse_string_base<string32_t, to_string32>(sc);
+	return parse__base<string32_t, TEMPLATE_PUSH_Tconv_type(string32)>(sc);
 }
 string32_t parse_string32(std::string const & value)
 {
@@ -766,7 +996,7 @@ string32_t parse_string32(std::string const & value)
 }
 string80_t parse_string80(SourceScannerDHLX & sc)
 {
-	return parse_string_base<string80_t, to_string80>(sc);
+	return parse__base<string80_t, TEMPLATE_PUSH_Tconv_type(string80)>(sc);
 }
 string80_t parse_string80(std::string const & value)
 {
@@ -774,7 +1004,7 @@ string80_t parse_string80(std::string const & value)
 }
 string320_t parse_string320(SourceScannerDHLX & sc)
 {
-	return parse_string_base<string320_t, to_string320>(sc);
+	return parse__base<string320_t, TEMPLATE_PUSH_Tconv_type(string320)>(sc);
 }
 string320_t parse_string320(std::string const & value)
 {
@@ -783,7 +1013,7 @@ string320_t parse_string320(std::string const & value)
 
 ubyte_t parse_ubyte(SourceScannerDHLX & sc)
 {
-	return parse_int_base<ubyte_t, to_ubyte>(sc);
+	return parse__base<ubyte_t, TEMPLATE_PUSH_Tconv_type(ubyte)>(sc);
 }
 ubyte_t parse_ubyte(std::string const & value)
 {
@@ -791,7 +1021,7 @@ ubyte_t parse_ubyte(std::string const & value)
 }
 sword_t parse_sword(SourceScannerDHLX & sc)
 {
-	return parse_int_base<sword_t, to_sword>(sc);
+	return parse__base<sword_t, TEMPLATE_PUSH_Tconv_type(sword)>(sc);
 }
 sword_t parse_sword(std::string const & value)
 {
@@ -799,7 +1029,7 @@ sword_t parse_sword(std::string const & value)
 }
 uword_t parse_uword(SourceScannerDHLX & sc)
 {
-	return parse_int_base<uword_t, to_uword>(sc);
+	return parse__base<uword_t, TEMPLATE_PUSH_Tconv_type(uword)>(sc);
 }
 uword_t parse_uword(std::string const & value)
 {
@@ -807,7 +1037,7 @@ uword_t parse_uword(std::string const & value)
 }
 sdword_t parse_sdword(SourceScannerDHLX & sc)
 {
-	return parse_int_base<sdword_t, to_sdword>(sc);
+	return parse__base<sdword_t, TEMPLATE_PUSH_Tconv_type(sdword)>(sc);
 }
 sdword_t parse_sdword(std::string const & value)
 {
@@ -815,7 +1045,7 @@ sdword_t parse_sdword(std::string const & value)
 }
 udword_t parse_udword(SourceScannerDHLX & sc)
 {
-	return parse_int_base<udword_t, to_udword>(sc);
+	return parse__base<udword_t, TEMPLATE_PUSH_Tconv_type(udword)>(sc);
 }
 udword_t parse_udword(std::string const & value)
 {

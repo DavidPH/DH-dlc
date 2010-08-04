@@ -146,6 +146,9 @@ std::string make_string<string80_t>(string80_t const & in);
 template<>
 std::string make_string<string320_t>(string320_t const & in);
 
+template <class T>
+T num_from_string(std::string const & value);
+
 #define DECLARE_CONVERT(TYPE) \
 TYPE##_t to_##TYPE(any_t       const &); \
 TYPE##_t to_##TYPE(bool_t      const &); \
