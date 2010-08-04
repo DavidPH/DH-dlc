@@ -93,13 +93,15 @@ class SourceTokenDHLX
 			TT_OP_MINUS_EQUALS,       // -=
 			TT_OP_MINUS2,             // --
 			TT_OP_NOT,                // !
+			TT_OP_PARENTHESIS_C,      // )
+			TT_OP_PARENTHESIS_O,      // (
+			TT_OP_PERCENT,            // %
+			TT_OP_PERCENT_EQUALS,     // %=
 			TT_OP_PERIOD,             // .
 			TT_OP_PIPE,               // |
 			TT_OP_PIPE_EQUALS,        // |=
 			TT_OP_PIPE2,              // ||
 			TT_OP_PIPE2_EQUALS,       // ||=
-			TT_OP_PARENTHESIS_C,      // )
-			TT_OP_PARENTHESIS_O,      // (
 			TT_OP_PLUS,               // +
 			TT_OP_PLUS_EQUALS,        // +=
 			TT_OP_PLUS2,              // ++

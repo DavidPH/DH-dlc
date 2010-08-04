@@ -460,6 +460,8 @@ to_##TYPE, \
 to_##TYPE, \
 to_##TYPE
 
+template<typename T, TEMPLATE_TAKE_Tconv> T parse__base(SourceScannerDHLX &);
+
 // This will be removed once all LevelObjectData types are class'd.
 template<typename T>
 inline void parse__base_init(T & data)
@@ -565,6 +567,36 @@ inline void parse__base_part_STRING(T & data, SourceTokenDHLX const & st, Source
 {
 	sc.unget(st);
 }
+template<>
+inline void parse__base_part_STRING<string_t, TEMPLATE_PUSH_Tconv_type(string)>(string_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = string_t(st.getData());
+}
+template<>
+inline void parse__base_part_STRING<string8_t, TEMPLATE_PUSH_Tconv_type(string8)>(string8_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = string8_t(st.getData());
+}
+template<>
+inline void parse__base_part_STRING<string16_t, TEMPLATE_PUSH_Tconv_type(string16)>(string16_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = string16_t(st.getData());
+}
+template<>
+inline void parse__base_part_STRING<string32_t, TEMPLATE_PUSH_Tconv_type(string32)>(string32_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = string32_t(st.getData());
+}
+template<>
+inline void parse__base_part_STRING<string80_t, TEMPLATE_PUSH_Tconv_type(string80)>(string80_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = string80_t(st.getData());
+}
+template<>
+inline void parse__base_part_STRING<string320_t, TEMPLATE_PUSH_Tconv_type(string320)>(string320_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+{
+	data = string320_t(st.getData());
+}
 template<typename T, TEMPLATE_TAKE_Tconv>
 inline T parse__base_part(SourceScannerDHLX & sc)
 {
@@ -586,6 +618,11 @@ inline T parse__base_part(SourceScannerDHLX & sc)
 
 	case SourceTokenDHLX::TT_STRING:
 		parse__base_part_STRING<T, TEMPLATE_PUSH_Tconv>(data, st, sc);
+		break;
+
+	case SourceTokenDHLX::TT_OP_PARENTHESIS_O:
+		data = parse__base<T, TEMPLATE_PUSH_Tconv>(sc);
+		sc.get(SourceTokenDHLX::TT_OP_PARENTHESIS_C);
 		break;
 
 	default:
@@ -622,12 +659,32 @@ inline bool parse__base_math__int(T & data, SourceScannerDHLX & sc)
 
 	switch (st.getType())
 	{
+	case SourceTokenDHLX::TT_OP_AND:
+		data &= parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
+	case SourceTokenDHLX::TT_OP_ASTERIX:
+		data *= parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
 	case SourceTokenDHLX::TT_OP_MINUS:
 		data -= parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
 		return true;
 
+	case SourceTokenDHLX::TT_OP_PERCENT:
+		data %= parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
+	case SourceTokenDHLX::TT_OP_PIPE:
+		data |= parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
 	case SourceTokenDHLX::TT_OP_PLUS:
 		data += parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
+	case SourceTokenDHLX::TT_OP_SLASH:
+		data /= parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
 		return true;
 
 	default:
@@ -642,12 +699,20 @@ inline bool parse__base_math__real(T & data, SourceScannerDHLX & sc)
 
 	switch (st.getType())
 	{
+	case SourceTokenDHLX::TT_OP_ASTERIX:
+		data *= parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
 	case SourceTokenDHLX::TT_OP_MINUS:
 		data -= parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
 		return true;
 
 	case SourceTokenDHLX::TT_OP_PLUS:
 		data += parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
+		return true;
+
+	case SourceTokenDHLX::TT_OP_SLASH:
+		data /= parse__base_part<T, TEMPLATE_PUSH_Tconv>(sc);
 		return true;
 
 	default:
@@ -869,11 +934,12 @@ int_l_t parse_int_l(std::string const & value)
 name_t parse_name(SourceScannerDHLX & sc)
 {
 	std::vector<std::string> nameVector;
-	std::string nameElement;
 
 	SourceTokenDHLX nameToken(sc.get(SourceTokenDHLX::TT_IDENTIFIER));
 
-	nameElement = nameToken.getData();
+	std::string nameElement(nameToken.getData());
+
+	bool hasDynamic(false);
 
 	while (true)
 	{
@@ -883,17 +949,24 @@ name_t parse_name(SourceScannerDHLX & sc)
 		{
 			nameVector.push_back(nameElement);
 			nameElement = sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData();
+			hasDynamic  = false;
 		}
 		else if (nameToken.getType() == SourceTokenDHLX::TT_OP_BRACKET_O)
 		{
-			nameElement += '.';
+			if (hasDynamic)
+				nameElement += '.';
 			nameElement += make_string(parse_int_s(sc));
+			hasDynamic   = true;
+
 			sc.get(SourceTokenDHLX::TT_OP_BRACKET_C);
 		}
 		else if (nameToken.getType() == SourceTokenDHLX::TT_OP_CMP_LT)
 		{
-			nameElement += '.';
+			if (hasDynamic)
+				nameElement += '.';
 			nameElement += make_string(parse_string(sc));
+			hasDynamic   = true;
+
 			sc.get(SourceTokenDHLX::TT_OP_CMP_GT);
 		}
 		else

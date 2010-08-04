@@ -404,6 +404,15 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 
 		_type = TT_OP_NOT; return;
 
+	case '%':
+		nextChar = in.get();
+
+		if (nextChar == '=') {_type = TT_OP_PERCENT_EQUALS; return;}
+
+		in.unget(nextChar);
+
+		_type = TT_OP_PERCENT; return;
+
 	case '|':
 		nextChar = in.get();
 
@@ -587,13 +596,15 @@ std::ostream & operator << (std::ostream & out, SourceTokenDHLX::TokenType in)
 		case SourceTokenDHLX::TT_OP_MINUS_EQUALS:       return out << "TT_OP_MINUS_EQUALS";
 		case SourceTokenDHLX::TT_OP_MINUS2:             return out << "TT_OP_MINUS2";
 		case SourceTokenDHLX::TT_OP_NOT:                return out << "TT_OP_NOT";
+		case SourceTokenDHLX::TT_OP_PARENTHESIS_C:      return out << "TT_OP_PARENTHESIS_C";
+		case SourceTokenDHLX::TT_OP_PARENTHESIS_O:      return out << "TT_OP_PARENTHESIS_O";
+		case SourceTokenDHLX::TT_OP_PERCENT:            return out << "TT_OP_PERCENT";
+		case SourceTokenDHLX::TT_OP_PERCENT_EQUALS:     return out << "TT_OP_PERCENT_EQUALS";
 		case SourceTokenDHLX::TT_OP_PERIOD:             return out << "TT_OP_PERIOD";
 		case SourceTokenDHLX::TT_OP_PIPE:               return out << "TT_OP_PIPE";
 		case SourceTokenDHLX::TT_OP_PIPE_EQUALS:        return out << "TT_OP_PIPE_EQUALS";
 		case SourceTokenDHLX::TT_OP_PIPE2:              return out << "TT_OP_PIPE2";
 		case SourceTokenDHLX::TT_OP_PIPE2_EQUALS:       return out << "TT_OP_PIPE2_EQUALS";
-		case SourceTokenDHLX::TT_OP_PARENTHESIS_C:      return out << "TT_OP_PARENTHESIS_C";
-		case SourceTokenDHLX::TT_OP_PARENTHESIS_O:      return out << "TT_OP_PARENTHESIS_O";
 		case SourceTokenDHLX::TT_OP_PLUS:               return out << "TT_OP_PLUS";
 		case SourceTokenDHLX::TT_OP_PLUS_EQUALS:        return out << "TT_OP_PLUS_EQUALS";
 		case SourceTokenDHLX::TT_OP_PLUS2:              return out << "TT_OP_PLUS2";
