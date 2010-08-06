@@ -287,6 +287,8 @@ add_executable(DH-dlc
 	LevelObject/LevelObjectPointer.cpp
 	LevelObject/LevelObjectType.cpp
 
+	parsing/FunctionHandler.cpp
+
 	types/binary.cpp
 	types/int_t.cpp
 	types/real_t.cpp
