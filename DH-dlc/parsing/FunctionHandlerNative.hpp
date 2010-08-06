@@ -21,29 +21,33 @@
 
 */
 
+#include "FunctionHandler.hpp"
+
 #include "../SourceScanner.hpp"
 
-#include <map>
 #include <string>
 #include <vector>
 
 
 
 template<typename T>
-class FunctionHandler
+class FunctionHandlerNative : public FunctionHandler<T>
 {
 	public:
-		virtual T operator () (SourceScannerDHLX & sc) const = 0;
-		virtual T operator () (std::vector<std::string> const & args) const = 0;
+		typedef T(*funcDDL_t)(std::vector<std::string> const &);
+		typedef T(*funcDHLX_t)(SourceScannerDHLX &);
 
-		static FunctionHandler<T> const * add_function(std::string const & name, FunctionHandler<T> const * func);
-		static FunctionHandler<T> const & get_function(std::string const & name);
-		static bool                       has_function(std::string const & name);
+		explicit FunctionHandlerNative();
+		explicit FunctionHandlerNative(funcDDL_t);
+		explicit FunctionHandlerNative(funcDHLX_t);
+		explicit FunctionHandlerNative(funcDDL_t, funcDHLX_t);
+
+		virtual T operator () (SourceScannerDHLX & sc) const;
+		virtual T operator () (std::vector<std::string> const & args) const;
 
 	private:
-		typedef std::map<std::string, FunctionHandler<T> const *> func_map_t;
-
-		static func_map_t * func_map;
+		funcDDL_t  _funcDDL;
+		funcDHLX_t _funcDHLX;
 };
 
 

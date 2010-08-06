@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, 2010 David Hill
+    Copyright 2010 David Hill
 
     This file is part of DH-dlc.
 
@@ -35,18 +35,23 @@
 
 
 template<typename T>
+typename FunctionHandler<T>::func_map_t * FunctionHandler<T>::func_map;
+
+
+
+template<typename T>
 FunctionHandler<T> const * FunctionHandler<T>::add_function(std::string const & name, FunctionHandler<T> const * func)
 {
-	if (!function_map) function_map = new std::map<std::string, FunctionHandler<T> const *>;
+	if (!func_map) func_map = new func_map_t;
 
-	return (*function_map)[name] = func;
+	return (*func_map)[name] = func;
 }
 template<typename T>
 FunctionHandler<T> const & FunctionHandler<T>::get_function(std::string const & name)
 {
-	if (!function_map) throw UnknownFunctionException(name);
+	if (!func_map) throw UnknownFunctionException(name);
 
-	FunctionHandler<T> const * func = (*function_map)[name];
+	FunctionHandler<T> const * func = (*func_map)[name];
 
 	if (!func) throw UnknownFunctionException(name);
 
@@ -55,51 +60,31 @@ FunctionHandler<T> const & FunctionHandler<T>::get_function(std::string const & 
 template<typename T>
 bool FunctionHandler<T>::has_function(std::string const & name)
 {
-	if (!function_map) return false;
+	if (!func_map) return false;
 
-	return (*function_map)[name] != NULL;
-}
-
-template<typename T>
-T FunctionHandlerNative<T>::operator () (SourceScannerDHLX & sc) const
-{
-	if (!_funcDHLX) throw UnknownFunctionException("function not available in DHLX");
-
-	return _funcDHLX(sc);
-}
-template<typename T>
-T FunctionHandlerNative<T>::operator () (std::vector<std::string> const & args) const
-{
-	if (!_funcDDL) throw UnknownFunctionException("function not available in DDL");
-
-	return _funcDDL(args);
+	return (*func_map)[name] != NULL;
 }
 
 
 
-#define INSTANCE_TEMPLATE(TYPE) \
-template class FunctionHandlerNative<TYPE##_t>
-
-INSTANCE_TEMPLATE(bool);
-INSTANCE_TEMPLATE(int_s);
-INSTANCE_TEMPLATE(int);
-INSTANCE_TEMPLATE(int_l);
-INSTANCE_TEMPLATE(real_s);
-INSTANCE_TEMPLATE(real);
-INSTANCE_TEMPLATE(real_l);
-INSTANCE_TEMPLATE(string);
-INSTANCE_TEMPLATE(string8);
-INSTANCE_TEMPLATE(string16);
-INSTANCE_TEMPLATE(string32);
-INSTANCE_TEMPLATE(string80);
-INSTANCE_TEMPLATE(string320);
-INSTANCE_TEMPLATE(ubyte);
-INSTANCE_TEMPLATE(sword);
-INSTANCE_TEMPLATE(uword);
-INSTANCE_TEMPLATE(sdword);
-INSTANCE_TEMPLATE(udword);
-
-#undef INSTANCE_TEMPLATE
+template class FunctionHandler<bool_t>;
+template class FunctionHandler<int_s_t>;
+template class FunctionHandler<int_t>;
+template class FunctionHandler<int_l_t>;
+template class FunctionHandler<real_s_t>;
+template class FunctionHandler<real_t>;
+template class FunctionHandler<real_l_t>;
+template class FunctionHandler<string_t>;
+template class FunctionHandler<string8_t>;
+template class FunctionHandler<string16_t>;
+template class FunctionHandler<string32_t>;
+template class FunctionHandler<string80_t>;
+template class FunctionHandler<string320_t>;
+template class FunctionHandler<ubyte_t>;
+template class FunctionHandler<sword_t>;
+template class FunctionHandler<uword_t>;
+template class FunctionHandler<sdword_t>;
+template class FunctionHandler<udword_t>;
 
 
 
