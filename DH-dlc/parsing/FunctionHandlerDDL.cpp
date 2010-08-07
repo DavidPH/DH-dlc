@@ -88,9 +88,7 @@ T FunctionHandlerDDL<T>::operator () (std::vector<std::string> const & args) con
 	funcObj->addData(_data);
 
 	obj_t returnValue = funcObj->getObject(name_t::name_return_value);
-	// XXX: Need to be able to do conversion with template types.
-	//return Tconv(returnValue);
-	return T();
+	return convert<T, obj_t>(returnValue);
 }
 
 
