@@ -21,6 +21,9 @@
 
 */
 
+#ifndef HPP_FunctionHandler__PARSING_
+#define HPP_FunctionHandler__PARSING_
+
 #include "../SourceScanner.hpp"
 
 #include <map>
@@ -45,6 +48,10 @@ class FunctionHandler
 
 		static func_map_t * func_map;
 };
+
+
+
+#endif /* HPP_FunctionHandler__PARSING_ */
 
 
 

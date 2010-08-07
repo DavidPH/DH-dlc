@@ -18,44 +18,40 @@
 */
 
 /*
-
+	Handles user-defined DDL functions.
 */
 
-#ifndef HPP_FunctionHandlerNative__PARSING_
-#define HPP_FunctionHandlerNative__PARSING_
+#ifndef HPP_FunctionHandlerDDL__PARSING_
+#define HPP_FunctionHandlerDDL__PARSING_
 
 #include "FunctionHandler.hpp"
 
-#include "../SourceScanner.hpp"
+#include "../types.hpp"
 
-#include <string>
-#include <vector>
+#include "../LevelObject/LevelObjectType.hpp"
 
 
 
 template<typename T>
-class FunctionHandlerNative : public FunctionHandler<T>
+class FunctionHandlerDDL : public FunctionHandler<T>
 {
 	public:
-		typedef T(*funcDDL_t)(std::vector<std::string> const &);
-		typedef T(*funcDHLX_t)(SourceScannerDHLX &);
-
-		explicit FunctionHandlerNative();
-		explicit FunctionHandlerNative(funcDDL_t);
-		explicit FunctionHandlerNative(funcDHLX_t);
-		explicit FunctionHandlerNative(funcDDL_t, funcDHLX_t);
+		explicit FunctionHandlerDDL();
+		explicit FunctionHandlerDDL(std::string const & data);
+		explicit FunctionHandlerDDL(std::string const & data, std::vector<type_t> const & argt);
+		virtual ~FunctionHandlerDDL();
 
 		virtual T operator () (SourceScannerDHLX & sc) const;
 		virtual T operator () (std::vector<std::string> const & args) const;
 
 	private:
-		funcDDL_t  _funcDDL;
-		funcDHLX_t _funcDHLX;
+		std::vector<type_t> _argt;
+		std::string _data;
 };
 
 
 
-#endif /* HPP_FunctionHandlerNative__PARSING_ */
+#endif /* HPP_FunctionHandlerDDL__PARSING_ */
 
 
 

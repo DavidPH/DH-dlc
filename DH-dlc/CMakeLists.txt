@@ -288,6 +288,7 @@ add_executable(DH-dlc
 	LevelObject/LevelObjectType.cpp
 
 	parsing/FunctionHandler.cpp
+	parsing/FunctionHandlerDDL.cpp
 	parsing/FunctionHandlerNative.cpp
 
 	types/binary.cpp
