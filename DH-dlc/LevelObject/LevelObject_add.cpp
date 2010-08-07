@@ -290,7 +290,7 @@ bool LevelObject::addDataIf(std::string const & data, std::vector<std::string> c
 			if (
 				(
 					!(op_local ? hasObject(name_t(*it)) : has_object(name_t(*it))) ||
-					!to_bool(op_local ? getObject(name_t(*it)) : get_object(name_t(*it)))
+					!convert<bool_t, obj_t>(op_local ? getObject(name_t(*it)) : get_object(name_t(*it)))
 				) != op_not
 			)
 				CHECK_RESULT
@@ -300,7 +300,7 @@ bool LevelObject::addDataIf(std::string const & data, std::vector<std::string> c
 			if (
 				(
 					(op_local ? hasObject(name_t(*it)) : has_object(name_t(*it))) &&
-					to_bool(op_local ? getObject(name_t(*it)) : get_object(name_t(*it)))
+					convert<bool_t, obj_t>(op_local ? getObject(name_t(*it)) : get_object(name_t(*it)))
 				) != op_not
 			)
 				CHECK_RESULT

@@ -81,9 +81,9 @@ class int_t
 
 		friend int_t sqrt(int_t const &);
 
-		friend int_l_t  to_int_l (int_t const &);
-		friend real_t   to_real  (int_t const &);
-		friend real_l_t to_real_l(int_t const &);
+		friend int_l_t  convert<int_l_t,  int_t>(int_t const &);
+		friend real_t   convert<real_t,   int_t>(int_t const &);
+		friend real_l_t convert<real_l_t, int_t>(int_t const &);
 
 
 
@@ -145,9 +145,9 @@ class int_l_t
 
 		friend int_l_t sqrt(int_l_t const &);
 
-		friend int_t    to_int   (int_l_t const &);
-		friend real_t   to_real  (int_l_t const &);
-		friend real_l_t to_real_l(int_l_t const &);
+		friend int_t    convert<int_t,    int_l_t>(int_l_t const &);
+		friend real_t   convert<real_t,   int_l_t>(int_l_t const &);
+		friend real_l_t convert<real_l_t, int_l_t>(int_l_t const &);
 
 	private:
 		#if USE_GMPLIB

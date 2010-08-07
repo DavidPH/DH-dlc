@@ -125,18 +125,18 @@ static const name_t name_y                ("y");
 static const name_t name_zoneboundry      ("zoneboundry");
 
 #define CHECKFLAG(ASSIGN, FLAG, VALUE) \
-if (hasObject(FLAG) && to_bool(getObject(FLAG))) \
+if (hasObject(FLAG) && convert<bool_t, obj_t>(getObject(FLAG))) \
 	ASSIGN |= VALUE; \
 else (void) 0
 
 #define CHECKFLAGNOT(ASSIGN, FLAG, VALUE) \
-if (!hasObject(FLAG) || !to_bool(getObject(FLAG))) \
+if (!hasObject(FLAG) || !convert<bool_t, obj_t>(getObject(FLAG))) \
 	ASSIGN |= VALUE; \
 else (void) 0
 
 #define CHECKVALUE1_ASSIGN(ASSIGN, NAME, TYPE) \
 if (hasObject(NAME)) \
-	ASSIGN = to_##TYPE(getObject(NAME)); \
+	ASSIGN = convert<TYPE##_t, obj_t>(getObject(NAME)); \
 else
 
 #define CHECKVALUE2_ASSIGN(ASSIGN, NAME, TYPE, DEFAULT) \
@@ -145,7 +145,7 @@ CHECKVALUE1_ASSIGN(ASSIGN, NAME, TYPE) \
 
 #define CHECKVALUE1_BINARY(NAME, TYPE) \
 if (hasObject(NAME)) \
-	to_##TYPE(getObject(NAME)).encodeBinary(out); \
+	convert<TYPE##_t, obj_t>(getObject(NAME)).encodeBinary(out); \
 else
 
 #define CHECKVALUE2_BINARY(NAME, TYPE, DEFAULT) \
@@ -303,7 +303,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 
 	if (_type == type_t::type_linedef())
 	{
-		int_l_t special = to_int_l(getObject(name_special));
+		int_l_t special = convert<int_l_t, obj_t>(getObject(name_special));
 
 		if (special != int_l_t(270)) return;
 
@@ -329,41 +329,41 @@ void LevelObject::encodeExtraData(std::ostream & out)
 		{
 			out << "\textflags 0";
 
-			if (hasObject(name_monstercross) && to_bool(getObject(name_monstercross)))
+			if (hasObject(name_monstercross) && convert<bool_t, obj_t>(getObject(name_monstercross)))
 				out << "|CROSS";
-			if (hasObject(name_playercross) && to_bool(getObject(name_playercross)))
+			if (hasObject(name_playercross) && convert<bool_t, obj_t>(getObject(name_playercross)))
 				out << "|CROSS";
 
-			if (hasObject(name_monsteruse) && to_bool(getObject(name_monsteruse)))
+			if (hasObject(name_monsteruse) && convert<bool_t, obj_t>(getObject(name_monsteruse)))
 				out << "|USE";
-			if (hasObject(name_playeruse) && to_bool(getObject(name_playeruse)))
+			if (hasObject(name_playeruse) && convert<bool_t, obj_t>(getObject(name_playeruse)))
 				out << "|USE";
 
-			if (hasObject(name_impact) && to_bool(getObject(name_impact)))
+			if (hasObject(name_impact) && convert<bool_t, obj_t>(getObject(name_impact)))
 				out << "|IMPACT";
 
-			if (hasObject(name_monsterpush) && to_bool(getObject(name_monsterpush)))
+			if (hasObject(name_monsterpush) && convert<bool_t, obj_t>(getObject(name_monsterpush)))
 				out << "|PUSH";
-			if (hasObject(name_playerpush) && to_bool(getObject(name_playerpush)))
+			if (hasObject(name_playerpush) && convert<bool_t, obj_t>(getObject(name_playerpush)))
 				out << "|PUSH";
 
-			if (hasObject(name_playercross) && to_bool(getObject(name_playercross)))
+			if (hasObject(name_playercross) && convert<bool_t, obj_t>(getObject(name_playercross)))
 				out << "|PLAYER";
-			if (hasObject(name_playeruse) && to_bool(getObject(name_playeruse)))
+			if (hasObject(name_playeruse) && convert<bool_t, obj_t>(getObject(name_playeruse)))
 				out << "|PLAYER";
-			if (hasObject(name_playerpush) && to_bool(getObject(name_playerpush)))
+			if (hasObject(name_playerpush) && convert<bool_t, obj_t>(getObject(name_playerpush)))
 				out << "|PLAYER";
 
-			if (hasObject(name_monsteractivate) && to_bool(getObject(name_monsteractivate)))
+			if (hasObject(name_monsteractivate) && convert<bool_t, obj_t>(getObject(name_monsteractivate)))
 				out << "|MONSTER";
 
-			if (hasObject(name_missilecross) && to_bool(getObject(name_missilecross)))
+			if (hasObject(name_missilecross) && convert<bool_t, obj_t>(getObject(name_missilecross)))
 				out << "|MISSILE";
 
-			if (hasObject(name_repeatspecial) && to_bool(getObject(name_repeatspecial)))
+			if (hasObject(name_repeatspecial) && convert<bool_t, obj_t>(getObject(name_repeatspecial)))
 				out << "|REPEAT";
 
-			if (hasObject(name_firstsideonly) && to_bool(getObject(name_firstsideonly)))
+			if (hasObject(name_firstsideonly) && convert<bool_t, obj_t>(getObject(name_firstsideonly)))
 				out << "|1SONLY";
 
 			out << "\n";
@@ -413,7 +413,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 
 	if (_type == type_t::type_thing())
 	{
-		int_l_t type = to_int_l(getObject(name_type));
+		int_l_t type = convert<int_l_t, obj_t>(getObject(name_type));
 
 		if (type != int_l_t(5004)) return;
 
@@ -434,42 +434,42 @@ void LevelObject::encodeExtraData(std::ostream & out)
 		{
 			out << "\toptions 0";
 
-			if (hasObject(name_skill1) && to_bool(getObject(name_skill1)))
+			if (hasObject(name_skill1) && convert<bool_t, obj_t>(getObject(name_skill1)))
 				out << "|EASY";
-			if (hasObject(name_skill2) && to_bool(getObject(name_skill2)))
+			if (hasObject(name_skill2) && convert<bool_t, obj_t>(getObject(name_skill2)))
 				out << "|EASY";
 
-			if (hasObject(name_skill3) && to_bool(getObject(name_skill3)))
+			if (hasObject(name_skill3) && convert<bool_t, obj_t>(getObject(name_skill3)))
 				out << "|NORMAL";
 
-			if (hasObject(name_skill4) && to_bool(getObject(name_skill4)))
+			if (hasObject(name_skill4) && convert<bool_t, obj_t>(getObject(name_skill4)))
 				out << "|HARD";
-			if (hasObject(name_skill5) && to_bool(getObject(name_skill5)))
+			if (hasObject(name_skill5) && convert<bool_t, obj_t>(getObject(name_skill5)))
 				out << "|HARD";
 
-			if (hasObject(name_ambush) && to_bool(getObject(name_ambush)))
+			if (hasObject(name_ambush) && convert<bool_t, obj_t>(getObject(name_ambush)))
 				out << "|AMBUSH";
 
-			if (!hasObject(name_single) || !to_bool(getObject(name_single)))
+			if (!hasObject(name_single) || !convert<bool_t, obj_t>(getObject(name_single)))
 				out << "|NOTSINGLE";
 
-			if (!hasObject(name_dm) || !to_bool(getObject(name_dm)))
+			if (!hasObject(name_dm) || !convert<bool_t, obj_t>(getObject(name_dm)))
 				out << "|NOTDM";
 
-			if (!hasObject(name_coop) || !to_bool(getObject(name_coop)))
+			if (!hasObject(name_coop) || !convert<bool_t, obj_t>(getObject(name_coop)))
 				out << "|NOTCOOP";
 
-			if (hasObject(name_friend) && to_bool(getObject(name_friend)))
+			if (hasObject(name_friend) && convert<bool_t, obj_t>(getObject(name_friend)))
 				out << "|FRIEND";
 
-			if (hasObject(name_dormant) && to_bool(getObject(name_dormant)))
+			if (hasObject(name_dormant) && convert<bool_t, obj_t>(getObject(name_dormant)))
 				out << "|DORMANT";
 
 			out << "\n";
 		}
 
 		if (hasObject(name_id))
-			out << "\ttid " << to_int_l(getObject(name_id)) << '\n';
+			out << "\ttid " << convert<int_l_t, obj_t>(getObject(name_id)) << '\n';
 
 		out << "\targs {";
 
@@ -652,18 +652,18 @@ void LevelObject::encodeHexen(std::ostream & out)
 			CHECKFLAG(flags, name_blockplayers,    uword_t(0x4000U)); // Hexen
 			CHECKFLAG(flags, name_blockeverything, uword_t(0x8000U)); // Hexen
 
-			if (hasObject(name_playeruse) && to_bool(getObject(name_playeruse)))
-				if (hasObject(name_playercross) && to_bool(getObject(name_playercross)))
+			if (hasObject(name_playeruse) && convert<bool_t, obj_t>(getObject(name_playeruse)))
+				if (hasObject(name_playercross) && convert<bool_t, obj_t>(getObject(name_playercross)))
 					flags |= uword_t(0x1800U);
 				else
 					flags |= uword_t(0x0400U);
-			else if (hasObject(name_monstercross) && to_bool(getObject(name_monstercross)))
+			else if (hasObject(name_monstercross) && convert<bool_t, obj_t>(getObject(name_monstercross)))
 				flags |= uword_t(0x0800U);
-			else if (hasObject(name_impact) && to_bool(getObject(name_impact)))
+			else if (hasObject(name_impact) && convert<bool_t, obj_t>(getObject(name_impact)))
 				flags |= uword_t(0x0C00U);
-			else if (hasObject(name_playerpush) && to_bool(getObject(name_playerpush)))
+			else if (hasObject(name_playerpush) && convert<bool_t, obj_t>(getObject(name_playerpush)))
 				flags |= uword_t(0x1000U);
-			else if (hasObject(name_missilecross) && to_bool(getObject(name_missilecross)))
+			else if (hasObject(name_missilecross) && convert<bool_t, obj_t>(getObject(name_missilecross)))
 				flags |= uword_t(0x1400U);
 
 			flags.encodeBinary(out);

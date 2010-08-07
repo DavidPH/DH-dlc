@@ -75,9 +75,9 @@ class real_t
 
 		friend real_t sqrt(real_t const &);
 
-		friend int_t    to_int   (real_t const &);
-		friend int_l_t  to_int_l (real_t const &);
-		friend real_l_t to_real_l(real_t const &);
+		friend int_t    convert<int_t,    real_t>(real_t const &);
+		friend int_l_t  convert<int_l_t,  real_t>(real_t const &);
+		friend real_l_t convert<real_l_t, real_t>(real_t const &);
 
 		friend real_t acos(real_t const &);
 		friend real_t asin(real_t const &);
@@ -125,9 +125,9 @@ class real_l_t
 
 		friend real_l_t sqrt(real_l_t const &);
 
-		friend int_t    to_int   (real_l_t const &);
-		friend int_l_t  to_int_l (real_l_t const &);
-		friend real_t   to_real  (real_l_t const &);
+		friend int_t   convert<int_t,   real_l_t>(real_l_t const &);
+		friend int_l_t convert<int_l_t, real_l_t>(real_l_t const &);
+		friend real_t  convert<real_t,  real_l_t>(real_l_t const &);
 
 		friend real_l_t acos(real_l_t const &);
 		friend real_l_t asin(real_l_t const &);

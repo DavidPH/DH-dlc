@@ -149,116 +149,12 @@ std::string make_string<string320_t>(string320_t const & in);
 template <class T>
 T num_from_string(std::string const & value);
 
-#define DECLARE_CONVERT(TYPE) \
-TYPE##_t to_##TYPE(any_t       const &); \
-TYPE##_t to_##TYPE(bool_t      const &); \
-TYPE##_t to_##TYPE(int_s_t     const &); \
-TYPE##_t to_##TYPE(int_t       const &); \
-TYPE##_t to_##TYPE(int_l_t     const &); \
-TYPE##_t to_##TYPE(obj_t              ); \
-TYPE##_t to_##TYPE(real_s_t    const &); \
-TYPE##_t to_##TYPE(real_t      const &); \
-TYPE##_t to_##TYPE(real_l_t    const &); \
-TYPE##_t to_##TYPE(string_t    const &); \
-TYPE##_t to_##TYPE(string8_t   const &); \
-TYPE##_t to_##TYPE(string16_t  const &); \
-TYPE##_t to_##TYPE(string32_t  const &); \
-TYPE##_t to_##TYPE(string80_t  const &); \
-TYPE##_t to_##TYPE(string320_t const &); \
-TYPE##_t to_##TYPE(ubyte_t     const &); \
-TYPE##_t to_##TYPE(sword_t     const &); \
-TYPE##_t to_##TYPE(uword_t     const &); \
-TYPE##_t to_##TYPE(sdword_t    const &); \
-TYPE##_t to_##TYPE(udword_t    const &); \
-
-DECLARE_CONVERT(any)
-DECLARE_CONVERT(bool)
-DECLARE_CONVERT(int_s)
-DECLARE_CONVERT(int)
-DECLARE_CONVERT(int_l)
-DECLARE_CONVERT(obj)
-DECLARE_CONVERT(real_s)
-DECLARE_CONVERT(real)
-DECLARE_CONVERT(real_l)
-DECLARE_CONVERT(string)
-DECLARE_CONVERT(string8)
-DECLARE_CONVERT(string16)
-DECLARE_CONVERT(string32)
-DECLARE_CONVERT(string80)
-DECLARE_CONVERT(string320)
-DECLARE_CONVERT(ubyte)
-DECLARE_CONVERT(sword)
-DECLARE_CONVERT(uword)
-DECLARE_CONVERT(sdword)
-DECLARE_CONVERT(udword)
-
-#undef DECLARE_CONVERT
 
 
+template<typename Tto, typename Tfrom>
+Tto convert(Tfrom const &);
 
-#define TEMPLATE_TAKE_Tconv \
-T(Tconv_any)      (any_t       const &), \
-T(Tconv_bool)     (bool_t      const &), \
-T(Tconv_int_s)    (int_s_t     const &), \
-T(Tconv_int)      (int_t       const &), \
-T(Tconv_int_l)    (int_l_t     const &), \
-T(Tconv_obj)      (obj_t              ), \
-T(Tconv_real_s)   (real_s_t    const &), \
-T(Tconv_real)     (real_t      const &), \
-T(Tconv_real_l)   (real_l_t    const &), \
-T(Tconv_string)   (string_t    const &), \
-T(Tconv_string8)  (string8_t   const &), \
-T(Tconv_string16) (string16_t  const &), \
-T(Tconv_string32) (string32_t  const &), \
-T(Tconv_string80) (string80_t  const &), \
-T(Tconv_string320)(string320_t const &), \
-T(Tconv_ubyte)    (ubyte_t     const &), \
-T(Tconv_sword)    (sword_t     const &), \
-T(Tconv_uword)    (uword_t     const &), \
-T(Tconv_sdword)   (sdword_t    const &), \
-T(Tconv_udword)   (udword_t    const &)
-#define TEMPLATE_PUSH_Tconv \
-Tconv_any,       \
-Tconv_bool,      \
-Tconv_int_s,     \
-Tconv_int,       \
-Tconv_int_l,     \
-Tconv_obj,       \
-Tconv_real_s,    \
-Tconv_real,      \
-Tconv_real_l,    \
-Tconv_string,    \
-Tconv_string8,   \
-Tconv_string16,  \
-Tconv_string32,  \
-Tconv_string80,  \
-Tconv_string320, \
-Tconv_ubyte,     \
-Tconv_sword,     \
-Tconv_uword,     \
-Tconv_sdword,    \
-Tconv_udword
-#define TEMPLATE_PUSH_Tconv_type(TYPE) \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE, \
-to_##TYPE
+
 
 #define TEMPLATE_TAKE_TfuncDDL \
 T(Tfunc)(std::string const &, std::vector<std::string> const &), \
@@ -278,20 +174,16 @@ parse_##TYPE##_unary,    \
 parse_##TYPE##_const
 
 #define TEMPLATE_TAKE_DDL \
-typename T,          \
-TEMPLATE_TAKE_Tconv, \
+typename T, \
 TEMPLATE_TAKE_TfuncDDL
 #define TEMPLATE_TAKE_DHLX \
-typename T,          \
-TEMPLATE_TAKE_Tconv, \
+typename T, \
 TEMPLATE_TAKE_TfuncDHLX
 #define TEMPLATE_PUSH \
-T,                   \
-TEMPLATE_PUSH_Tconv, \
+T, \
 TEMPLATE_PUSH_Tfunc
 #define TEMPLATE_PUSH_type(TYPE) \
-TYPE##_t,                       \
-TEMPLATE_PUSH_Tconv_type(TYPE), \
+TYPE##_t, \
 TEMPLATE_PUSH_Tfunc_type(TYPE)
 
 

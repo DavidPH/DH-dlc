@@ -287,7 +287,7 @@ void LevelObject::setType(type_t const newType, std::string const & value)
 	else if (_type == type_t::type_sdword())     _data = parse_sdword(value);
 	else if (_type == type_t::type_udword())     _data = parse_udword(value);
 
-	else if (_data.getType() != any_t::OBJMAP_T) _data = to_obj(_data)->_data.getObjMap();
+	else if (_data.getType() != any_t::OBJMAP_T) _data = convert<obj_t, any_t>(_data)->_data.getObjMap();
 
 	add_object(name_t(""), this);
 }

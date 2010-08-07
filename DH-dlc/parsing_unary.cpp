@@ -39,7 +39,7 @@
 
 #define CONST_PI(TYPE)			\
 if (opString == function_name_pi())	\
-	return to_##TYPE(pi());		\
+	return convert<TYPE##_t, real_t>(pi());		\
 else (void) 0
 
 #define CONST_RANDOM(TYPE)		\
@@ -80,22 +80,22 @@ else (void) 0
 if (opString == function_name_##NAME())				\
 {								\
 	CALC_TYPE##_t clampValue =				\
-		to_##CALC_TYPE(parse_##TYPE(value));		\
+		convert<CALC_TYPE##_t, TYPE##_t>(parse_##TYPE(value));		\
 								\
 	while (clampValue >= CALC_TYPE##_t(MAX))       clampValue -= CALC_TYPE##_t(MAX);	\
 	while (clampValue < CALC_TYPE##_t(int_s_t(0))) clampValue += CALC_TYPE##_t(MAX);	\
 								\
-	return to_##TYPE(clampValue);				\
+	return convert<TYPE##_t, CALC_TYPE##_t>(clampValue);				\
 }								\
 else (void) 0
 
 #define UNARY_BYTEANGLE(TYPE) UNARY_clamp(TYPE, byteangle, int_s_t(256), TYPE)
 #define UNARY_DEGREES(TYPE)   UNARY_clamp(TYPE, degrees,   int_s_t(360), TYPE)
-#define UNARY_RADIANS(TYPE)   UNARY_clamp(TYPE, radians,   to_real_l(pi()*real_t(2)), real_l)
+#define UNARY_RADIANS(TYPE)   UNARY_clamp(TYPE, radians,   (convert<real_l_t, real_t>(pi()*real_t(2))), real_l)
 
 #define UNARY_convert(TYPE, NAME, EXPR)						\
 if (opString == function_name_##NAME())						\
-	return to_##TYPE(real_t( to_real(parse_##TYPE(value)) * (EXPR) ));	\
+	return convert<TYPE##_t, real_t>(real_t( convert<real_t, TYPE##_t>(parse_##TYPE(value)) * (EXPR) ));	\
 else (void) 0
 
 #define UNARY_BYTE2DEG(TYPE) UNARY_convert(TYPE, byte2deg, (real_t(360.0) / real_t(256.0)))
@@ -112,7 +112,7 @@ else (void) 0
 
 #define UNARY_ROUND(TYPE) \
 if (opString == function_name_round()) \
-	return to_##TYPE(to_int_l(TYPE##_t(parse_##TYPE(value) + TYPE##_t(0.5)))); \
+	return convert<TYPE##_t, int_l_t>(convert<int_l_t, TYPE##_t>(TYPE##_t(parse_##TYPE(value) + TYPE##_t(0.5)))); \
 else (void) 0
 
 #define UNARY_common(TYPE)	\

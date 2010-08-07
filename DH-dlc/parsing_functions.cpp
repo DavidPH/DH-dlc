@@ -116,7 +116,7 @@ parsing_FunctionAdder_##TYPE##_##FUNC##_##NAME \
 #define ADD_FUNCTION2(TYPE1, TYPE2, FUNC, NAME) \
 static parsing_FunctionAdder<TYPE1##_func_t> \
 parsing_FunctionAdder_##TYPE1##_##TYPE2##_##FUNC##_##NAME \
-(TYPE1##_func_map, #NAME, &parse_function_##FUNC<TYPE2##_t, to_##TYPE2, parse_##TYPE2>)
+(TYPE1##_func_map, #NAME, &parse_function_##FUNC<TYPE2##_t, convert<TYPE2##_t, any_t>, parse_##TYPE2>)
 
 #define ADD_FUNCTION(TYPE, FUNC, NAME) \
 ADD_FUNCTION2(TYPE, TYPE, FUNC, NAME)
@@ -345,7 +345,7 @@ TYPE##_t parse_##TYPE##_function(std::string const & function, SourceScannerDHLX
 } \
 TYPE##_t parse_##TYPE##_function(std::string const & opString, std::vector<std::string> const & args) \
 { \
-	return parse__function<TYPE##_t, TYPE##_func_t, to_##TYPE>(opString, args, TYPE##_func_map, TYPE_NAME); \
+	return parse__function<TYPE##_t, TYPE##_func_t, convert<TYPE##_t, any_t> >(opString, args, TYPE##_func_map, TYPE_NAME); \
 }
 template <class T, class Tfunc, T(Tconv)(any_t const &)>
 T parse__function(std::string const & opString, std::vector<std::string> const & args, std::map<std::string, Tfunc> & TfuncMap, char const * Tname)

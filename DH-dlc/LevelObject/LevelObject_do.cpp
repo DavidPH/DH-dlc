@@ -217,7 +217,7 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 	else if (command == command_name_return() && _data.getType() == any_t::OBJMAP_T)
 	{
 		obj_t returnType  = getObject(name_t::name_return_type);
-		obj_t returnValue = create(type_t::get_type(to_string(returnType).makeString()), st.getBase(0));
+		obj_t returnValue = create(type_t::get_type(convert<string_t, obj_t>(returnType).makeString()), st.getBase(0));
 		addObject(name_t::name_return_value, returnValue);
 		_isReturned = 1;
 	}

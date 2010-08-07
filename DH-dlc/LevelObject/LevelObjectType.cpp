@@ -125,7 +125,7 @@ LevelObjectType LevelObjectType::get_type(std::string const & type_name)
 	{
 		obj_t return_type = get_object(name_t::name_return_type);
 
-		return get_type(to_string(return_type).makeString());
+		return get_type(convert<string_t, obj_t>(return_type).makeString());
 	}
 
 	throw InvalidTypeException(type_name);

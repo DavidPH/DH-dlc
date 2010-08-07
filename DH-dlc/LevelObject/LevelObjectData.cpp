@@ -394,31 +394,31 @@ TYPE##_t LevelObjectData::FUNC_NAME() const \
 	{ \
 	case NULL_T: throw std::invalid_argument("LevelObjectData(NULL_T)->" #FUNC_NAME "()"); \
 		\
-	case BOOL_T: return to_##TYPE( _valBool); \
+	case BOOL_T: return convert<TYPE##_t, bool_t>( _valBool); \
 		\
-	case INT_S_T: return to_##TYPE( _valIntShort); \
-	case INT_T:   return to_##TYPE(*_valInt); \
-	case INT_L_T: return to_##TYPE(*_valIntLong); \
+	case INT_S_T: return convert<TYPE##_t, int_s_t>( _valIntShort); \
+	case INT_T:   return convert<TYPE##_t, int_t>  (*_valInt); \
+	case INT_L_T: return convert<TYPE##_t, int_l_t>(*_valIntLong); \
 		\
-	case OBJ_T:    return to_##TYPE(*_valObj); \
+	case OBJ_T:    return convert<TYPE##_t, obj_t>(*_valObj); \
 	case OBJMAP_T: throw std::invalid_argument("LevelObjectData(OBJMAP_T)->" #FUNC_NAME "()"); \
 		\
-	case REAL_S_T: return to_##TYPE(*_valRealShort); \
-	case REAL_T:   return to_##TYPE(*_valReal); \
-	case REAL_L_T: return to_##TYPE(*_valRealLong); \
+	case REAL_S_T: return convert<TYPE##_t, real_s_t>(*_valRealShort); \
+	case REAL_T:   return convert<TYPE##_t, real_t>  (*_valReal); \
+	case REAL_L_T: return convert<TYPE##_t, real_l_t>(*_valRealLong); \
 		\
-	case STRING_T:    return to_##TYPE(*_valString); \
-	case STRING8_T:   return to_##TYPE(*_valString8); \
-	case STRING16_T:  return to_##TYPE(*_valString16); \
-	case STRING32_T:  return to_##TYPE(*_valString32); \
-	case STRING80_T:  return to_##TYPE(*_valString80); \
-	case STRING320_T: return to_##TYPE(*_valString320); \
+	case STRING_T:    return convert<TYPE##_t, string_t>   (*_valString); \
+	case STRING8_T:   return convert<TYPE##_t, string8_t>  (*_valString8); \
+	case STRING16_T:  return convert<TYPE##_t, string16_t> (*_valString16); \
+	case STRING32_T:  return convert<TYPE##_t, string32_t> (*_valString32); \
+	case STRING80_T:  return convert<TYPE##_t, string80_t> (*_valString80); \
+	case STRING320_T: return convert<TYPE##_t, string320_t>(*_valString320); \
 		\
-	case UBYTE_T:  return to_##TYPE(*_valUByte); \
-	case SWORD_T:  return to_##TYPE(*_valSWord); \
-	case UWORD_T:  return to_##TYPE(*_valUWord); \
-	case SDWORD_T: return to_##TYPE(*_valSDWord); \
-	case UDWORD_T: return to_##TYPE(*_valUDWord); \
+	case UBYTE_T:  return convert<TYPE##_t, ubyte_t> (*_valUByte); \
+	case SWORD_T:  return convert<TYPE##_t, sword_t> (*_valSWord); \
+	case UWORD_T:  return convert<TYPE##_t, uword_t> (*_valUWord); \
+	case SDWORD_T: return convert<TYPE##_t, sdword_t>(*_valSDWord); \
+	case UDWORD_T: return convert<TYPE##_t, udword_t>(*_valUDWord); \
 	} \
 	\
 	return TYPE##_t(); \

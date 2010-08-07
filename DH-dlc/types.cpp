@@ -49,7 +49,7 @@
 
 
 
-template <typename T>
+template<typename T>
 bool_t bool_from_string(T const & value)
 {
 	if (value == T("false") || value == T("FALSE")) return false;
@@ -58,13 +58,13 @@ bool_t bool_from_string(T const & value)
 	return value != T();
 }
 
-template <class T, T (Ca)(any_t const &), T (Ci)(int_s_t const &)>
+template<typename T>
 T from_obj_t(obj_t o)
 {
 	if (o->getData().getType() == any_t::OBJMAP_T)
-		return Ci(get_object_index(o));
+		return convert<T, int_s_t>(get_object_index(o));
 	else
-		return Ca(o->getData());
+		return convert<T, any_t>(o->getData());
 }
 
 template<class T>
@@ -270,425 +270,425 @@ T num_from_string(std::string const & value)
 	return num;
 }
 
-any_t to_any(any_t       const & value) {return value;}
-any_t to_any(bool_t      const & value) {return value;}
-any_t to_any(int_s_t     const & value) {return value;}
-any_t to_any(int_t       const & value) {return value;}
-any_t to_any(int_l_t     const & value) {return value;}
-any_t to_any(obj_t               value) {return from_obj_t<any_t, to_any, to_any>(value);}
-any_t to_any(real_s_t    const & value) {return value;}
-any_t to_any(real_t      const & value) {return value;}
-any_t to_any(real_l_t    const & value) {return value;}
-any_t to_any(string_t    const & value) {return value;}
-any_t to_any(string8_t   const & value) {return value;}
-any_t to_any(string16_t  const & value) {return value;}
-any_t to_any(string32_t  const & value) {return value;}
-any_t to_any(string80_t  const & value) {return value;}
-any_t to_any(string320_t const & value) {return value;}
-any_t to_any(ubyte_t     const & value) {return value;}
-any_t to_any(sword_t     const & value) {return value;}
-any_t to_any(uword_t     const & value) {return value;}
-any_t to_any(sdword_t    const & value) {return value;}
-any_t to_any(udword_t    const & value) {return value;}
+template<> any_t convert<any_t, any_t>      (any_t       const & value) {return value;}
+template<> any_t convert<any_t, bool_t>     (bool_t      const & value) {return value;}
+template<> any_t convert<any_t, int_s_t>    (int_s_t     const & value) {return value;}
+template<> any_t convert<any_t, int_t>      (int_t       const & value) {return value;}
+template<> any_t convert<any_t, int_l_t>    (int_l_t     const & value) {return value;}
+template<> any_t convert<any_t, obj_t>      (obj_t       const & value) {return from_obj_t<any_t>(value);}
+template<> any_t convert<any_t, real_s_t>   (real_s_t    const & value) {return value;}
+template<> any_t convert<any_t, real_t>     (real_t      const & value) {return value;}
+template<> any_t convert<any_t, real_l_t>   (real_l_t    const & value) {return value;}
+template<> any_t convert<any_t, string_t>   (string_t    const & value) {return value;}
+template<> any_t convert<any_t, string8_t>  (string8_t   const & value) {return value;}
+template<> any_t convert<any_t, string16_t> (string16_t  const & value) {return value;}
+template<> any_t convert<any_t, string32_t> (string32_t  const & value) {return value;}
+template<> any_t convert<any_t, string80_t> (string80_t  const & value) {return value;}
+template<> any_t convert<any_t, string320_t>(string320_t const & value) {return value;}
+template<> any_t convert<any_t, ubyte_t>    (ubyte_t     const & value) {return value;}
+template<> any_t convert<any_t, sword_t>    (sword_t     const & value) {return value;}
+template<> any_t convert<any_t, uword_t>    (uword_t     const & value) {return value;}
+template<> any_t convert<any_t, sdword_t>   (sdword_t    const & value) {return value;}
+template<> any_t convert<any_t, udword_t>   (udword_t    const & value) {return value;}
 
-bool_t to_bool(any_t       const & value) {return value.toBool();}
-bool_t to_bool(bool_t      const & value) {return value;}
-bool_t to_bool(int_s_t     const & value) {return value != int_s_t();}
-bool_t to_bool(int_t       const & value) {return value != int_t();}
-bool_t to_bool(int_l_t     const & value) {return value != int_l_t();}
-bool_t to_bool(obj_t               value) {return from_obj_t<bool_t, to_bool, to_bool>(value);}
-bool_t to_bool(real_s_t    const & value) {return value != int_s_t();}
-bool_t to_bool(real_t      const & value) {return value != real_t();}
-bool_t to_bool(real_l_t    const & value) {return value != real_l_t();}
-bool_t to_bool(string_t    const & value) {return bool_from_string(value);}
-bool_t to_bool(string8_t   const & value) {return bool_from_string(value);}
-bool_t to_bool(string16_t  const & value) {return bool_from_string(value);}
-bool_t to_bool(string32_t  const & value) {return bool_from_string(value);}
-bool_t to_bool(string80_t  const & value) {return bool_from_string(value);}
-bool_t to_bool(string320_t const & value) {return bool_from_string(value);}
-bool_t to_bool(ubyte_t     const & value) {return value != ubyte_t();}
-bool_t to_bool(sword_t     const & value) {return value != sword_t();}
-bool_t to_bool(uword_t     const & value) {return value != uword_t();}
-bool_t to_bool(sdword_t    const & value) {return value != sdword_t();}
-bool_t to_bool(udword_t    const & value) {return value != udword_t();}
+template<> bool_t convert<bool_t, any_t>      (any_t       const & value) {return value.toBool();}
+template<> bool_t convert<bool_t, bool_t>     (bool_t      const & value) {return value;}
+template<> bool_t convert<bool_t, int_s_t>    (int_s_t     const & value) {return value != int_s_t();}
+template<> bool_t convert<bool_t, int_t>      (int_t       const & value) {return value != int_t();}
+template<> bool_t convert<bool_t, int_l_t>    (int_l_t     const & value) {return value != int_l_t();}
+template<> bool_t convert<bool_t, obj_t>      (obj_t       const & value) {return from_obj_t<bool_t>(value);}
+template<> bool_t convert<bool_t, real_s_t>   (real_s_t    const & value) {return value != int_s_t();}
+template<> bool_t convert<bool_t, real_t>     (real_t      const & value) {return value != real_t();}
+template<> bool_t convert<bool_t, real_l_t>   (real_l_t    const & value) {return value != real_l_t();}
+template<> bool_t convert<bool_t, string_t>   (string_t    const & value) {return bool_from_string(value);}
+template<> bool_t convert<bool_t, string8_t>  (string8_t   const & value) {return bool_from_string(value);}
+template<> bool_t convert<bool_t, string16_t> (string16_t  const & value) {return bool_from_string(value);}
+template<> bool_t convert<bool_t, string32_t> (string32_t  const & value) {return bool_from_string(value);}
+template<> bool_t convert<bool_t, string80_t> (string80_t  const & value) {return bool_from_string(value);}
+template<> bool_t convert<bool_t, string320_t>(string320_t const & value) {return bool_from_string(value);}
+template<> bool_t convert<bool_t, ubyte_t>    (ubyte_t     const & value) {return value != ubyte_t();}
+template<> bool_t convert<bool_t, sword_t>    (sword_t     const & value) {return value != sword_t();}
+template<> bool_t convert<bool_t, uword_t>    (uword_t     const & value) {return value != uword_t();}
+template<> bool_t convert<bool_t, sdword_t>   (sdword_t    const & value) {return value != sdword_t();}
+template<> bool_t convert<bool_t, udword_t>   (udword_t    const & value) {return value != udword_t();}
 
-int_s_t to_int_s(any_t       const & value) {return value.toIntShort();}
-int_s_t to_int_s(bool_t      const & value) {return int_s_t(value);}
-int_s_t to_int_s(int_s_t     const & value) {return value;}
-int_s_t to_int_s(int_t       const & value) {return int_s_t(value.makeInt());}
-int_s_t to_int_s(int_l_t     const & value) {return int_s_t(value.makeInt());}
-int_s_t to_int_s(obj_t               value) {return from_obj_t<int_s_t, to_int_s, to_int_s>(value);}
-int_s_t to_int_s(real_s_t    const & value) {return int_s_t(value);}
-int_s_t to_int_s(real_t      const & value) {return int_s_t(value.makeInt());}
-int_s_t to_int_s(real_l_t    const & value) {return int_s_t(value.makeInt());}
-int_s_t to_int_s(string_t    const & value) {return num_from_string<int_s_t>(value.makeString());}
-int_s_t to_int_s(string8_t   const & value) {return num_from_string<int_s_t>(value.makeString());}
-int_s_t to_int_s(string16_t  const & value) {return num_from_string<int_s_t>(value.makeString());}
-int_s_t to_int_s(string32_t  const & value) {return num_from_string<int_s_t>(value.makeString());}
-int_s_t to_int_s(string80_t  const & value) {return num_from_string<int_s_t>(value.makeString());}
-int_s_t to_int_s(string320_t const & value) {return num_from_string<int_s_t>(value.makeString());}
-int_s_t to_int_s(ubyte_t     const & value) {return int_s_t(value.makeInt());}
-int_s_t to_int_s(sword_t     const & value) {return int_s_t(value.makeInt());}
-int_s_t to_int_s(uword_t     const & value) {return int_s_t(value.makeInt());}
-int_s_t to_int_s(sdword_t    const & value) {return int_s_t(value.makeInt());}
-int_s_t to_int_s(udword_t    const & value) {return int_s_t(value.makeInt());}
+template<> int_s_t convert<int_s_t, any_t>      (any_t       const & value) {return value.toIntShort();}
+template<> int_s_t convert<int_s_t, bool_t>     (bool_t      const & value) {return int_s_t(value);}
+template<> int_s_t convert<int_s_t, int_s_t>    (int_s_t     const & value) {return value;}
+template<> int_s_t convert<int_s_t, int_t>      (int_t       const & value) {return int_s_t(value.makeInt());}
+template<> int_s_t convert<int_s_t, int_l_t>    (int_l_t     const & value) {return int_s_t(value.makeInt());}
+template<> int_s_t convert<int_s_t, obj_t>      (obj_t       const & value) {return from_obj_t<int_s_t>(value);}
+template<> int_s_t convert<int_s_t, real_s_t>   (real_s_t    const & value) {return int_s_t(value);}
+template<> int_s_t convert<int_s_t, real_t>     (real_t      const & value) {return int_s_t(value.makeInt());}
+template<> int_s_t convert<int_s_t, real_l_t>   (real_l_t    const & value) {return int_s_t(value.makeInt());}
+template<> int_s_t convert<int_s_t, string_t>   (string_t    const & value) {return num_from_string<int_s_t>(value.makeString());}
+template<> int_s_t convert<int_s_t, string8_t>  (string8_t   const & value) {return num_from_string<int_s_t>(value.makeString());}
+template<> int_s_t convert<int_s_t, string16_t> (string16_t  const & value) {return num_from_string<int_s_t>(value.makeString());}
+template<> int_s_t convert<int_s_t, string32_t> (string32_t  const & value) {return num_from_string<int_s_t>(value.makeString());}
+template<> int_s_t convert<int_s_t, string80_t> (string80_t  const & value) {return num_from_string<int_s_t>(value.makeString());}
+template<> int_s_t convert<int_s_t, string320_t>(string320_t const & value) {return num_from_string<int_s_t>(value.makeString());}
+template<> int_s_t convert<int_s_t, ubyte_t>    (ubyte_t     const & value) {return int_s_t(value.makeInt());}
+template<> int_s_t convert<int_s_t, sword_t>    (sword_t     const & value) {return int_s_t(value.makeInt());}
+template<> int_s_t convert<int_s_t, uword_t>    (uword_t     const & value) {return int_s_t(value.makeInt());}
+template<> int_s_t convert<int_s_t, sdword_t>   (sdword_t    const & value) {return int_s_t(value.makeInt());}
+template<> int_s_t convert<int_s_t, udword_t>   (udword_t    const & value) {return int_s_t(value.makeInt());}
 
-int_t to_int(any_t       const & value) {return value.toInt();}
-int_t to_int(bool_t      const & value) {return int_t((int_s_t)value);}
-int_t to_int(int_s_t     const & value) {return int_t(value);}
-int_t to_int(int_t       const & value) {return value;}
-int_t to_int(int_l_t     const & value) {return int_t(value._data);}
-int_t to_int(obj_t               value) {return from_obj_t<int_t, to_int, to_int>(value);}
-int_t to_int(real_s_t    const & value) {return int_t(value);}
-int_t to_int(real_t      const & value) {return int_t(value._data);}
-int_t to_int(real_l_t    const & value) {return int_t(value._data);}
-int_t to_int(string_t    const & value) {return num_from_string<int_t>(value.makeString());}
-int_t to_int(string8_t   const & value) {return num_from_string<int_t>(value.makeString());}
-int_t to_int(string16_t  const & value) {return num_from_string<int_t>(value.makeString());}
-int_t to_int(string32_t  const & value) {return num_from_string<int_t>(value.makeString());}
-int_t to_int(string80_t  const & value) {return num_from_string<int_t>(value.makeString());}
-int_t to_int(string320_t const & value) {return num_from_string<int_t>(value.makeString());}
-int_t to_int(ubyte_t     const & value) {return int_t(value.makeInt());}
-int_t to_int(sword_t     const & value) {return int_t(value.makeInt());}
-int_t to_int(uword_t     const & value) {return int_t(value.makeInt());}
-int_t to_int(sdword_t    const & value) {return int_t(value.makeInt());}
-int_t to_int(udword_t    const & value) {return int_t(value.makeInt());}
+template<> int_t convert<int_t, any_t>      (any_t       const & value) {return value.toInt();}
+template<> int_t convert<int_t, bool_t>     (bool_t      const & value) {return int_t((int_s_t)value);}
+template<> int_t convert<int_t, int_s_t>    (int_s_t     const & value) {return int_t(value);}
+template<> int_t convert<int_t, int_t>      (int_t       const & value) {return value;}
+template<> int_t convert<int_t, int_l_t>    (int_l_t     const & value) {return int_t(value._data);}
+template<> int_t convert<int_t, obj_t>      (obj_t       const & value) {return from_obj_t<int_t>(value);}
+template<> int_t convert<int_t, real_s_t>   (real_s_t    const & value) {return int_t(value);}
+template<> int_t convert<int_t, real_t>     (real_t      const & value) {return int_t(value._data);}
+template<> int_t convert<int_t, real_l_t>   (real_l_t    const & value) {return int_t(value._data);}
+template<> int_t convert<int_t, string_t>   (string_t    const & value) {return num_from_string<int_t>(value.makeString());}
+template<> int_t convert<int_t, string8_t>  (string8_t   const & value) {return num_from_string<int_t>(value.makeString());}
+template<> int_t convert<int_t, string16_t> (string16_t  const & value) {return num_from_string<int_t>(value.makeString());}
+template<> int_t convert<int_t, string32_t> (string32_t  const & value) {return num_from_string<int_t>(value.makeString());}
+template<> int_t convert<int_t, string80_t> (string80_t  const & value) {return num_from_string<int_t>(value.makeString());}
+template<> int_t convert<int_t, string320_t>(string320_t const & value) {return num_from_string<int_t>(value.makeString());}
+template<> int_t convert<int_t, ubyte_t>    (ubyte_t     const & value) {return int_t(value.makeInt());}
+template<> int_t convert<int_t, sword_t>    (sword_t     const & value) {return int_t(value.makeInt());}
+template<> int_t convert<int_t, uword_t>    (uword_t     const & value) {return int_t(value.makeInt());}
+template<> int_t convert<int_t, sdword_t>   (sdword_t    const & value) {return int_t(value.makeInt());}
+template<> int_t convert<int_t, udword_t>   (udword_t    const & value) {return int_t(value.makeInt());}
 
-int_l_t to_int_l(any_t       const & value) {return value.toIntLong();}
-int_l_t to_int_l(bool_t      const & value) {return int_l_t((int_s_t)value);}
-int_l_t to_int_l(int_s_t     const & value) {return int_l_t(value);}
-int_l_t to_int_l(int_t       const & value) {return int_l_t(value._data);}
-int_l_t to_int_l(int_l_t     const & value) {return value;}
-int_l_t to_int_l(obj_t               value) {return from_obj_t<int_l_t, to_int_l, to_int_l>(value);}
-int_l_t to_int_l(real_s_t    const & value) {return int_l_t(value);}
-int_l_t to_int_l(real_t      const & value) {return int_l_t(value._data);}
-int_l_t to_int_l(real_l_t    const & value) {return int_l_t(value._data);}
-int_l_t to_int_l(string_t    const & value) {return num_from_string<int_l_t>(value.makeString());}
-int_l_t to_int_l(string8_t   const & value) {return num_from_string<int_l_t>(value.makeString());}
-int_l_t to_int_l(string16_t  const & value) {return num_from_string<int_l_t>(value.makeString());}
-int_l_t to_int_l(string32_t  const & value) {return num_from_string<int_l_t>(value.makeString());}
-int_l_t to_int_l(string80_t  const & value) {return num_from_string<int_l_t>(value.makeString());}
-int_l_t to_int_l(string320_t const & value) {return num_from_string<int_l_t>(value.makeString());}
-int_l_t to_int_l(ubyte_t     const & value) {return int_l_t(value.makeInt());}
-int_l_t to_int_l(sword_t     const & value) {return int_l_t(value.makeInt());}
-int_l_t to_int_l(uword_t     const & value) {return int_l_t(value.makeInt());}
-int_l_t to_int_l(sdword_t    const & value) {return int_l_t(value.makeInt());}
-int_l_t to_int_l(udword_t    const & value) {return int_l_t(value.makeInt());}
+template<> int_l_t convert<int_l_t, any_t>      (any_t       const & value) {return value.toIntLong();}
+template<> int_l_t convert<int_l_t, bool_t>     (bool_t      const & value) {return int_l_t((int_s_t)value);}
+template<> int_l_t convert<int_l_t, int_s_t>    (int_s_t     const & value) {return int_l_t(value);}
+template<> int_l_t convert<int_l_t, int_t>      (int_t       const & value) {return int_l_t(value._data);}
+template<> int_l_t convert<int_l_t, int_l_t>    (int_l_t     const & value) {return value;}
+template<> int_l_t convert<int_l_t, obj_t>      (obj_t       const & value) {return from_obj_t<int_l_t>(value);}
+template<> int_l_t convert<int_l_t, real_s_t>   (real_s_t    const & value) {return int_l_t(value);}
+template<> int_l_t convert<int_l_t, real_t>     (real_t      const & value) {return int_l_t(value._data);}
+template<> int_l_t convert<int_l_t, real_l_t>   (real_l_t    const & value) {return int_l_t(value._data);}
+template<> int_l_t convert<int_l_t, string_t>   (string_t    const & value) {return num_from_string<int_l_t>(value.makeString());}
+template<> int_l_t convert<int_l_t, string8_t>  (string8_t   const & value) {return num_from_string<int_l_t>(value.makeString());}
+template<> int_l_t convert<int_l_t, string16_t> (string16_t  const & value) {return num_from_string<int_l_t>(value.makeString());}
+template<> int_l_t convert<int_l_t, string32_t> (string32_t  const & value) {return num_from_string<int_l_t>(value.makeString());}
+template<> int_l_t convert<int_l_t, string80_t> (string80_t  const & value) {return num_from_string<int_l_t>(value.makeString());}
+template<> int_l_t convert<int_l_t, string320_t>(string320_t const & value) {return num_from_string<int_l_t>(value.makeString());}
+template<> int_l_t convert<int_l_t, ubyte_t>    (ubyte_t     const & value) {return int_l_t(value.makeInt());}
+template<> int_l_t convert<int_l_t, sword_t>    (sword_t     const & value) {return int_l_t(value.makeInt());}
+template<> int_l_t convert<int_l_t, uword_t>    (uword_t     const & value) {return int_l_t(value.makeInt());}
+template<> int_l_t convert<int_l_t, sdword_t>   (sdword_t    const & value) {return int_l_t(value.makeInt());}
+template<> int_l_t convert<int_l_t, udword_t>   (udword_t    const & value) {return int_l_t(value.makeInt());}
 
-obj_t to_obj(any_t       const & value) {throw std::invalid_argument("to_obj(any_t)");}
-obj_t to_obj(bool_t      const & value) {throw std::invalid_argument("to_obj(bool_t)");}
-obj_t to_obj(int_s_t     const & value) {throw std::invalid_argument("to_obj(int_s_t)");}
-obj_t to_obj(int_t       const & value) {throw std::invalid_argument("to_obj(int_t)");}
-obj_t to_obj(int_l_t     const & value) {throw std::invalid_argument("to_obj(int_l_t)");}
-obj_t to_obj(obj_t               value) {return value;}
-obj_t to_obj(real_s_t    const & value) {throw std::invalid_argument("to_obj(real_s_t)");}
-obj_t to_obj(real_t      const & value) {throw std::invalid_argument("to_obj(real_t)");}
-obj_t to_obj(real_l_t    const & value) {throw std::invalid_argument("to_obj(real_l_t)");}
-obj_t to_obj(string_t    const & value) {throw std::invalid_argument("to_obj(string_t)");}
-obj_t to_obj(string8_t   const & value) {throw std::invalid_argument("to_obj(string8_t)");}
-obj_t to_obj(string16_t  const & value) {throw std::invalid_argument("to_obj(string16_t)");}
-obj_t to_obj(string32_t  const & value) {throw std::invalid_argument("to_obj(string32_t)");}
-obj_t to_obj(string80_t  const & value) {throw std::invalid_argument("to_obj(string80_t)");}
-obj_t to_obj(string320_t const & value) {throw std::invalid_argument("to_obj(string320_t)");}
-obj_t to_obj(ubyte_t     const & value) {throw std::invalid_argument("to_obj(ubyte_t)");}
-obj_t to_obj(sword_t     const & value) {throw std::invalid_argument("to_obj(sword_t)");}
-obj_t to_obj(uword_t     const & value) {throw std::invalid_argument("to_obj(uword_t)");}
-obj_t to_obj(sdword_t    const & value) {throw std::invalid_argument("to_obj(sdword_t)");}
-obj_t to_obj(udword_t    const & value) {throw std::invalid_argument("to_obj(udword_t)");}
+template<> obj_t convert<obj_t, any_t>      (any_t       const & value) {throw std::invalid_argument("to_obj(any_t)");}
+template<> obj_t convert<obj_t, bool_t>     (bool_t      const & value) {throw std::invalid_argument("to_obj(bool_t)");}
+template<> obj_t convert<obj_t, int_s_t>    (int_s_t     const & value) {throw std::invalid_argument("to_obj(int_s_t)");}
+template<> obj_t convert<obj_t, int_t>      (int_t       const & value) {throw std::invalid_argument("to_obj(int_t)");}
+template<> obj_t convert<obj_t, int_l_t>    (int_l_t     const & value) {throw std::invalid_argument("to_obj(int_l_t)");}
+template<> obj_t convert<obj_t, obj_t>      (obj_t       const & value) {return value;}
+template<> obj_t convert<obj_t, real_s_t>   (real_s_t    const & value) {throw std::invalid_argument("to_obj(real_s_t)");}
+template<> obj_t convert<obj_t, real_t>     (real_t      const & value) {throw std::invalid_argument("to_obj(real_t)");}
+template<> obj_t convert<obj_t, real_l_t>   (real_l_t    const & value) {throw std::invalid_argument("to_obj(real_l_t)");}
+template<> obj_t convert<obj_t, string_t>   (string_t    const & value) {throw std::invalid_argument("to_obj(string_t)");}
+template<> obj_t convert<obj_t, string8_t>  (string8_t   const & value) {throw std::invalid_argument("to_obj(string8_t)");}
+template<> obj_t convert<obj_t, string16_t> (string16_t  const & value) {throw std::invalid_argument("to_obj(string16_t)");}
+template<> obj_t convert<obj_t, string32_t> (string32_t  const & value) {throw std::invalid_argument("to_obj(string32_t)");}
+template<> obj_t convert<obj_t, string80_t> (string80_t  const & value) {throw std::invalid_argument("to_obj(string80_t)");}
+template<> obj_t convert<obj_t, string320_t>(string320_t const & value) {throw std::invalid_argument("to_obj(string320_t)");}
+template<> obj_t convert<obj_t, ubyte_t>    (ubyte_t     const & value) {throw std::invalid_argument("to_obj(ubyte_t)");}
+template<> obj_t convert<obj_t, sword_t>    (sword_t     const & value) {throw std::invalid_argument("to_obj(sword_t)");}
+template<> obj_t convert<obj_t, uword_t>    (uword_t     const & value) {throw std::invalid_argument("to_obj(uword_t)");}
+template<> obj_t convert<obj_t, sdword_t>   (sdword_t    const & value) {throw std::invalid_argument("to_obj(sdword_t)");}
+template<> obj_t convert<obj_t, udword_t>   (udword_t    const & value) {throw std::invalid_argument("to_obj(udword_t)");}
 
-real_s_t to_real_s(any_t       const & value) {return value.toRealShort();}
-real_s_t to_real_s(bool_t      const & value) {return (int_s_t)value;}
-real_s_t to_real_s(int_s_t     const & value) {return value;}
-real_s_t to_real_s(int_t       const & value) {return value.makeFloat();}
-real_s_t to_real_s(int_l_t     const & value) {return value.makeFloat();}
-real_s_t to_real_s(obj_t               value) {return from_obj_t<real_s_t, to_real_s, to_real_s>(value);}
-real_s_t to_real_s(real_s_t    const & value) {return value;}
-real_s_t to_real_s(real_t      const & value) {return value.makeFloat();}
-real_s_t to_real_s(real_l_t    const & value) {return value.makeFloat();}
-real_s_t to_real_s(string_t    const & value) {return num_from_string<real_s_t>(value.makeString());}
-real_s_t to_real_s(string8_t   const & value) {return num_from_string<real_s_t>(value.makeString());}
-real_s_t to_real_s(string16_t  const & value) {return num_from_string<real_s_t>(value.makeString());}
-real_s_t to_real_s(string32_t  const & value) {return num_from_string<real_s_t>(value.makeString());}
-real_s_t to_real_s(string80_t  const & value) {return num_from_string<real_s_t>(value.makeString());}
-real_s_t to_real_s(string320_t const & value) {return num_from_string<real_s_t>(value.makeString());}
-real_s_t to_real_s(ubyte_t     const & value) {return real_s_t(value.makeInt());}
-real_s_t to_real_s(sword_t     const & value) {return real_s_t(value.makeInt());}
-real_s_t to_real_s(uword_t     const & value) {return real_s_t(value.makeInt());}
-real_s_t to_real_s(sdword_t    const & value) {return real_s_t(value.makeInt());}
-real_s_t to_real_s(udword_t    const & value) {return real_s_t(value.makeInt());}
+template<> real_s_t convert<real_s_t, any_t>      (any_t       const & value) {return value.toRealShort();}
+template<> real_s_t convert<real_s_t, bool_t>     (bool_t      const & value) {return (int_s_t)value;}
+template<> real_s_t convert<real_s_t, int_s_t>    (int_s_t     const & value) {return value;}
+template<> real_s_t convert<real_s_t, int_t>      (int_t       const & value) {return value.makeFloat();}
+template<> real_s_t convert<real_s_t, int_l_t>    (int_l_t     const & value) {return value.makeFloat();}
+template<> real_s_t convert<real_s_t, obj_t>      (obj_t       const & value) {return from_obj_t<real_s_t>(value);}
+template<> real_s_t convert<real_s_t, real_s_t>   (real_s_t    const & value) {return value;}
+template<> real_s_t convert<real_s_t, real_t>     (real_t      const & value) {return value.makeFloat();}
+template<> real_s_t convert<real_s_t, real_l_t>   (real_l_t    const & value) {return value.makeFloat();}
+template<> real_s_t convert<real_s_t, string_t>   (string_t    const & value) {return num_from_string<real_s_t>(value.makeString());}
+template<> real_s_t convert<real_s_t, string8_t>  (string8_t   const & value) {return num_from_string<real_s_t>(value.makeString());}
+template<> real_s_t convert<real_s_t, string16_t> (string16_t  const & value) {return num_from_string<real_s_t>(value.makeString());}
+template<> real_s_t convert<real_s_t, string32_t> (string32_t  const & value) {return num_from_string<real_s_t>(value.makeString());}
+template<> real_s_t convert<real_s_t, string80_t> (string80_t  const & value) {return num_from_string<real_s_t>(value.makeString());}
+template<> real_s_t convert<real_s_t, string320_t>(string320_t const & value) {return num_from_string<real_s_t>(value.makeString());}
+template<> real_s_t convert<real_s_t, ubyte_t>    (ubyte_t     const & value) {return real_s_t(value.makeInt());}
+template<> real_s_t convert<real_s_t, sword_t>    (sword_t     const & value) {return real_s_t(value.makeInt());}
+template<> real_s_t convert<real_s_t, uword_t>    (uword_t     const & value) {return real_s_t(value.makeInt());}
+template<> real_s_t convert<real_s_t, sdword_t>   (sdword_t    const & value) {return real_s_t(value.makeInt());}
+template<> real_s_t convert<real_s_t, udword_t>   (udword_t    const & value) {return real_s_t(value.makeInt());}
 
-real_t to_real(any_t       const & value) {return value.toReal();}
-real_t to_real(bool_t      const & value) {return real_t((int)value);}
-real_t to_real(int_s_t     const & value) {return real_t(value);}
-real_t to_real(int_t       const & value) {return real_t(value._data);}
-real_t to_real(int_l_t     const & value) {return real_t(value._data);}
-real_t to_real(obj_t               value) {return from_obj_t<real_t, to_real, to_real>(value);}
-real_t to_real(real_s_t    const & value) {return real_t(value);}
-real_t to_real(real_t      const & value) {return value;}
-real_t to_real(real_l_t    const & value) {return real_t(value._data);}
-real_t to_real(string_t    const & value) {return num_from_string<real_t>(value.makeString());}
-real_t to_real(string8_t   const & value) {return num_from_string<real_t>(value.makeString());}
-real_t to_real(string16_t  const & value) {return num_from_string<real_t>(value.makeString());}
-real_t to_real(string32_t  const & value) {return num_from_string<real_t>(value.makeString());}
-real_t to_real(string80_t  const & value) {return num_from_string<real_t>(value.makeString());}
-real_t to_real(string320_t const & value) {return num_from_string<real_t>(value.makeString());}
-real_t to_real(ubyte_t     const & value) {return real_t(value.makeInt());}
-real_t to_real(sword_t     const & value) {return real_t(value.makeInt());}
-real_t to_real(uword_t     const & value) {return real_t(value.makeInt());}
-real_t to_real(sdword_t    const & value) {return real_t(value.makeInt());}
-real_t to_real(udword_t    const & value) {return real_t(value.makeInt());}
+template<> real_t convert<real_t, any_t>      (any_t       const & value) {return value.toReal();}
+template<> real_t convert<real_t, bool_t>     (bool_t      const & value) {return real_t((int)value);}
+template<> real_t convert<real_t, int_s_t>    (int_s_t     const & value) {return real_t(value);}
+template<> real_t convert<real_t, int_t>      (int_t       const & value) {return real_t(value._data);}
+template<> real_t convert<real_t, int_l_t>    (int_l_t     const & value) {return real_t(value._data);}
+template<> real_t convert<real_t, obj_t>      (obj_t       const & value) {return from_obj_t<real_t>(value);}
+template<> real_t convert<real_t, real_s_t>   (real_s_t    const & value) {return real_t(value);}
+template<> real_t convert<real_t, real_t>     (real_t      const & value) {return value;}
+template<> real_t convert<real_t, real_l_t>   (real_l_t    const & value) {return real_t(value._data);}
+template<> real_t convert<real_t, string_t>   (string_t    const & value) {return num_from_string<real_t>(value.makeString());}
+template<> real_t convert<real_t, string8_t>  (string8_t   const & value) {return num_from_string<real_t>(value.makeString());}
+template<> real_t convert<real_t, string16_t> (string16_t  const & value) {return num_from_string<real_t>(value.makeString());}
+template<> real_t convert<real_t, string32_t> (string32_t  const & value) {return num_from_string<real_t>(value.makeString());}
+template<> real_t convert<real_t, string80_t> (string80_t  const & value) {return num_from_string<real_t>(value.makeString());}
+template<> real_t convert<real_t, string320_t>(string320_t const & value) {return num_from_string<real_t>(value.makeString());}
+template<> real_t convert<real_t, ubyte_t>    (ubyte_t     const & value) {return real_t(value.makeInt());}
+template<> real_t convert<real_t, sword_t>    (sword_t     const & value) {return real_t(value.makeInt());}
+template<> real_t convert<real_t, uword_t>    (uword_t     const & value) {return real_t(value.makeInt());}
+template<> real_t convert<real_t, sdword_t>   (sdword_t    const & value) {return real_t(value.makeInt());}
+template<> real_t convert<real_t, udword_t>   (udword_t    const & value) {return real_t(value.makeInt());}
 
-real_l_t to_real_l(any_t       const & value) {return value.toRealLong();}
-real_l_t to_real_l(bool_t      const & value) {return real_l_t((int)value);}
-real_l_t to_real_l(int_s_t     const & value) {return real_l_t(value);}
-real_l_t to_real_l(int_t       const & value) {return real_l_t(value._data);}
-real_l_t to_real_l(int_l_t     const & value) {return real_l_t(value._data);}
-real_l_t to_real_l(obj_t               value) {return from_obj_t<real_l_t, to_real_l, to_real_l>(value);}
-real_l_t to_real_l(real_s_t    const & value) {return real_l_t(value);}
-real_l_t to_real_l(real_t      const & value) {return real_l_t(value._data);}
-real_l_t to_real_l(real_l_t    const & value) {return value;}
-real_l_t to_real_l(string_t    const & value) {return num_from_string<real_l_t>(value.makeString());}
-real_l_t to_real_l(string8_t   const & value) {return num_from_string<real_l_t>(value.makeString());}
-real_l_t to_real_l(string16_t  const & value) {return num_from_string<real_l_t>(value.makeString());}
-real_l_t to_real_l(string32_t  const & value) {return num_from_string<real_l_t>(value.makeString());}
-real_l_t to_real_l(string80_t  const & value) {return num_from_string<real_l_t>(value.makeString());}
-real_l_t to_real_l(string320_t const & value) {return num_from_string<real_l_t>(value.makeString());}
-real_l_t to_real_l(ubyte_t     const & value) {return real_l_t(value.makeInt());}
-real_l_t to_real_l(sword_t     const & value) {return real_l_t(value.makeInt());}
-real_l_t to_real_l(uword_t     const & value) {return real_l_t(value.makeInt());}
-real_l_t to_real_l(sdword_t    const & value) {return real_l_t(value.makeInt());}
-real_l_t to_real_l(udword_t    const & value) {return real_l_t(value.makeInt());}
+template<> real_l_t convert<real_l_t, any_t>      (any_t       const & value) {return value.toRealLong();}
+template<> real_l_t convert<real_l_t, bool_t>     (bool_t      const & value) {return real_l_t((int)value);}
+template<> real_l_t convert<real_l_t, int_s_t>    (int_s_t     const & value) {return real_l_t(value);}
+template<> real_l_t convert<real_l_t, int_t>      (int_t       const & value) {return real_l_t(value._data);}
+template<> real_l_t convert<real_l_t, int_l_t>    (int_l_t     const & value) {return real_l_t(value._data);}
+template<> real_l_t convert<real_l_t, obj_t>      (obj_t       const & value) {return from_obj_t<real_l_t>(value);}
+template<> real_l_t convert<real_l_t, real_s_t>   (real_s_t    const & value) {return real_l_t(value);}
+template<> real_l_t convert<real_l_t, real_t>     (real_t      const & value) {return real_l_t(value._data);}
+template<> real_l_t convert<real_l_t, real_l_t>   (real_l_t    const & value) {return value;}
+template<> real_l_t convert<real_l_t, string_t>   (string_t    const & value) {return num_from_string<real_l_t>(value.makeString());}
+template<> real_l_t convert<real_l_t, string8_t>  (string8_t   const & value) {return num_from_string<real_l_t>(value.makeString());}
+template<> real_l_t convert<real_l_t, string16_t> (string16_t  const & value) {return num_from_string<real_l_t>(value.makeString());}
+template<> real_l_t convert<real_l_t, string32_t> (string32_t  const & value) {return num_from_string<real_l_t>(value.makeString());}
+template<> real_l_t convert<real_l_t, string80_t> (string80_t  const & value) {return num_from_string<real_l_t>(value.makeString());}
+template<> real_l_t convert<real_l_t, string320_t>(string320_t const & value) {return num_from_string<real_l_t>(value.makeString());}
+template<> real_l_t convert<real_l_t, ubyte_t>    (ubyte_t     const & value) {return real_l_t(value.makeInt());}
+template<> real_l_t convert<real_l_t, sword_t>    (sword_t     const & value) {return real_l_t(value.makeInt());}
+template<> real_l_t convert<real_l_t, uword_t>    (uword_t     const & value) {return real_l_t(value.makeInt());}
+template<> real_l_t convert<real_l_t, sdword_t>   (sdword_t    const & value) {return real_l_t(value.makeInt());}
+template<> real_l_t convert<real_l_t, udword_t>   (udword_t    const & value) {return real_l_t(value.makeInt());}
 
-string_t to_string(any_t       const & value) {return value.toString();}
-string_t to_string(bool_t      const & value) {return string_t(make_string(value));}
-string_t to_string(int_s_t     const & value) {return string_t(make_string(value));}
-string_t to_string(int_t       const & value) {return string_t(make_string(value));}
-string_t to_string(int_l_t     const & value) {return string_t(make_string(value));}
-string_t to_string(obj_t               value) {return from_obj_t<string_t, to_string, to_string>(value);}
-string_t to_string(real_s_t    const & value) {return string_t(make_string(value));}
-string_t to_string(real_t      const & value) {return string_t(make_string(value));}
-string_t to_string(real_l_t    const & value) {return string_t(make_string(value));}
-string_t to_string(string_t    const & value) {return value;}
-string_t to_string(string8_t   const & value) {return string_t(value.makeString());}
-string_t to_string(string16_t  const & value) {return string_t(value.makeString());}
-string_t to_string(string32_t  const & value) {return string_t(value.makeString());}
-string_t to_string(string80_t  const & value) {return string_t(value.makeString());}
-string_t to_string(string320_t const & value) {return string_t(value.makeString());}
-string_t to_string(ubyte_t     const & value) {return string_t(make_string(value));}
-string_t to_string(sword_t     const & value) {return string_t(make_string(value));}
-string_t to_string(uword_t     const & value) {return string_t(make_string(value));}
-string_t to_string(sdword_t    const & value) {return string_t(make_string(value));}
-string_t to_string(udword_t    const & value) {return string_t(make_string(value));}
+template<> string_t convert<string_t, any_t>      (any_t       const & value) {return value.toString();}
+template<> string_t convert<string_t, bool_t>     (bool_t      const & value) {return string_t(make_string(value));}
+template<> string_t convert<string_t, int_s_t>    (int_s_t     const & value) {return string_t(make_string(value));}
+template<> string_t convert<string_t, int_t>      (int_t       const & value) {return string_t(make_string(value));}
+template<> string_t convert<string_t, int_l_t>    (int_l_t     const & value) {return string_t(make_string(value));}
+template<> string_t convert<string_t, obj_t>      (obj_t       const & value) {return from_obj_t<string_t>(value);}
+template<> string_t convert<string_t, real_s_t>   (real_s_t    const & value) {return string_t(make_string(value));}
+template<> string_t convert<string_t, real_t>     (real_t      const & value) {return string_t(make_string(value));}
+template<> string_t convert<string_t, real_l_t>   (real_l_t    const & value) {return string_t(make_string(value));}
+template<> string_t convert<string_t, string_t>   (string_t    const & value) {return value;}
+template<> string_t convert<string_t, string8_t>  (string8_t   const & value) {return string_t(value.makeString());}
+template<> string_t convert<string_t, string16_t> (string16_t  const & value) {return string_t(value.makeString());}
+template<> string_t convert<string_t, string32_t> (string32_t  const & value) {return string_t(value.makeString());}
+template<> string_t convert<string_t, string80_t> (string80_t  const & value) {return string_t(value.makeString());}
+template<> string_t convert<string_t, string320_t>(string320_t const & value) {return string_t(value.makeString());}
+template<> string_t convert<string_t, ubyte_t>    (ubyte_t     const & value) {return string_t(make_string(value));}
+template<> string_t convert<string_t, sword_t>    (sword_t     const & value) {return string_t(make_string(value));}
+template<> string_t convert<string_t, uword_t>    (uword_t     const & value) {return string_t(make_string(value));}
+template<> string_t convert<string_t, sdword_t>   (sdword_t    const & value) {return string_t(make_string(value));}
+template<> string_t convert<string_t, udword_t>   (udword_t    const & value) {return string_t(make_string(value));}
 
-string8_t to_string8(any_t       const & value) {return value.toString8();}
-string8_t to_string8(bool_t      const & value) {return string8_t(make_string(value));}
-string8_t to_string8(int_s_t     const & value) {return string8_t(make_string(value));}
-string8_t to_string8(int_t       const & value) {return string8_t(make_string(value));}
-string8_t to_string8(int_l_t     const & value) {return string8_t(make_string(value));}
-string8_t to_string8(obj_t               value) {return from_obj_t<string8_t, to_string8, to_string8>(value);}
-string8_t to_string8(real_s_t    const & value) {return string8_t(make_string(value));}
-string8_t to_string8(real_t      const & value) {return string8_t(make_string(value));}
-string8_t to_string8(real_l_t    const & value) {return string8_t(make_string(value));}
-string8_t to_string8(string_t    const & value) {return string8_t(value.makeString());}
-string8_t to_string8(string8_t   const & value) {return value;}
-string8_t to_string8(string16_t  const & value) {return string8_t(value.makeString());}
-string8_t to_string8(string32_t  const & value) {return string8_t(value.makeString());}
-string8_t to_string8(string80_t  const & value) {return string8_t(value.makeString());}
-string8_t to_string8(string320_t const & value) {return string8_t(value.makeString());}
-string8_t to_string8(ubyte_t     const & value) {return string8_t(make_string(value));}
-string8_t to_string8(sword_t     const & value) {return string8_t(make_string(value));}
-string8_t to_string8(uword_t     const & value) {return string8_t(make_string(value));}
-string8_t to_string8(sdword_t    const & value) {return string8_t(make_string(value));}
-string8_t to_string8(udword_t    const & value) {return string8_t(make_string(value));}
+template<> string8_t convert<string8_t, any_t>      (any_t       const & value) {return value.toString8();}
+template<> string8_t convert<string8_t, bool_t>     (bool_t      const & value) {return string8_t(make_string(value));}
+template<> string8_t convert<string8_t, int_s_t>    (int_s_t     const & value) {return string8_t(make_string(value));}
+template<> string8_t convert<string8_t, int_t>      (int_t       const & value) {return string8_t(make_string(value));}
+template<> string8_t convert<string8_t, int_l_t>    (int_l_t     const & value) {return string8_t(make_string(value));}
+template<> string8_t convert<string8_t, obj_t>      (obj_t       const & value) {return from_obj_t<string8_t>(value);}
+template<> string8_t convert<string8_t, real_s_t>   (real_s_t    const & value) {return string8_t(make_string(value));}
+template<> string8_t convert<string8_t, real_t>     (real_t      const & value) {return string8_t(make_string(value));}
+template<> string8_t convert<string8_t, real_l_t>   (real_l_t    const & value) {return string8_t(make_string(value));}
+template<> string8_t convert<string8_t, string_t>   (string_t    const & value) {return string8_t(value.makeString());}
+template<> string8_t convert<string8_t, string8_t>  (string8_t   const & value) {return value;}
+template<> string8_t convert<string8_t, string16_t> (string16_t  const & value) {return string8_t(value.makeString());}
+template<> string8_t convert<string8_t, string32_t> (string32_t  const & value) {return string8_t(value.makeString());}
+template<> string8_t convert<string8_t, string80_t> (string80_t  const & value) {return string8_t(value.makeString());}
+template<> string8_t convert<string8_t, string320_t>(string320_t const & value) {return string8_t(value.makeString());}
+template<> string8_t convert<string8_t, ubyte_t>    (ubyte_t     const & value) {return string8_t(make_string(value));}
+template<> string8_t convert<string8_t, sword_t>    (sword_t     const & value) {return string8_t(make_string(value));}
+template<> string8_t convert<string8_t, uword_t>    (uword_t     const & value) {return string8_t(make_string(value));}
+template<> string8_t convert<string8_t, sdword_t>   (sdword_t    const & value) {return string8_t(make_string(value));}
+template<> string8_t convert<string8_t, udword_t>   (udword_t    const & value) {return string8_t(make_string(value));}
 
-string16_t to_string16(any_t       const & value) {return value.toString16();}
-string16_t to_string16(bool_t      const & value) {return string16_t(make_string(value));}
-string16_t to_string16(int_s_t     const & value) {return string16_t(make_string(value));}
-string16_t to_string16(int_t       const & value) {return string16_t(make_string(value));}
-string16_t to_string16(int_l_t     const & value) {return string16_t(make_string(value));}
-string16_t to_string16(obj_t               value) {return from_obj_t<string16_t, to_string16, to_string16>(value);}
-string16_t to_string16(real_s_t    const & value) {return string16_t(make_string(value));}
-string16_t to_string16(real_t      const & value) {return string16_t(make_string(value));}
-string16_t to_string16(real_l_t    const & value) {return string16_t(make_string(value));}
-string16_t to_string16(string_t    const & value) {return string16_t(value.makeString());}
-string16_t to_string16(string8_t   const & value) {return string16_t(value.makeString());}
-string16_t to_string16(string16_t  const & value) {return value;}
-string16_t to_string16(string32_t  const & value) {return string16_t(value.makeString());}
-string16_t to_string16(string80_t  const & value) {return string16_t(value.makeString());}
-string16_t to_string16(string320_t const & value) {return string16_t(value.makeString());}
-string16_t to_string16(ubyte_t     const & value) {return string16_t(make_string(value));}
-string16_t to_string16(sword_t     const & value) {return string16_t(make_string(value));}
-string16_t to_string16(uword_t     const & value) {return string16_t(make_string(value));}
-string16_t to_string16(sdword_t    const & value) {return string16_t(make_string(value));}
-string16_t to_string16(udword_t    const & value) {return string16_t(make_string(value));}
+template<> string16_t convert<string16_t, any_t>      (any_t       const & value) {return value.toString16();}
+template<> string16_t convert<string16_t, bool_t>     (bool_t      const & value) {return string16_t(make_string(value));}
+template<> string16_t convert<string16_t, int_s_t>    (int_s_t     const & value) {return string16_t(make_string(value));}
+template<> string16_t convert<string16_t, int_t>      (int_t       const & value) {return string16_t(make_string(value));}
+template<> string16_t convert<string16_t, int_l_t>    (int_l_t     const & value) {return string16_t(make_string(value));}
+template<> string16_t convert<string16_t, obj_t>      (obj_t       const & value) {return from_obj_t<string16_t>(value);}
+template<> string16_t convert<string16_t, real_s_t>   (real_s_t    const & value) {return string16_t(make_string(value));}
+template<> string16_t convert<string16_t, real_t>     (real_t      const & value) {return string16_t(make_string(value));}
+template<> string16_t convert<string16_t, real_l_t>   (real_l_t    const & value) {return string16_t(make_string(value));}
+template<> string16_t convert<string16_t, string_t>   (string_t    const & value) {return string16_t(value.makeString());}
+template<> string16_t convert<string16_t, string8_t>  (string8_t   const & value) {return string16_t(value.makeString());}
+template<> string16_t convert<string16_t, string16_t> (string16_t  const & value) {return value;}
+template<> string16_t convert<string16_t, string32_t> (string32_t  const & value) {return string16_t(value.makeString());}
+template<> string16_t convert<string16_t, string80_t> (string80_t  const & value) {return string16_t(value.makeString());}
+template<> string16_t convert<string16_t, string320_t>(string320_t const & value) {return string16_t(value.makeString());}
+template<> string16_t convert<string16_t, ubyte_t>    (ubyte_t     const & value) {return string16_t(make_string(value));}
+template<> string16_t convert<string16_t, sword_t>    (sword_t     const & value) {return string16_t(make_string(value));}
+template<> string16_t convert<string16_t, uword_t>    (uword_t     const & value) {return string16_t(make_string(value));}
+template<> string16_t convert<string16_t, sdword_t>   (sdword_t    const & value) {return string16_t(make_string(value));}
+template<> string16_t convert<string16_t, udword_t>   (udword_t    const & value) {return string16_t(make_string(value));}
 
-string32_t to_string32(any_t       const & value) {return value.toString32();}
-string32_t to_string32(bool_t      const & value) {return string32_t(make_string(value));}
-string32_t to_string32(int_s_t     const & value) {return string32_t(make_string(value));}
-string32_t to_string32(int_t       const & value) {return string32_t(make_string(value));}
-string32_t to_string32(int_l_t     const & value) {return string32_t(make_string(value));}
-string32_t to_string32(obj_t               value) {return from_obj_t<string32_t, to_string32, to_string32>(value);}
-string32_t to_string32(real_s_t    const & value) {return string32_t(make_string(value));}
-string32_t to_string32(real_t      const & value) {return string32_t(make_string(value));}
-string32_t to_string32(real_l_t    const & value) {return string32_t(make_string(value));}
-string32_t to_string32(string_t    const & value) {return string32_t(value.makeString());}
-string32_t to_string32(string8_t   const & value) {return string32_t(value.makeString());}
-string32_t to_string32(string16_t  const & value) {return string32_t(value.makeString());}
-string32_t to_string32(string32_t  const & value) {return value;}
-string32_t to_string32(string80_t  const & value) {return string32_t(value.makeString());}
-string32_t to_string32(string320_t const & value) {return string32_t(value.makeString());}
-string32_t to_string32(ubyte_t     const & value) {return string32_t(make_string(value));}
-string32_t to_string32(sword_t     const & value) {return string32_t(make_string(value));}
-string32_t to_string32(uword_t     const & value) {return string32_t(make_string(value));}
-string32_t to_string32(sdword_t    const & value) {return string32_t(make_string(value));}
-string32_t to_string32(udword_t    const & value) {return string32_t(make_string(value));}
+template<> string32_t convert<string32_t, any_t>      (any_t       const & value) {return value.toString32();}
+template<> string32_t convert<string32_t, bool_t>     (bool_t      const & value) {return string32_t(make_string(value));}
+template<> string32_t convert<string32_t, int_s_t>    (int_s_t     const & value) {return string32_t(make_string(value));}
+template<> string32_t convert<string32_t, int_t>      (int_t       const & value) {return string32_t(make_string(value));}
+template<> string32_t convert<string32_t, int_l_t>    (int_l_t     const & value) {return string32_t(make_string(value));}
+template<> string32_t convert<string32_t, obj_t>      (obj_t       const & value) {return from_obj_t<string32_t>(value);}
+template<> string32_t convert<string32_t, real_s_t>   (real_s_t    const & value) {return string32_t(make_string(value));}
+template<> string32_t convert<string32_t, real_t>     (real_t      const & value) {return string32_t(make_string(value));}
+template<> string32_t convert<string32_t, real_l_t>   (real_l_t    const & value) {return string32_t(make_string(value));}
+template<> string32_t convert<string32_t, string_t>   (string_t    const & value) {return string32_t(value.makeString());}
+template<> string32_t convert<string32_t, string8_t>  (string8_t   const & value) {return string32_t(value.makeString());}
+template<> string32_t convert<string32_t, string16_t> (string16_t  const & value) {return string32_t(value.makeString());}
+template<> string32_t convert<string32_t, string32_t> (string32_t  const & value) {return value;}
+template<> string32_t convert<string32_t, string80_t> (string80_t  const & value) {return string32_t(value.makeString());}
+template<> string32_t convert<string32_t, string320_t>(string320_t const & value) {return string32_t(value.makeString());}
+template<> string32_t convert<string32_t, ubyte_t>    (ubyte_t     const & value) {return string32_t(make_string(value));}
+template<> string32_t convert<string32_t, sword_t>    (sword_t     const & value) {return string32_t(make_string(value));}
+template<> string32_t convert<string32_t, uword_t>    (uword_t     const & value) {return string32_t(make_string(value));}
+template<> string32_t convert<string32_t, sdword_t>   (sdword_t    const & value) {return string32_t(make_string(value));}
+template<> string32_t convert<string32_t, udword_t>   (udword_t    const & value) {return string32_t(make_string(value));}
 
-string80_t to_string80(any_t       const & value) {return value.toString80();}
-string80_t to_string80(bool_t      const & value) {return string80_t(make_string(value));}
-string80_t to_string80(int_s_t     const & value) {return string80_t(make_string(value));}
-string80_t to_string80(int_t       const & value) {return string80_t(make_string(value));}
-string80_t to_string80(int_l_t     const & value) {return string80_t(make_string(value));}
-string80_t to_string80(obj_t               value) {return from_obj_t<string80_t, to_string80, to_string80>(value);}
-string80_t to_string80(real_s_t    const & value) {return string80_t(make_string(value));}
-string80_t to_string80(real_t      const & value) {return string80_t(make_string(value));}
-string80_t to_string80(real_l_t    const & value) {return string80_t(make_string(value));}
-string80_t to_string80(string_t    const & value) {return string80_t(value.makeString());}
-string80_t to_string80(string8_t   const & value) {return string80_t(value.makeString());}
-string80_t to_string80(string16_t  const & value) {return string80_t(value.makeString());}
-string80_t to_string80(string32_t  const & value) {return string80_t(value.makeString());}
-string80_t to_string80(string80_t  const & value) {return value;}
-string80_t to_string80(string320_t const & value) {return string80_t(value.makeString());}
-string80_t to_string80(ubyte_t     const & value) {return string80_t(make_string(value));}
-string80_t to_string80(sword_t     const & value) {return string80_t(make_string(value));}
-string80_t to_string80(uword_t     const & value) {return string80_t(make_string(value));}
-string80_t to_string80(sdword_t    const & value) {return string80_t(make_string(value));}
-string80_t to_string80(udword_t    const & value) {return string80_t(make_string(value));}
+template<> string80_t convert<string80_t, any_t>      (any_t       const & value) {return value.toString80();}
+template<> string80_t convert<string80_t, bool_t>     (bool_t      const & value) {return string80_t(make_string(value));}
+template<> string80_t convert<string80_t, int_s_t>    (int_s_t     const & value) {return string80_t(make_string(value));}
+template<> string80_t convert<string80_t, int_t>      (int_t       const & value) {return string80_t(make_string(value));}
+template<> string80_t convert<string80_t, int_l_t>    (int_l_t     const & value) {return string80_t(make_string(value));}
+template<> string80_t convert<string80_t, obj_t>      (obj_t       const & value) {return from_obj_t<string80_t>(value);}
+template<> string80_t convert<string80_t, real_s_t>   (real_s_t    const & value) {return string80_t(make_string(value));}
+template<> string80_t convert<string80_t, real_t>     (real_t      const & value) {return string80_t(make_string(value));}
+template<> string80_t convert<string80_t, real_l_t>   (real_l_t    const & value) {return string80_t(make_string(value));}
+template<> string80_t convert<string80_t, string_t>   (string_t    const & value) {return string80_t(value.makeString());}
+template<> string80_t convert<string80_t, string8_t>  (string8_t   const & value) {return string80_t(value.makeString());}
+template<> string80_t convert<string80_t, string16_t> (string16_t  const & value) {return string80_t(value.makeString());}
+template<> string80_t convert<string80_t, string32_t> (string32_t  const & value) {return string80_t(value.makeString());}
+template<> string80_t convert<string80_t, string80_t> (string80_t  const & value) {return value;}
+template<> string80_t convert<string80_t, string320_t>(string320_t const & value) {return string80_t(value.makeString());}
+template<> string80_t convert<string80_t, ubyte_t>    (ubyte_t     const & value) {return string80_t(make_string(value));}
+template<> string80_t convert<string80_t, sword_t>    (sword_t     const & value) {return string80_t(make_string(value));}
+template<> string80_t convert<string80_t, uword_t>    (uword_t     const & value) {return string80_t(make_string(value));}
+template<> string80_t convert<string80_t, sdword_t>   (sdword_t    const & value) {return string80_t(make_string(value));}
+template<> string80_t convert<string80_t, udword_t>   (udword_t    const & value) {return string80_t(make_string(value));}
 
-string320_t to_string320(any_t       const & value) {return value.toString320();}
-string320_t to_string320(bool_t      const & value) {return string320_t(make_string(value));}
-string320_t to_string320(int_s_t     const & value) {return string320_t(make_string(value));}
-string320_t to_string320(int_t       const & value) {return string320_t(make_string(value));}
-string320_t to_string320(int_l_t     const & value) {return string320_t(make_string(value));}
-string320_t to_string320(obj_t               value) {return from_obj_t<string320_t, to_string320, to_string320>(value);}
-string320_t to_string320(real_s_t    const & value) {return string320_t(make_string(value));}
-string320_t to_string320(real_t      const & value) {return string320_t(make_string(value));}
-string320_t to_string320(real_l_t    const & value) {return string320_t(make_string(value));}
-string320_t to_string320(string_t    const & value) {return string320_t(value.makeString());}
-string320_t to_string320(string8_t   const & value) {return string320_t(value.makeString());}
-string320_t to_string320(string16_t  const & value) {return string320_t(value.makeString());}
-string320_t to_string320(string32_t  const & value) {return string320_t(value.makeString());}
-string320_t to_string320(string80_t  const & value) {return string320_t(value.makeString());}
-string320_t to_string320(string320_t const & value) {return value;}
-string320_t to_string320(ubyte_t     const & value) {return string320_t(make_string(value));}
-string320_t to_string320(sword_t     const & value) {return string320_t(make_string(value));}
-string320_t to_string320(uword_t     const & value) {return string320_t(make_string(value));}
-string320_t to_string320(sdword_t    const & value) {return string320_t(make_string(value));}
-string320_t to_string320(udword_t    const & value) {return string320_t(make_string(value));}
+template<> string320_t convert<string320_t, any_t>      (any_t       const & value) {return value.toString320();}
+template<> string320_t convert<string320_t, bool_t>     (bool_t      const & value) {return string320_t(make_string(value));}
+template<> string320_t convert<string320_t, int_s_t>    (int_s_t     const & value) {return string320_t(make_string(value));}
+template<> string320_t convert<string320_t, int_t>      (int_t       const & value) {return string320_t(make_string(value));}
+template<> string320_t convert<string320_t, int_l_t>    (int_l_t     const & value) {return string320_t(make_string(value));}
+template<> string320_t convert<string320_t, obj_t>      (obj_t       const & value) {return from_obj_t<string320_t>(value);}
+template<> string320_t convert<string320_t, real_s_t>   (real_s_t    const & value) {return string320_t(make_string(value));}
+template<> string320_t convert<string320_t, real_t>     (real_t      const & value) {return string320_t(make_string(value));}
+template<> string320_t convert<string320_t, real_l_t>   (real_l_t    const & value) {return string320_t(make_string(value));}
+template<> string320_t convert<string320_t, string_t>   (string_t    const & value) {return string320_t(value.makeString());}
+template<> string320_t convert<string320_t, string8_t>  (string8_t   const & value) {return string320_t(value.makeString());}
+template<> string320_t convert<string320_t, string16_t> (string16_t  const & value) {return string320_t(value.makeString());}
+template<> string320_t convert<string320_t, string32_t> (string32_t  const & value) {return string320_t(value.makeString());}
+template<> string320_t convert<string320_t, string80_t> (string80_t  const & value) {return string320_t(value.makeString());}
+template<> string320_t convert<string320_t, string320_t>(string320_t const & value) {return value;}
+template<> string320_t convert<string320_t, ubyte_t>    (ubyte_t     const & value) {return string320_t(make_string(value));}
+template<> string320_t convert<string320_t, sword_t>    (sword_t     const & value) {return string320_t(make_string(value));}
+template<> string320_t convert<string320_t, uword_t>    (uword_t     const & value) {return string320_t(make_string(value));}
+template<> string320_t convert<string320_t, sdword_t>   (sdword_t    const & value) {return string320_t(make_string(value));}
+template<> string320_t convert<string320_t, udword_t>   (udword_t    const & value) {return string320_t(make_string(value));}
 
-ubyte_t to_ubyte(any_t       const & value) {return value.toUByte();}
-ubyte_t to_ubyte(bool_t      const & value) {return ubyte_t(value);}
-ubyte_t to_ubyte(int_s_t     const & value) {return ubyte_t(value);}
-ubyte_t to_ubyte(int_t       const & value) {return ubyte_t(value.makeInt());}
-ubyte_t to_ubyte(int_l_t     const & value) {return ubyte_t(value.makeInt());}
-ubyte_t to_ubyte(obj_t               value) {return from_obj_t<ubyte_t, to_ubyte, to_ubyte>(value);}
-ubyte_t to_ubyte(real_s_t    const & value) {return ubyte_t(value);}
-ubyte_t to_ubyte(real_t      const & value) {return ubyte_t(value.makeInt());}
-ubyte_t to_ubyte(real_l_t    const & value) {return ubyte_t(value.makeInt());}
-ubyte_t to_ubyte(string_t    const & value) {return num_from_string<ubyte_t>(value.makeString());}
-ubyte_t to_ubyte(string8_t   const & value) {return num_from_string<ubyte_t>(value.makeString());}
-ubyte_t to_ubyte(string16_t  const & value) {return num_from_string<ubyte_t>(value.makeString());}
-ubyte_t to_ubyte(string32_t  const & value) {return num_from_string<ubyte_t>(value.makeString());}
-ubyte_t to_ubyte(string80_t  const & value) {return num_from_string<ubyte_t>(value.makeString());}
-ubyte_t to_ubyte(string320_t const & value) {return num_from_string<ubyte_t>(value.makeString());}
-ubyte_t to_ubyte(ubyte_t     const & value) {return value;}
-ubyte_t to_ubyte(sword_t     const & value) {return ubyte_t(value.makeInt());}
-ubyte_t to_ubyte(uword_t     const & value) {return ubyte_t(value.makeInt());}
-ubyte_t to_ubyte(sdword_t    const & value) {return ubyte_t(value.makeInt());}
-ubyte_t to_ubyte(udword_t    const & value) {return ubyte_t(value.makeInt());}
+template<> ubyte_t convert<ubyte_t, any_t>      (any_t       const & value) {return value.toUByte();}
+template<> ubyte_t convert<ubyte_t, bool_t>     (bool_t      const & value) {return ubyte_t(value);}
+template<> ubyte_t convert<ubyte_t, int_s_t>    (int_s_t     const & value) {return ubyte_t(value);}
+template<> ubyte_t convert<ubyte_t, int_t>      (int_t       const & value) {return ubyte_t(value.makeInt());}
+template<> ubyte_t convert<ubyte_t, int_l_t>    (int_l_t     const & value) {return ubyte_t(value.makeInt());}
+template<> ubyte_t convert<ubyte_t, obj_t>      (obj_t       const & value) {return from_obj_t<ubyte_t>(value);}
+template<> ubyte_t convert<ubyte_t, real_s_t>   (real_s_t    const & value) {return ubyte_t(value);}
+template<> ubyte_t convert<ubyte_t, real_t>     (real_t      const & value) {return ubyte_t(value.makeInt());}
+template<> ubyte_t convert<ubyte_t, real_l_t>   (real_l_t    const & value) {return ubyte_t(value.makeInt());}
+template<> ubyte_t convert<ubyte_t, string_t>   (string_t    const & value) {return num_from_string<ubyte_t>(value.makeString());}
+template<> ubyte_t convert<ubyte_t, string8_t>  (string8_t   const & value) {return num_from_string<ubyte_t>(value.makeString());}
+template<> ubyte_t convert<ubyte_t, string16_t> (string16_t  const & value) {return num_from_string<ubyte_t>(value.makeString());}
+template<> ubyte_t convert<ubyte_t, string32_t> (string32_t  const & value) {return num_from_string<ubyte_t>(value.makeString());}
+template<> ubyte_t convert<ubyte_t, string80_t> (string80_t  const & value) {return num_from_string<ubyte_t>(value.makeString());}
+template<> ubyte_t convert<ubyte_t, string320_t>(string320_t const & value) {return num_from_string<ubyte_t>(value.makeString());}
+template<> ubyte_t convert<ubyte_t, ubyte_t>    (ubyte_t     const & value) {return value;}
+template<> ubyte_t convert<ubyte_t, sword_t>    (sword_t     const & value) {return ubyte_t(value.makeInt());}
+template<> ubyte_t convert<ubyte_t, uword_t>    (uword_t     const & value) {return ubyte_t(value.makeInt());}
+template<> ubyte_t convert<ubyte_t, sdword_t>   (sdword_t    const & value) {return ubyte_t(value.makeInt());}
+template<> ubyte_t convert<ubyte_t, udword_t>   (udword_t    const & value) {return ubyte_t(value.makeInt());}
 
-sword_t to_sword(any_t       const & value) {return value.toSWord();}
-sword_t to_sword(bool_t      const & value) {return sword_t(value);}
-sword_t to_sword(int_s_t     const & value) {return sword_t(value);}
-sword_t to_sword(int_t       const & value) {return sword_t(value.makeInt());}
-sword_t to_sword(int_l_t     const & value) {return sword_t(value.makeInt());}
-sword_t to_sword(obj_t               value) {return from_obj_t<sword_t, to_sword, to_sword>(value);}
-sword_t to_sword(real_s_t    const & value) {return sword_t(value);}
-sword_t to_sword(real_t      const & value) {return sword_t(value.makeInt());}
-sword_t to_sword(real_l_t    const & value) {return sword_t(value.makeInt());}
-sword_t to_sword(string_t    const & value) {return num_from_string<sword_t>(value.makeString());}
-sword_t to_sword(string8_t   const & value) {return num_from_string<sword_t>(value.makeString());}
-sword_t to_sword(string16_t  const & value) {return num_from_string<sword_t>(value.makeString());}
-sword_t to_sword(string32_t  const & value) {return num_from_string<sword_t>(value.makeString());}
-sword_t to_sword(string80_t  const & value) {return num_from_string<sword_t>(value.makeString());}
-sword_t to_sword(string320_t const & value) {return num_from_string<sword_t>(value.makeString());}
-sword_t to_sword(ubyte_t     const & value) {return sword_t(value.makeInt());}
-sword_t to_sword(sword_t     const & value) {return value;}
-sword_t to_sword(uword_t     const & value) {return sword_t(value.makeInt());}
-sword_t to_sword(sdword_t    const & value) {return sword_t(value.makeInt());}
-sword_t to_sword(udword_t    const & value) {return sword_t(value.makeInt());}
+template<> sword_t convert<sword_t, any_t>      (any_t       const & value) {return value.toSWord();}
+template<> sword_t convert<sword_t, bool_t>     (bool_t      const & value) {return sword_t(value);}
+template<> sword_t convert<sword_t, int_s_t>    (int_s_t     const & value) {return sword_t(value);}
+template<> sword_t convert<sword_t, int_t>      (int_t       const & value) {return sword_t(value.makeInt());}
+template<> sword_t convert<sword_t, int_l_t>    (int_l_t     const & value) {return sword_t(value.makeInt());}
+template<> sword_t convert<sword_t, obj_t>      (obj_t       const & value) {return from_obj_t<sword_t>(value);}
+template<> sword_t convert<sword_t, real_s_t>   (real_s_t    const & value) {return sword_t(value);}
+template<> sword_t convert<sword_t, real_t>     (real_t      const & value) {return sword_t(value.makeInt());}
+template<> sword_t convert<sword_t, real_l_t>   (real_l_t    const & value) {return sword_t(value.makeInt());}
+template<> sword_t convert<sword_t, string_t>   (string_t    const & value) {return num_from_string<sword_t>(value.makeString());}
+template<> sword_t convert<sword_t, string8_t>  (string8_t   const & value) {return num_from_string<sword_t>(value.makeString());}
+template<> sword_t convert<sword_t, string16_t> (string16_t  const & value) {return num_from_string<sword_t>(value.makeString());}
+template<> sword_t convert<sword_t, string32_t> (string32_t  const & value) {return num_from_string<sword_t>(value.makeString());}
+template<> sword_t convert<sword_t, string80_t> (string80_t  const & value) {return num_from_string<sword_t>(value.makeString());}
+template<> sword_t convert<sword_t, string320_t>(string320_t const & value) {return num_from_string<sword_t>(value.makeString());}
+template<> sword_t convert<sword_t, ubyte_t>    (ubyte_t     const & value) {return sword_t(value.makeInt());}
+template<> sword_t convert<sword_t, sword_t>    (sword_t     const & value) {return value;}
+template<> sword_t convert<sword_t, uword_t>    (uword_t     const & value) {return sword_t(value.makeInt());}
+template<> sword_t convert<sword_t, sdword_t>   (sdword_t    const & value) {return sword_t(value.makeInt());}
+template<> sword_t convert<sword_t, udword_t>   (udword_t    const & value) {return sword_t(value.makeInt());}
 
-uword_t to_uword(any_t       const & value) {return value.toUWord();}
-uword_t to_uword(bool_t      const & value) {return uword_t(value);}
-uword_t to_uword(int_s_t     const & value) {return uword_t(value);}
-uword_t to_uword(int_t       const & value) {return uword_t(value.makeInt());}
-uword_t to_uword(int_l_t     const & value) {return uword_t(value.makeInt());}
-uword_t to_uword(obj_t               value) {return from_obj_t<uword_t, to_uword, to_uword>(value);}
-uword_t to_uword(real_s_t    const & value) {return uword_t(value);}
-uword_t to_uword(real_t      const & value) {return uword_t(value.makeInt());}
-uword_t to_uword(real_l_t    const & value) {return uword_t(value.makeInt());}
-uword_t to_uword(string_t    const & value) {return num_from_string<uword_t>(value.makeString());}
-uword_t to_uword(string8_t   const & value) {return num_from_string<uword_t>(value.makeString());}
-uword_t to_uword(string16_t  const & value) {return num_from_string<uword_t>(value.makeString());}
-uword_t to_uword(string32_t  const & value) {return num_from_string<uword_t>(value.makeString());}
-uword_t to_uword(string80_t  const & value) {return num_from_string<uword_t>(value.makeString());}
-uword_t to_uword(string320_t const & value) {return num_from_string<uword_t>(value.makeString());}
-uword_t to_uword(ubyte_t     const & value) {return uword_t(value.makeInt());}
-uword_t to_uword(sword_t     const & value) {return uword_t(value.makeInt());}
-uword_t to_uword(uword_t     const & value) {return value;}
-uword_t to_uword(sdword_t    const & value) {return uword_t(value.makeInt());}
-uword_t to_uword(udword_t    const & value) {return uword_t(value.makeInt());}
+template<> uword_t convert<uword_t, any_t>      (any_t       const & value) {return value.toUWord();}
+template<> uword_t convert<uword_t, bool_t>     (bool_t      const & value) {return uword_t(value);}
+template<> uword_t convert<uword_t, int_s_t>    (int_s_t     const & value) {return uword_t(value);}
+template<> uword_t convert<uword_t, int_t>      (int_t       const & value) {return uword_t(value.makeInt());}
+template<> uword_t convert<uword_t, int_l_t>    (int_l_t     const & value) {return uword_t(value.makeInt());}
+template<> uword_t convert<uword_t, obj_t>      (obj_t       const & value) {return from_obj_t<uword_t>(value);}
+template<> uword_t convert<uword_t, real_s_t>   (real_s_t    const & value) {return uword_t(value);}
+template<> uword_t convert<uword_t, real_t>     (real_t      const & value) {return uword_t(value.makeInt());}
+template<> uword_t convert<uword_t, real_l_t>   (real_l_t    const & value) {return uword_t(value.makeInt());}
+template<> uword_t convert<uword_t, string_t>   (string_t    const & value) {return num_from_string<uword_t>(value.makeString());}
+template<> uword_t convert<uword_t, string8_t>  (string8_t   const & value) {return num_from_string<uword_t>(value.makeString());}
+template<> uword_t convert<uword_t, string16_t> (string16_t  const & value) {return num_from_string<uword_t>(value.makeString());}
+template<> uword_t convert<uword_t, string32_t> (string32_t  const & value) {return num_from_string<uword_t>(value.makeString());}
+template<> uword_t convert<uword_t, string80_t> (string80_t  const & value) {return num_from_string<uword_t>(value.makeString());}
+template<> uword_t convert<uword_t, string320_t>(string320_t const & value) {return num_from_string<uword_t>(value.makeString());}
+template<> uword_t convert<uword_t, ubyte_t>    (ubyte_t     const & value) {return uword_t(value.makeInt());}
+template<> uword_t convert<uword_t, sword_t>    (sword_t     const & value) {return uword_t(value.makeInt());}
+template<> uword_t convert<uword_t, uword_t>    (uword_t     const & value) {return value;}
+template<> uword_t convert<uword_t, sdword_t>   (sdword_t    const & value) {return uword_t(value.makeInt());}
+template<> uword_t convert<uword_t, udword_t>   (udword_t    const & value) {return uword_t(value.makeInt());}
 
-sdword_t to_sdword(any_t       const & value) {return value.toSDWord();}
-sdword_t to_sdword(bool_t      const & value) {return sdword_t(value);}
-sdword_t to_sdword(int_s_t     const & value) {return sdword_t(value);}
-sdword_t to_sdword(int_t       const & value) {return sdword_t(value.makeInt());}
-sdword_t to_sdword(int_l_t     const & value) {return sdword_t(value.makeInt());}
-sdword_t to_sdword(obj_t               value) {return from_obj_t<sdword_t, to_sdword, to_sdword>(value);}
-sdword_t to_sdword(real_s_t    const & value) {return sdword_t(value);}
-sdword_t to_sdword(real_t      const & value) {return sdword_t(value.makeInt());}
-sdword_t to_sdword(real_l_t    const & value) {return sdword_t(value.makeInt());}
-sdword_t to_sdword(string_t    const & value) {return num_from_string<sdword_t>(value.makeString());}
-sdword_t to_sdword(string8_t   const & value) {return num_from_string<sdword_t>(value.makeString());}
-sdword_t to_sdword(string16_t  const & value) {return num_from_string<sdword_t>(value.makeString());}
-sdword_t to_sdword(string32_t  const & value) {return num_from_string<sdword_t>(value.makeString());}
-sdword_t to_sdword(string80_t  const & value) {return num_from_string<sdword_t>(value.makeString());}
-sdword_t to_sdword(string320_t const & value) {return num_from_string<sdword_t>(value.makeString());}
-sdword_t to_sdword(ubyte_t     const & value) {return sdword_t(value.makeInt());}
-sdword_t to_sdword(sword_t     const & value) {return sdword_t(value.makeInt());}
-sdword_t to_sdword(uword_t     const & value) {return sdword_t(value.makeInt());}
-sdword_t to_sdword(sdword_t    const & value) {return value;}
-sdword_t to_sdword(udword_t    const & value) {return sdword_t(value.makeInt());}
+template<> sdword_t convert<sdword_t, any_t>      (any_t       const & value) {return value.toSDWord();}
+template<> sdword_t convert<sdword_t, bool_t>     (bool_t      const & value) {return sdword_t(value);}
+template<> sdword_t convert<sdword_t, int_s_t>    (int_s_t     const & value) {return sdword_t(value);}
+template<> sdword_t convert<sdword_t, int_t>      (int_t       const & value) {return sdword_t(value.makeInt());}
+template<> sdword_t convert<sdword_t, int_l_t>    (int_l_t     const & value) {return sdword_t(value.makeInt());}
+template<> sdword_t convert<sdword_t, obj_t>      (obj_t       const & value) {return from_obj_t<sdword_t>(value);}
+template<> sdword_t convert<sdword_t, real_s_t>   (real_s_t    const & value) {return sdword_t(value);}
+template<> sdword_t convert<sdword_t, real_t>     (real_t      const & value) {return sdword_t(value.makeInt());}
+template<> sdword_t convert<sdword_t, real_l_t>   (real_l_t    const & value) {return sdword_t(value.makeInt());}
+template<> sdword_t convert<sdword_t, string_t>   (string_t    const & value) {return num_from_string<sdword_t>(value.makeString());}
+template<> sdword_t convert<sdword_t, string8_t>  (string8_t   const & value) {return num_from_string<sdword_t>(value.makeString());}
+template<> sdword_t convert<sdword_t, string16_t> (string16_t  const & value) {return num_from_string<sdword_t>(value.makeString());}
+template<> sdword_t convert<sdword_t, string32_t> (string32_t  const & value) {return num_from_string<sdword_t>(value.makeString());}
+template<> sdword_t convert<sdword_t, string80_t> (string80_t  const & value) {return num_from_string<sdword_t>(value.makeString());}
+template<> sdword_t convert<sdword_t, string320_t>(string320_t const & value) {return num_from_string<sdword_t>(value.makeString());}
+template<> sdword_t convert<sdword_t, ubyte_t>    (ubyte_t     const & value) {return sdword_t(value.makeInt());}
+template<> sdword_t convert<sdword_t, sword_t>    (sword_t     const & value) {return sdword_t(value.makeInt());}
+template<> sdword_t convert<sdword_t, uword_t>    (uword_t     const & value) {return sdword_t(value.makeInt());}
+template<> sdword_t convert<sdword_t, sdword_t>   (sdword_t    const & value) {return value;}
+template<> sdword_t convert<sdword_t, udword_t>   (udword_t    const & value) {return sdword_t(value.makeInt());}
 
-udword_t to_udword(any_t       const & value) {return value.toUDWord();}
-udword_t to_udword(bool_t      const & value) {return udword_t(value);}
-udword_t to_udword(int_s_t     const & value) {return udword_t(value);}
-udword_t to_udword(int_t       const & value) {return udword_t(value.makeInt());}
-udword_t to_udword(int_l_t     const & value) {return udword_t(value.makeInt());}
-udword_t to_udword(obj_t               value) {return from_obj_t<udword_t, to_udword, to_udword>(value);}
-udword_t to_udword(real_s_t    const & value) {return udword_t(value);}
-udword_t to_udword(real_t      const & value) {return udword_t(value.makeInt());}
-udword_t to_udword(real_l_t    const & value) {return udword_t(value.makeInt());}
-udword_t to_udword(string_t    const & value) {return num_from_string<udword_t>(value.makeString());}
-udword_t to_udword(string8_t   const & value) {return num_from_string<udword_t>(value.makeString());}
-udword_t to_udword(string16_t  const & value) {return num_from_string<udword_t>(value.makeString());}
-udword_t to_udword(string32_t  const & value) {return num_from_string<udword_t>(value.makeString());}
-udword_t to_udword(string80_t  const & value) {return num_from_string<udword_t>(value.makeString());}
-udword_t to_udword(string320_t const & value) {return num_from_string<udword_t>(value.makeString());}
-udword_t to_udword(ubyte_t     const & value) {return udword_t(value.makeInt());}
-udword_t to_udword(sword_t     const & value) {return udword_t(value.makeInt());}
-udword_t to_udword(uword_t     const & value) {return udword_t(value.makeInt());}
-udword_t to_udword(sdword_t    const & value) {return udword_t(value.makeInt());}
-udword_t to_udword(udword_t    const & value) {return value;}
+template<> udword_t convert<udword_t, any_t>      (any_t       const & value) {return value.toUDWord();}
+template<> udword_t convert<udword_t, bool_t>     (bool_t      const & value) {return udword_t(value);}
+template<> udword_t convert<udword_t, int_s_t>    (int_s_t     const & value) {return udword_t(value);}
+template<> udword_t convert<udword_t, int_t>      (int_t       const & value) {return udword_t(value.makeInt());}
+template<> udword_t convert<udword_t, int_l_t>    (int_l_t     const & value) {return udword_t(value.makeInt());}
+template<> udword_t convert<udword_t, obj_t>      (obj_t       const & value) {return from_obj_t<udword_t>(value);}
+template<> udword_t convert<udword_t, real_s_t>   (real_s_t    const & value) {return udword_t(value);}
+template<> udword_t convert<udword_t, real_t>     (real_t      const & value) {return udword_t(value.makeInt());}
+template<> udword_t convert<udword_t, real_l_t>   (real_l_t    const & value) {return udword_t(value.makeInt());}
+template<> udword_t convert<udword_t, string_t>   (string_t    const & value) {return num_from_string<udword_t>(value.makeString());}
+template<> udword_t convert<udword_t, string8_t>  (string8_t   const & value) {return num_from_string<udword_t>(value.makeString());}
+template<> udword_t convert<udword_t, string16_t> (string16_t  const & value) {return num_from_string<udword_t>(value.makeString());}
+template<> udword_t convert<udword_t, string32_t> (string32_t  const & value) {return num_from_string<udword_t>(value.makeString());}
+template<> udword_t convert<udword_t, string80_t> (string80_t  const & value) {return num_from_string<udword_t>(value.makeString());}
+template<> udword_t convert<udword_t, string320_t>(string320_t const & value) {return num_from_string<udword_t>(value.makeString());}
+template<> udword_t convert<udword_t, ubyte_t>    (ubyte_t     const & value) {return udword_t(value.makeInt());}
+template<> udword_t convert<udword_t, sword_t>    (sword_t     const & value) {return udword_t(value.makeInt());}
+template<> udword_t convert<udword_t, uword_t>    (uword_t     const & value) {return udword_t(value.makeInt());}
+template<> udword_t convert<udword_t, sdword_t>   (sdword_t    const & value) {return udword_t(value.makeInt());}
+template<> udword_t convert<udword_t, udword_t>   (udword_t    const & value) {return value;}
 
 
 
