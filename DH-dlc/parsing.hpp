@@ -32,10 +32,6 @@
 
 
 
-void add_function(std::string const & type, std::string const & name, std::string const & data);
-std::string const & get_function(std::string const & type, std::string const & name);
-bool has_function(std::string const & type, std::string const & name);
-
 std::vector<std::string> parse_args(std::string const &);
 
 name_t parse_name(SourceScannerDHLX &);
@@ -45,8 +41,6 @@ obj_t parse_obj(std::string const &, type_t const);
 #define DECLARE_PARSE(TYPE) \
 TYPE##_t parse_##TYPE(SourceScannerDHLX &); \
 TYPE##_t parse_##TYPE(std::string const &); \
-TYPE##_t parse_##TYPE##_function(std::string const &, SourceScannerDHLX &);              \
-TYPE##_t parse_##TYPE##_function(std::string const &, std::vector<std::string> const &); \
 TYPE##_t parse_##TYPE##_const(std::string const &); \
 TYPE##_t parse_##TYPE##_unary(std::string const &, SourceScannerDHLX &); \
 TYPE##_t parse_##TYPE##_unary(std::string const &, std::string const &);

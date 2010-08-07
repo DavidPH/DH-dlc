@@ -157,20 +157,16 @@ Tto convert(Tfrom const &);
 
 
 #define TEMPLATE_TAKE_TfuncDDL \
-T(Tfunc)(std::string const &, std::vector<std::string> const &), \
-T(Tunary)(std::string const &, std::string const &),             \
+T(Tunary)(std::string const &, std::string const &), \
 T(Tconst)(std::string const &)
 #define TEMPLATE_TAKE_TfuncDHLX \
-T(Tfunc)(std::string const &, SourceScannerDHLX &),  \
 T(Tunary)(std::string const &, SourceScannerDHLX &), \
 T(Tconst)(std::string const &)
 #define TEMPLATE_PUSH_Tfunc \
-Tfunc,  \
 Tunary, \
 Tconst
 #define TEMPLATE_PUSH_Tfunc_type(TYPE) \
-parse_##TYPE##_function, \
-parse_##TYPE##_unary,    \
+parse_##TYPE##_unary, \
 parse_##TYPE##_const
 
 #define TEMPLATE_TAKE_DDL \

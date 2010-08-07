@@ -33,6 +33,8 @@
 #include "exceptions/CompilerException.hpp"
 #include "exceptions/SyntaxException.hpp"
 
+#include "parsing/FunctionHandlerDDL.hpp"
+
 
 
 void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
@@ -69,10 +71,40 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 		// [TYPE] # function : NAME [: TYPE ...] { data }
 		if (st.getName() == command_name_function())
 		{
-			add_function(st.getType(), st.getBase(0), st.getData());
+			std::vector<std::string> type_vec(st.getBase());
+			type_vec.push_back(st.getType());
 
-			for (size_t index = 1; index < st.getBase().size(); ++index)
-				add_function(st.getBase(index), st.getBase(0), st.getData());
+			for (size_t index = 1; index < type_vec.size(); ++index)
+			{
+				if (type_vec[index] == "")
+					break;
+
+				type_t type(type_t::get_type(type_vec[index]));
+
+				if (type == type_t::type_bool()) FunctionHandler<bool_t>::add_function(type_vec[0], new FunctionHandlerDDL<bool_t>(st.getData()));
+
+				     if (type == type_t::type_bool())       FunctionHandler<bool_t>::add_function(type_vec[0], new FunctionHandlerDDL<bool_t>(st.getData()));
+				else if (type == type_t::type_shortint())   FunctionHandler<int_s_t>::add_function(type_vec[0], new FunctionHandlerDDL<int_s_t>(st.getData()));
+				else if (type == type_t::type_int())        FunctionHandler<int_t>::add_function(type_vec[0], new FunctionHandlerDDL<int_t>(st.getData()));
+				else if (type == type_t::type_longint())    FunctionHandler<int_l_t>::add_function(type_vec[0], new FunctionHandlerDDL<int_l_t>(st.getData()));
+
+				else if (type == type_t::type_shortfloat()) FunctionHandler<real_s_t>::add_function(type_vec[0], new FunctionHandlerDDL<real_s_t>(st.getData()));
+				else if (type == type_t::type_float())      FunctionHandler<real_t>::add_function(type_vec[0], new FunctionHandlerDDL<real_t>(st.getData()));
+				else if (type == type_t::type_longfloat())  FunctionHandler<real_l_t>::add_function(type_vec[0], new FunctionHandlerDDL<real_l_t>(st.getData()));
+
+				else if (type == type_t::type_string())     FunctionHandler<string_t>::add_function(type_vec[0], new FunctionHandlerDDL<string_t>(st.getData()));
+				else if (type == type_t::type_string8())    FunctionHandler<string8_t>::add_function(type_vec[0], new FunctionHandlerDDL<string8_t>(st.getData()));
+				else if (type == type_t::type_string16())   FunctionHandler<string16_t>::add_function(type_vec[0], new FunctionHandlerDDL<string16_t>(st.getData()));
+				else if (type == type_t::type_string32())   FunctionHandler<string32_t>::add_function(type_vec[0], new FunctionHandlerDDL<string32_t>(st.getData()));
+				else if (type == type_t::type_string80())   FunctionHandler<string80_t>::add_function(type_vec[0], new FunctionHandlerDDL<string80_t>(st.getData()));
+				else if (type == type_t::type_string320())  FunctionHandler<string320_t>::add_function(type_vec[0], new FunctionHandlerDDL<string320_t>(st.getData()));
+
+				else if (type == type_t::type_ubyte())      FunctionHandler<ubyte_t>::add_function(type_vec[0], new FunctionHandlerDDL<ubyte_t>(st.getData()));
+				else if (type == type_t::type_sword())      FunctionHandler<sword_t>::add_function(type_vec[0], new FunctionHandlerDDL<sword_t>(st.getData()));
+				else if (type == type_t::type_uword())      FunctionHandler<uword_t>::add_function(type_vec[0], new FunctionHandlerDDL<uword_t>(st.getData()));
+				else if (type == type_t::type_sdword())     FunctionHandler<sdword_t>::add_function(type_vec[0], new FunctionHandlerDDL<sdword_t>(st.getData()));
+				else if (type == type_t::type_udword())     FunctionHandler<udword_t>::add_function(type_vec[0], new FunctionHandlerDDL<udword_t>(st.getData()));
+			}
 
 			return;
 		}

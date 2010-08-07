@@ -39,6 +39,8 @@
 #include "exceptions/InvalidTypeException.hpp"
 #include "exceptions/ParsingException.hpp"
 
+#include "parsing/FunctionHandler.hpp"
+
 #include "types/binary.hpp"
 #include "types/int_t.hpp"
 #include "types/real_t.hpp"
@@ -120,7 +122,7 @@ struct ParsingDataDDL
 	unsigned hasExponent : 1;
 };
 
-template <class T, T (Tfunc)(std::string const &, std::vector<std::string> const &)>
+template <class T>
 static bool check_function(ParsingDataDDL<T> * data)
 {
 	if (data->value[0] != '<') return false;
@@ -137,7 +139,7 @@ static bool check_function(ParsingDataDDL<T> * data)
 
 	std::vector<std::string> args = parse_args(newValue.substr(1, newValue.size()-2));
 
-	data->valueReturn = Tfunc(opString, args);
+	data->valueReturn = FunctionHandler<T>::get_function(opString)(args);
 
 	return true;
 }
@@ -339,7 +341,7 @@ static bool check_unary(ParsingDataDDL<T> * data)
 	return true;
 }
 
-template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &), T (Tfunc)(std::string const &, std::vector<std::string> const &)>
+template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &)>
 static bool check_all(ParsingDataDDL<T> * data)
 {
 	if (check_math<T, Tparse>(data))
@@ -351,7 +353,7 @@ static bool check_all(ParsingDataDDL<T> * data)
 	if (check_unary<T, Tconst, Tunary>(data))
 		return true;
 
-	if (check_function<T, Tfunc>(data))
+	if (check_function<T>(data))
 		return true;
 
 	if (data->hasBracket)
@@ -584,7 +586,7 @@ inline T parse__base_part(SourceScannerDHLX & sc)
 			if (type_t::has_type(function))
 				parse__base_typecast<TEMPLATE_PUSH>(data, type_t::get_type(function), sc);
 			else
-				data = Tfunc(function, sc);
+				data = FunctionHandler<T>::get_function(function)(sc);
 
 			sc.get(SourceTokenDHLX::TT_OP_PARENTHESIS_C);
 			break;
@@ -876,20 +878,20 @@ bool_t parse_bool(std::string const & value)
 
 	ParsingDataDDL<bool_t> data(value);
 
-	if (check_all<bool_t, parse_bool, convert<bool_t, any_t>, parse_bool_const, parse_bool_unary, parse_bool_function>(&data))
+	if (check_all<bool_t, parse_bool, convert<bool_t, any_t>, parse_bool_const, parse_bool_unary>(&data))
 		return data.valueReturn;
 
 	return convert<bool_t, obj_t>(get_object(name_t(value)));
 }
 
-template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &), T (Tfunc)(std::string const &, std::vector<std::string> const &)>
+template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &)>
 static T parse_num_base(std::string const & value)
 {
 	if (value.empty()) return T();
 
 	ParsingDataDDL<T> data(value);
 
-	if (check_all<T, Tparse, Tconv, Tconst, Tunary, Tfunc>(&data))
+	if (check_all<T, Tparse, Tconv, Tconst, Tunary>(&data))
 		return data.valueReturn;
 
 	if (data.hasExponent)
@@ -924,7 +926,7 @@ int_s_t parse_int_s(SourceScannerDHLX & sc)
 }
 int_s_t parse_int_s(std::string const & value)
 {
-	return parse_num_base<int_s_t, parse_int_s, convert<int_s_t, any_t>, parse_int_s_const, parse_int_s_unary, parse_int_s_function>(value);
+	return parse_num_base<int_s_t, parse_int_s, convert<int_s_t, any_t>, parse_int_s_const, parse_int_s_unary>(value);
 }
 int_t parse_int(SourceScannerDHLX & sc)
 {
@@ -932,7 +934,7 @@ int_t parse_int(SourceScannerDHLX & sc)
 }
 int_t parse_int(std::string const & value)
 {
-	return parse_num_base<int_t, parse_int, convert<int_t, any_t>, parse_int_const, parse_int_unary, parse_int_function>(value);
+	return parse_num_base<int_t, parse_int, convert<int_t, any_t>, parse_int_const, parse_int_unary>(value);
 }
 int_l_t parse_int_l(SourceScannerDHLX & sc)
 {
@@ -940,7 +942,7 @@ int_l_t parse_int_l(SourceScannerDHLX & sc)
 }
 int_l_t parse_int_l(std::string const & value)
 {
-	return parse_num_base<int_l_t, parse_int_l, convert<int_l_t, any_t>, parse_int_l_const, parse_int_l_unary, parse_int_l_function>(value);
+	return parse_num_base<int_l_t, parse_int_l, convert<int_l_t, any_t>, parse_int_l_const, parse_int_l_unary>(value);
 }
 
 name_t parse_name(SourceScannerDHLX & sc)
@@ -1007,7 +1009,7 @@ real_s_t parse_real_s(SourceScannerDHLX & sc)
 }
 real_s_t parse_real_s(std::string const & value)
 {
-	return parse_num_base<real_s_t, parse_real_s, convert<real_s_t, any_t>, parse_real_s_const, parse_real_s_unary, parse_real_s_function>(value);
+	return parse_num_base<real_s_t, parse_real_s, convert<real_s_t, any_t>, parse_real_s_const, parse_real_s_unary>(value);
 }
 real_t parse_real(SourceScannerDHLX & sc)
 {
@@ -1015,7 +1017,7 @@ real_t parse_real(SourceScannerDHLX & sc)
 }
 real_t parse_real(std::string const & value)
 {
-	return parse_num_base<real_t, parse_real, convert<real_t, any_t>, parse_real_const, parse_real_unary, parse_real_function>(value);
+	return parse_num_base<real_t, parse_real, convert<real_t, any_t>, parse_real_const, parse_real_unary>(value);
 }
 real_l_t parse_real_l(SourceScannerDHLX & sc)
 {
@@ -1023,10 +1025,10 @@ real_l_t parse_real_l(SourceScannerDHLX & sc)
 }
 real_l_t parse_real_l(std::string const & value)
 {
-	return parse_num_base<real_l_t, parse_real_l, convert<real_l_t, any_t>, parse_real_l_const, parse_real_l_unary, parse_real_l_function>(value);
+	return parse_num_base<real_l_t, parse_real_l, convert<real_l_t, any_t>, parse_real_l_const, parse_real_l_unary>(value);
 }
 
-template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &), T (Tfunc)(std::string const &, std::vector<std::string> const &)>
+template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &)>
 static T parse_string_base(std::string const & value)
 {
 	if (value.empty())
@@ -1037,7 +1039,7 @@ static T parse_string_base(std::string const & value)
 
 	ParsingDataDDL<T> data(value);
 
-	if (check_all<T, Tparse, Tconv, Tconst, Tunary, Tfunc>(&data))
+	if (check_all<T, Tparse, Tconv, Tconst, Tunary>(&data))
 		return data.valueReturn;
 
 	// This is required to be able to parse UDMF.
@@ -1053,7 +1055,7 @@ string_t parse_string(SourceScannerDHLX & sc)
 }
 string_t parse_string(std::string const & value)
 {
-	return parse_string_base<string_t, parse_string, convert<string_t, any_t>, parse_string_const, parse_string_unary, parse_string_function>(value);
+	return parse_string_base<string_t, parse_string, convert<string_t, any_t>, parse_string_const, parse_string_unary>(value);
 }
 string8_t parse_string8(SourceScannerDHLX & sc)
 {
@@ -1061,7 +1063,7 @@ string8_t parse_string8(SourceScannerDHLX & sc)
 }
 string8_t parse_string8(std::string const & value)
 {
-	return parse_string_base<string8_t, parse_string8, convert<string8_t, any_t>, parse_string8_const, parse_string8_unary, parse_string8_function>(value);
+	return parse_string_base<string8_t, parse_string8, convert<string8_t, any_t>, parse_string8_const, parse_string8_unary>(value);
 }
 string16_t parse_string16(SourceScannerDHLX & sc)
 {
@@ -1069,7 +1071,7 @@ string16_t parse_string16(SourceScannerDHLX & sc)
 }
 string16_t parse_string16(std::string const & value)
 {
-	return parse_string_base<string16_t, parse_string16, convert<string16_t, any_t>, parse_string16_const, parse_string16_unary, parse_string16_function>(value);
+	return parse_string_base<string16_t, parse_string16, convert<string16_t, any_t>, parse_string16_const, parse_string16_unary>(value);
 }
 string32_t parse_string32(SourceScannerDHLX & sc)
 {
@@ -1077,7 +1079,7 @@ string32_t parse_string32(SourceScannerDHLX & sc)
 }
 string32_t parse_string32(std::string const & value)
 {
-	return parse_string_base<string32_t, parse_string32, convert<string32_t, any_t>, parse_string32_const, parse_string32_unary, parse_string32_function>(value);
+	return parse_string_base<string32_t, parse_string32, convert<string32_t, any_t>, parse_string32_const, parse_string32_unary>(value);
 }
 string80_t parse_string80(SourceScannerDHLX & sc)
 {
@@ -1085,7 +1087,7 @@ string80_t parse_string80(SourceScannerDHLX & sc)
 }
 string80_t parse_string80(std::string const & value)
 {
-	return parse_string_base<string80_t, parse_string80, convert<string80_t, any_t>, parse_string80_const, parse_string80_unary, parse_string80_function>(value);
+	return parse_string_base<string80_t, parse_string80, convert<string80_t, any_t>, parse_string80_const, parse_string80_unary>(value);
 }
 string320_t parse_string320(SourceScannerDHLX & sc)
 {
@@ -1093,7 +1095,7 @@ string320_t parse_string320(SourceScannerDHLX & sc)
 }
 string320_t parse_string320(std::string const & value)
 {
-	return parse_string_base<string320_t, parse_string320, convert<string320_t, any_t>, parse_string320_const, parse_string320_unary, parse_string320_function>(value);
+	return parse_string_base<string320_t, parse_string320, convert<string320_t, any_t>, parse_string320_const, parse_string320_unary>(value);
 }
 
 ubyte_t parse_ubyte(SourceScannerDHLX & sc)
@@ -1102,7 +1104,7 @@ ubyte_t parse_ubyte(SourceScannerDHLX & sc)
 }
 ubyte_t parse_ubyte(std::string const & value)
 {
-	return parse_num_base<ubyte_t, parse_ubyte, convert<ubyte_t, any_t>, parse_ubyte_const, parse_ubyte_unary, parse_ubyte_function>(value);
+	return parse_num_base<ubyte_t, parse_ubyte, convert<ubyte_t, any_t>, parse_ubyte_const, parse_ubyte_unary>(value);
 }
 sword_t parse_sword(SourceScannerDHLX & sc)
 {
@@ -1110,7 +1112,7 @@ sword_t parse_sword(SourceScannerDHLX & sc)
 }
 sword_t parse_sword(std::string const & value)
 {
-	return parse_num_base<sword_t, parse_sword, convert<sword_t, any_t>, parse_sword_const, parse_sword_unary, parse_sword_function>(value);
+	return parse_num_base<sword_t, parse_sword, convert<sword_t, any_t>, parse_sword_const, parse_sword_unary>(value);
 }
 uword_t parse_uword(SourceScannerDHLX & sc)
 {
@@ -1118,7 +1120,7 @@ uword_t parse_uword(SourceScannerDHLX & sc)
 }
 uword_t parse_uword(std::string const & value)
 {
-	return parse_num_base<uword_t, parse_uword, convert<uword_t, any_t>, parse_uword_const, parse_uword_unary, parse_uword_function>(value);
+	return parse_num_base<uword_t, parse_uword, convert<uword_t, any_t>, parse_uword_const, parse_uword_unary>(value);
 }
 sdword_t parse_sdword(SourceScannerDHLX & sc)
 {
@@ -1126,7 +1128,7 @@ sdword_t parse_sdword(SourceScannerDHLX & sc)
 }
 sdword_t parse_sdword(std::string const & value)
 {
-	return parse_num_base<sdword_t, parse_sdword, convert<sdword_t, any_t>, parse_sdword_const, parse_sdword_unary, parse_sdword_function>(value);
+	return parse_num_base<sdword_t, parse_sdword, convert<sdword_t, any_t>, parse_sdword_const, parse_sdword_unary>(value);
 }
 udword_t parse_udword(SourceScannerDHLX & sc)
 {
@@ -1134,7 +1136,7 @@ udword_t parse_udword(SourceScannerDHLX & sc)
 }
 udword_t parse_udword(std::string const & value)
 {
-	return parse_num_base<udword_t, parse_udword, convert<udword_t, any_t>, parse_udword_const, parse_udword_unary, parse_udword_function>(value);
+	return parse_num_base<udword_t, parse_udword, convert<udword_t, any_t>, parse_udword_const, parse_udword_unary>(value);
 }
 
 
