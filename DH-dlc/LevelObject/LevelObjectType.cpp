@@ -181,5 +181,31 @@ MAKE_type_X(thing)
 MAKE_type_X(vertex)
 #undef MAKE_type_X
 
+#define MAKE_type_auto(TYPE, NAME) \
+template<> \
+LevelObjectType LevelObjectType::type_auto<TYPE##_t>() \
+{ \
+	return type_##NAME(); \
+}
+MAKE_type_auto(bool,      bool)
+MAKE_type_auto(int_s,     shortint)
+MAKE_type_auto(int,       int)
+MAKE_type_auto(int_l,     longint)
+MAKE_type_auto(real_s,    shortfloat)
+MAKE_type_auto(real,      float)
+MAKE_type_auto(real_l,    longfloat)
+MAKE_type_auto(string,    string)
+MAKE_type_auto(string8,   string8)
+MAKE_type_auto(string16,  string16)
+MAKE_type_auto(string32,  string32)
+MAKE_type_auto(string80,  string80)
+MAKE_type_auto(string320, string320)
+MAKE_type_auto(ubyte,     ubyte)
+MAKE_type_auto(sword,     sword)
+MAKE_type_auto(uword,     uword)
+MAKE_type_auto(sdword,    sdword)
+MAKE_type_auto(udword,    udword)
+#undef MAKE_type_auto
+
 
 

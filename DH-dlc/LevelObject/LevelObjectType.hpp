@@ -100,6 +100,9 @@ public:
 	static LevelObjectType type_thing();
 	static LevelObjectType type_vertex();
 
+	template<typename T>
+	static LevelObjectType type_auto();
+
 	static LevelObjectType const type_null;
 
 private:

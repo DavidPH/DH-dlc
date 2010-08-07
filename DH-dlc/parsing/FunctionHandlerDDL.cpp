@@ -67,11 +67,9 @@ T FunctionHandlerDDL<T>::operator () (std::vector<std::string> const & args) con
 {
 	obj_t funcObj = LevelObject::create();
 
-	// XXX: Need to be able to get LevelObjectType object with a template type.
-	// TODO: Should be able to just make a LevelObject with a LevelObjectType.
-	//obj_t returnType = LevelObject::create(type_t::type_string(), string_t(Tname));
-	// XXX: Needs returnType.
-	//funcObj->addObject(name_t::name_return_type, returnType);
+	// TODO: Should be able to make a LevelObject that contains a LevelObjectType.
+	obj_t returnType = LevelObject::create(type_t::type_string(), type_t::type_auto<T>().makeString());
+	funcObj->addObject(name_t::name_return_type, returnType);
 
 	obj_t argcObj = LevelObject::create(type_t::type_shortint(), int_s_t(args.size()));
 	funcObj->addObject(name_t(key_name_argc()), argcObj);
