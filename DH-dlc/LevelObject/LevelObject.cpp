@@ -95,55 +95,55 @@ LevelObject::LevelObject(type_t const type) : LevelObject_INIT_LIST(type, false)
 LevelObject::LevelObject(type_t const type, any_t const & data) : LevelObject_INIT_LIST(type, data) {}
 LevelObject::LevelObject(type_t const type, SourceScannerDHLX & sc) : LevelObject_INIT_LIST(type, false)
 {
-	     if (_type == type_t::type_bool())       _data = parse_bool(sc);
+	     if (_type == type_t::type_bool())       _data = parse<bool_t>(sc);
 
-	else if (_type == type_t::type_shortint())   _data = parse_int_s(sc);
-	else if (_type == type_t::type_int())        _data = parse_int(sc);
-	else if (_type == type_t::type_longint())    _data = parse_int_l(sc);
+	else if (_type == type_t::type_shortint())   _data = parse<int_s_t>(sc);
+	else if (_type == type_t::type_int())        _data = parse<int_t>(sc);
+	else if (_type == type_t::type_longint())    _data = parse<int_l_t>(sc);
 
-	else if (_type == type_t::type_shortfloat()) _data = parse_real_s(sc);
-	else if (_type == type_t::type_float())      _data = parse_real(sc);
-	else if (_type == type_t::type_longfloat())  _data = parse_real_l(sc);
+	else if (_type == type_t::type_shortfloat()) _data = parse<real_s_t>(sc);
+	else if (_type == type_t::type_float())      _data = parse<real_t>(sc);
+	else if (_type == type_t::type_longfloat())  _data = parse<real_l_t>(sc);
 
-	else if (_type == type_t::type_string())     _data = parse_string(sc);
-	else if (_type == type_t::type_string8())    _data = parse_string8(sc);
-	else if (_type == type_t::type_string16())   _data = parse_string16(sc);
-	else if (_type == type_t::type_string32())   _data = parse_string32(sc);
-	else if (_type == type_t::type_string80())   _data = parse_string80(sc);
-	else if (_type == type_t::type_string320())  _data = parse_string320(sc);
+	else if (_type == type_t::type_string())     _data = parse<string_t>(sc);
+	else if (_type == type_t::type_string8())    _data = parse<string8_t>(sc);
+	else if (_type == type_t::type_string16())   _data = parse<string16_t>(sc);
+	else if (_type == type_t::type_string32())   _data = parse<string32_t>(sc);
+	else if (_type == type_t::type_string80())   _data = parse<string80_t>(sc);
+	else if (_type == type_t::type_string320())  _data = parse<string320_t>(sc);
 
-	else if (_type == type_t::type_ubyte())      _data = parse_ubyte(sc);
-	else if (_type == type_t::type_sword())      _data = parse_sword(sc);
-	else if (_type == type_t::type_uword())      _data = parse_uword(sc);
-	else if (_type == type_t::type_sdword())     _data = parse_sdword(sc);
-	else if (_type == type_t::type_udword())     _data = parse_udword(sc);
+	else if (_type == type_t::type_ubyte())      _data = parse<ubyte_t>(sc);
+	else if (_type == type_t::type_sword())      _data = parse<sword_t>(sc);
+	else if (_type == type_t::type_uword())      _data = parse<uword_t>(sc);
+	else if (_type == type_t::type_sdword())     _data = parse<sdword_t>(sc);
+	else if (_type == type_t::type_udword())     _data = parse<udword_t>(sc);
 
 	else                                         _data = objmap_t();
 }
 LevelObject::LevelObject(type_t const type, std::string const & value) : LevelObject_INIT_LIST(type, false)
 {
-	     if (_type == type_t::type_bool())       _data = parse_bool(value);
+	     if (_type == type_t::type_bool())       _data = parse<bool_t>(value);
 
-	else if (_type == type_t::type_shortint())   _data = parse_int_s(value);
-	else if (_type == type_t::type_int())        _data = parse_int(value);
-	else if (_type == type_t::type_longint())    _data = parse_int_l(value);
+	else if (_type == type_t::type_shortint())   _data = parse<int_s_t>(value);
+	else if (_type == type_t::type_int())        _data = parse<int_t>(value);
+	else if (_type == type_t::type_longint())    _data = parse<int_l_t>(value);
 
-	else if (_type == type_t::type_shortfloat()) _data = parse_real_s(value);
-	else if (_type == type_t::type_float())      _data = parse_real(value);
-	else if (_type == type_t::type_longfloat())  _data = parse_real_l(value);
+	else if (_type == type_t::type_shortfloat()) _data = parse<real_s_t>(value);
+	else if (_type == type_t::type_float())      _data = parse<real_t>(value);
+	else if (_type == type_t::type_longfloat())  _data = parse<real_l_t>(value);
 
-	else if (_type == type_t::type_string())     _data = parse_string(value);
-	else if (_type == type_t::type_string8())    _data = parse_string8(value);
-	else if (_type == type_t::type_string16())   _data = parse_string16(value);
-	else if (_type == type_t::type_string32())   _data = parse_string32(value);
-	else if (_type == type_t::type_string80())   _data = parse_string80(value);
-	else if (_type == type_t::type_string320())  _data = parse_string320(value);
+	else if (_type == type_t::type_string())     _data = parse<string_t>(value);
+	else if (_type == type_t::type_string8())    _data = parse<string8_t>(value);
+	else if (_type == type_t::type_string16())   _data = parse<string16_t>(value);
+	else if (_type == type_t::type_string32())   _data = parse<string32_t>(value);
+	else if (_type == type_t::type_string80())   _data = parse<string80_t>(value);
+	else if (_type == type_t::type_string320())  _data = parse<string320_t>(value);
 
-	else if (_type == type_t::type_ubyte())      _data = parse_ubyte(value);
-	else if (_type == type_t::type_sword())      _data = parse_sword(value);
-	else if (_type == type_t::type_uword())      _data = parse_uword(value);
-	else if (_type == type_t::type_sdword())     _data = parse_sdword(value);
-	else if (_type == type_t::type_udword())     _data = parse_udword(value);
+	else if (_type == type_t::type_ubyte())      _data = parse<ubyte_t>(value);
+	else if (_type == type_t::type_sword())      _data = parse<sword_t>(value);
+	else if (_type == type_t::type_uword())      _data = parse<uword_t>(value);
+	else if (_type == type_t::type_sdword())     _data = parse<sdword_t>(value);
+	else if (_type == type_t::type_udword())     _data = parse<udword_t>(value);
 
 	else                                         _data = objmap_t();
 }
@@ -264,28 +264,28 @@ void LevelObject::setType(type_t const newType, std::string const & value)
 
 	_type = newType;
 
-	     if (_type == type_t::type_bool())       _data = parse_bool(value);
+	     if (_type == type_t::type_bool())       _data = parse<bool_t>(value);
 
-	else if (_type == type_t::type_shortint())   _data = parse_int_s(value);
-	else if (_type == type_t::type_int())        _data = parse_int(value);
-	else if (_type == type_t::type_longint())    _data = parse_int_l(value);
+	else if (_type == type_t::type_shortint())   _data = parse<int_s_t>(value);
+	else if (_type == type_t::type_int())        _data = parse<int_t>(value);
+	else if (_type == type_t::type_longint())    _data = parse<int_l_t>(value);
 
-	else if (_type == type_t::type_shortfloat()) _data = parse_real_s(value);
-	else if (_type == type_t::type_float())      _data = parse_real(value);
-	else if (_type == type_t::type_longfloat())  _data = parse_real_l(value);
+	else if (_type == type_t::type_shortfloat()) _data = parse<real_s_t>(value);
+	else if (_type == type_t::type_float())      _data = parse<real_t>(value);
+	else if (_type == type_t::type_longfloat())  _data = parse<real_l_t>(value);
 
-	else if (_type == type_t::type_string())     _data = parse_string(value);
-	else if (_type == type_t::type_string8())    _data = parse_string8(value);
-	else if (_type == type_t::type_string16())   _data = parse_string16(value);
-	else if (_type == type_t::type_string32())   _data = parse_string32(value);
-	else if (_type == type_t::type_string80())   _data = parse_string80(value);
-	else if (_type == type_t::type_string320())  _data = parse_string320(value);
+	else if (_type == type_t::type_string())     _data = parse<string_t>(value);
+	else if (_type == type_t::type_string8())    _data = parse<string8_t>(value);
+	else if (_type == type_t::type_string16())   _data = parse<string16_t>(value);
+	else if (_type == type_t::type_string32())   _data = parse<string32_t>(value);
+	else if (_type == type_t::type_string80())   _data = parse<string80_t>(value);
+	else if (_type == type_t::type_string320())  _data = parse<string320_t>(value);
 
-	else if (_type == type_t::type_ubyte())      _data = parse_ubyte(value);
-	else if (_type == type_t::type_sword())      _data = parse_sword(value);
-	else if (_type == type_t::type_uword())      _data = parse_uword(value);
-	else if (_type == type_t::type_sdword())     _data = parse_sdword(value);
-	else if (_type == type_t::type_udword())     _data = parse_udword(value);
+	else if (_type == type_t::type_ubyte())      _data = parse<ubyte_t>(value);
+	else if (_type == type_t::type_sword())      _data = parse<sword_t>(value);
+	else if (_type == type_t::type_uword())      _data = parse<uword_t>(value);
+	else if (_type == type_t::type_sdword())     _data = parse<sdword_t>(value);
+	else if (_type == type_t::type_udword())     _data = parse<udword_t>(value);
 
 	else if (_data.getType() != any_t::OBJMAP_T) _data = convert<obj_t, any_t>(_data)->_data.getObjMap();
 

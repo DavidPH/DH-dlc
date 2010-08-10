@@ -78,7 +78,7 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 
 	// # debug : message
 	else if (command == command_name_debug())
-		PRINT_AND_COUNT_DEBUG(parse_string(st.getBase(0)).makeString() << '\n');
+		PRINT_AND_COUNT_DEBUG(parse<string_t>(st.getBase(0)).makeString() << '\n');
 
 	// # delete : KEY
 	// removes KEY from this object
@@ -138,7 +138,7 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 				break;
 			}
 		}
-		while (parse_bool(st.getBase(0)));
+		while (parse<bool_t>(st.getBase(0)));
 	}
 
 	// # else { data }
@@ -156,7 +156,7 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 	// # error : message
 	// prints message and counts towards error-limit
 	else if (command == command_name_error())
-		PRINT_AND_COUNT_ERROR(parse_string(st.getBase(0)).makeString() << '\n');
+		PRINT_AND_COUNT_ERROR(parse<string_t>(st.getBase(0)).makeString() << '\n');
 
 	// [type] # for : name : start : stop : step { data }
 	else if (command == command_name_for())
@@ -210,7 +210,7 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 
 	// # info : message
 	else if (command == command_name_info())
-		PRINT_AND_COUNT_INFO(parse_string(st.getBase(0)).makeString() << '\n');
+		PRINT_AND_COUNT_INFO(parse<string_t>(st.getBase(0)).makeString() << '\n');
 
 	// # return : VALUE
 	// Used to return a value from a function.
@@ -226,7 +226,7 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 	else if (command == command_name_script())
 	{
 		for (size_t index = 1; index < st.getBase().size(); ++index)
-			add_script(st.getBase(0), parse_string(st.getBase(index)).makeString());
+			add_script(st.getBase(0), parse<string_t>(st.getBase(index)).makeString());
 
 		add_script(st.getBase(0), st.getData());
 	}
@@ -239,7 +239,7 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 			nameSCRIPTS += ".acs";
 
 		for (size_t index = 0; index < st.getBase().size(); ++index)
-			add_script(nameSCRIPTS, parse_string(st.getBase(index)).makeString());
+			add_script(nameSCRIPTS, parse<string_t>(st.getBase(index)).makeString());
 
 		add_script(nameSCRIPTS, st.getData());
 	}
@@ -252,7 +252,7 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 			nameExtraData += ".txt";
 
 		for (size_t index = 0; index < st.getBase().size(); ++index)
-			add_script(nameExtraData, parse_string(st.getBase(index)).makeString());
+			add_script(nameExtraData, parse<string_t>(st.getBase(index)).makeString());
 
 		add_script(nameExtraData, st.getData());
 	}
@@ -265,19 +265,19 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 			nameFRAGGLE += ".txt";
 
 		for (size_t index = 0; index < st.getBase().size(); ++index)
-			add_script(nameFRAGGLE, parse_string(st.getBase(index)).makeString());
+			add_script(nameFRAGGLE, parse<string_t>(st.getBase(index)).makeString());
 
 		add_script(nameFRAGGLE, st.getData());
 	}
 
 	// # warn : message
 	else if (command == command_name_warn())
-		PRINT_AND_COUNT_WARNING(parse_string(st.getBase(0)).makeString() << '\n');
+		PRINT_AND_COUNT_WARNING(parse<string_t>(st.getBase(0)).makeString() << '\n');
 
 	// # while : condition {data}
 	else if (command == command_name_while())
 	{
-		while (parse_bool(st.getBase(0)))
+		while (parse<bool_t>(st.getBase(0)))
 		{
 			addData(st.getData());
 

@@ -120,7 +120,7 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 		// # precision : NEW_PRECISION
 		if (st.getName() == command_name_precision())
 		{
-			set_precision(parse_int_s(st.getBase(0)));
+			set_precision(parse<int_s_t>(st.getBase(0)));
 
 			return;
 		}

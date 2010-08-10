@@ -125,250 +125,6 @@ struct ParsingDataDDL
 	unsigned hasExponent : 1;
 };
 
-template <class T>
-static bool check_function(ParsingDataDDL<T> * data)
-{
-	if (data->value[0] != '<') return false;
-
-	size_t bracketIndex = data->value.find('>');
-
-	if (bracketIndex == std::string::npos) return false;
-
-	if (bracketIndex == data->value.size()-1)
-		throw FunctionException("missing argument list");
-
-	std::string opString = data->value.substr(1, bracketIndex-1);
-	std::string newValue = data->value.substr(bracketIndex+1);
-
-	std::vector<std::string> args = parse_args(newValue.substr(1, newValue.size()-2));
-
-	data->valueReturn = FunctionHandler<T>::get_function(opString)(args);
-
-	return true;
-}
-
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math_bool(ParsingDataDDL<T> * data)
-{
-	switch (data->operatorChar)
-	{
-		case -2: return false;
-
-		case '&': data->valueReturn = Tparse(data->valueLeft) && Tparse(data->valueRight); return true;
-		case '|': data->valueReturn = Tparse(data->valueLeft) || Tparse(data->valueRight); return true;
-
-		default: throw ParsingException(std::string("non-bool operator:") + (char)data->operatorChar);
-	}
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math_int(ParsingDataDDL<T> * data)
-{
-	switch (data->operatorChar)
-	{
-		case -2: return false;
-
-		case '*': data->valueReturn = Tparse(data->valueLeft) * Tparse(data->valueRight); return true;
-		case '/': data->valueReturn = Tparse(data->valueLeft) / Tparse(data->valueRight); return true;
-		case '%': data->valueReturn = Tparse(data->valueLeft) % Tparse(data->valueRight); return true;
-		case '+': data->valueReturn = Tparse(data->valueLeft) + Tparse(data->valueRight); return true;
-		case '-': data->valueReturn = Tparse(data->valueLeft) - Tparse(data->valueRight); return true;
-		case '&': data->valueReturn = Tparse(data->valueLeft) & Tparse(data->valueRight); return true;
-		case '|': data->valueReturn = Tparse(data->valueLeft) | Tparse(data->valueRight); return true;
-
-		default: throw ParsingException(std::string("non-int operator:") + (char)data->operatorChar);
-	}
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math_real(ParsingDataDDL<T> * data)
-{
-	switch (data->operatorChar)
-	{
-		case -2: return false;
-
-		case '*': data->valueReturn = Tparse(data->valueLeft) * Tparse(data->valueRight); return true;
-		case '/': data->valueReturn = Tparse(data->valueLeft) / Tparse(data->valueRight); return true;
-		case '+': data->valueReturn = Tparse(data->valueLeft) + Tparse(data->valueRight); return true;
-		case '-': data->valueReturn = Tparse(data->valueLeft) - Tparse(data->valueRight); return true;
-
-		default: throw ParsingException(std::string("non-float operator:") + (char)data->operatorChar);
-	}
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math_string(ParsingDataDDL<T> * data)
-{
-	switch (data->operatorChar)
-	{
-		case -2: return false;
-
-		case '+': data->valueReturn = Tparse(data->valueLeft) + Tparse(data->valueRight); return true;
-
-		default: throw ParsingException(std::string("non-string operator:") + (char)data->operatorChar);
-	}
-}
-
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingDataDDL<T> * data)
-{
-	return check_math_int<T, Tparse>(data);
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingDataDDL<bool_t> * data)
-{
-	return check_math_bool<bool_t, parse_bool>(data);
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingDataDDL<real_s_t> * data)
-{
-	return check_math_real<real_s_t, parse_real_s>(data);
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingDataDDL<real_t> * data)
-{
-	return check_math_real<real_t, parse_real>(data);
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingDataDDL<real_l_t> * data)
-{
-	return check_math_real<real_l_t, parse_real_l>(data);
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingDataDDL<string_t> * data)
-{
-	return check_math_string<string_t, parse_string>(data);
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingDataDDL<string8_t> * data)
-{
-	return check_math_string<string8_t, parse_string8>(data);
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingDataDDL<string16_t> * data)
-{
-	return check_math_string<string16_t, parse_string16>(data);
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingDataDDL<string32_t> * data)
-{
-	return check_math_string<string32_t, parse_string32>(data);
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingDataDDL<string80_t> * data)
-{
-	return check_math_string<string80_t, parse_string80>(data);
-}
-template <class T, T (Tparse)(std::string const &)>
-static bool check_math(ParsingDataDDL<string320_t> * data)
-{
-	return check_math_string<string320_t, parse_string320>(data);
-}
-
-template <class T, T (Tconv)(any_t const &)>
-static bool check_typecast(ParsingDataDDL<T> * data)
-{
-	if (data->value[0] != '(') return false;
-
-	size_t bracketIndex = data->value.find(')');
-
-	if (bracketIndex == std::string::npos) return false;
-
-	std::string opString = data->value.substr(1, bracketIndex-1);
-	std::string newValue = "";
-
-	// Assign newValue only if there actually is one.
-	if (bracketIndex != data->value.size()-1)
-		newValue = data->value.substr(bracketIndex+1);
-
-	if (opString == type_name_bool())
-	{
-		data->valueReturn = Tconv(parse_bool(newValue));
-		return true;
-	}
-
-	if (opString == type_name_shortint())
-	{
-		data->valueReturn = Tconv(parse_int_s(newValue));
-		return true;
-	}
-	if (opString == type_name_int())
-	{
-		data->valueReturn = Tconv(parse_int(newValue));
-		return true;
-	}
-	if (opString == type_name_longint())
-	{
-		data->valueReturn = Tconv(parse_int_l(newValue));
-		return true;
-	}
-
-	if (opString == type_name_shortfloat())
-	{
-		data->valueReturn = Tconv(parse_real_s(newValue));
-		return true;
-	}
-	if (opString == type_name_float())
-	{
-		data->valueReturn = Tconv(parse_real(newValue));
-		return true;
-	}
-	if (opString == type_name_longfloat())
-	{
-		data->valueReturn = Tconv(parse_real_l(newValue));
-		return true;
-	}
-
-	if (opString == type_name_string())
-	{
-		data->valueReturn = Tconv(parse_string(newValue));
-		return true;
-	}
-
-	return false;
-}
-
-template <class T, T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &)>
-static bool check_unary(ParsingDataDDL<T> * data)
-{
-	if (data->value[0] != '[') return false;
-
-	size_t bracketIndex = data->value.find(']');
-
-	if (bracketIndex == std::string::npos) return false;
-
-	std::string opString = data->value.substr(1, bracketIndex-1);
-
-	if (bracketIndex != data->value.size()-1)
-		data->valueReturn = Tunary(opString, data->value.substr(bracketIndex+1));
-	else
-		data->valueReturn = Tconst(opString);
-
-	return true;
-}
-
-template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &)>
-static bool check_all(ParsingDataDDL<T> * data)
-{
-	if (check_math<T, Tparse>(data))
-		return true;
-
-	if (check_typecast<T, Tconv>(data))
-		return true;
-
-	if (check_unary<T, Tconst, Tunary>(data))
-		return true;
-
-	if (check_function<T>(data))
-		return true;
-
-	if (data->hasBracket)
-	{
-		data->valueReturn = Tparse(data->value.substr(1, data->value.length()-2));
-		return true;
-	}
-
-	return false;
-}
-
-
 
 std::vector<std::string> parse_args(std::string const & value)
 {
@@ -401,24 +157,24 @@ std::vector<std::string> parse_args(std::string const & value)
 
 
 
-template<typename T> T    parse__base         (std::string const & value);
-template<typename T> T    parse__base         (SourceScannerDHLX & sc);
-template<typename T> T    parse__base_const   (std::string const & function);
-template<typename T> bool parse__base_function(ParsingDataDDL<T> & data);
-template<typename T> void parse__base_init    (T & data);
-template<typename T> T    parse__base_part    (SourceScannerDHLX & sc);
-template<typename T> bool parse__base_typecast(ParsingDataDDL<T> & data);
-template<typename T> void parse__base_typecast(T & data, type_t const type, SourceScannerDHLX & sc);
-template<typename T> bool parse__base_unary   (ParsingDataDDL<T> & data);
-template<typename T> T    parse__base_unary   (std::string const & function, SourceScannerDHLX & sc);
-template<typename T> T    parse__base_unary   (std::string const & function, std::string const & value);
-template<typename T> bool parse__base_value   (ParsingDataDDL<T> & data);
+template<typename T> T    parse         (std::string const & value);
+template<typename T> T    parse         (SourceScannerDHLX & sc);
+template<typename T> T    parse_const   (std::string const & function);
+template<typename T> bool parse_function(ParsingDataDDL<T> & data);
+template<typename T> void parse_init    (T & data);
+template<typename T> T    parse_part    (SourceScannerDHLX & sc);
+template<typename T> bool parse_typecast(ParsingDataDDL<T> & data);
+template<typename T> void parse_typecast(T & data, type_t const type, SourceScannerDHLX & sc);
+template<typename T> bool parse_unary   (ParsingDataDDL<T> & data);
+template<typename T> T    parse_unary   (std::string const & function, SourceScannerDHLX & sc);
+template<typename T> T    parse_unary   (std::string const & function, std::string const & value);
+template<typename T> bool parse_value   (ParsingDataDDL<T> & data);
 
 
 
 /* parse -> const -> bool */
 template<typename T>
-inline T parse__base_const__bool(std::string const & function)
+inline T parse_const__bool(std::string const & function)
 {
 	if (function == function_name_random())
 		return random_int_s(0, 1) != 0;
@@ -429,7 +185,7 @@ inline T parse__base_const__bool(std::string const & function)
 
 /* parse -> const -> int */
 template<typename T>
-inline T parse__base_const__int(std::string const & function)
+inline T parse_const__int(std::string const & function)
 {
 	throw UnknownFunctionException(function);
 }
@@ -437,7 +193,7 @@ inline T parse__base_const__int(std::string const & function)
 
 /* parse -> const -> real */
 template<typename T>
-inline T parse__base_const__real(std::string const & function)
+inline T parse_const__real(std::string const & function)
 {
 	if (function == function_name_pi())
 		return convert<T, real_t>(pi());
@@ -452,7 +208,7 @@ inline T parse__base_const__real(std::string const & function)
 
 /* parse -> const -> string */
 template<typename T>
-inline T parse__base_const__string(std::string const & function)
+inline T parse_const__string(std::string const & function)
 {
 	if (function == function_name_mapname())
 		return T(option_map_name);
@@ -463,142 +219,142 @@ inline T parse__base_const__string(std::string const & function)
 
 /* parse -> const */
 template<typename T>
-inline T parse__base_const(std::string const & function)
+inline T parse_const(std::string const & function)
 {
 	throw UnknownFunctionException(function);
 }
 
 /* parse -> const <bool_t> */
 template<>
-inline bool_t parse__base_const<bool_t>(std::string const & function)
+inline bool_t parse_const<bool_t>(std::string const & function)
 {
-	return parse__base_const__bool<bool_t>(function);
+	return parse_const__bool<bool_t>(function);
 }
 
 /* parse -> const <int_s_t> */
 template<>
-inline int_s_t parse__base_const<int_s_t>(std::string const & function)
+inline int_s_t parse_const<int_s_t>(std::string const & function)
 {
-	return parse__base_const__int<int_s_t>(function);
+	return parse_const__int<int_s_t>(function);
 }
 
 /* parse -> const <int_t> */
 template<>
-inline int_t parse__base_const<int_t>(std::string const & function)
+inline int_t parse_const<int_t>(std::string const & function)
 {
-	return parse__base_const__int<int_t>(function);
+	return parse_const__int<int_t>(function);
 }
 
 /* parse -> const <int_l_t> */
 template<>
-inline int_l_t parse__base_const<int_l_t>(std::string const & function)
+inline int_l_t parse_const<int_l_t>(std::string const & function)
 {
-	return parse__base_const__int<int_l_t>(function);
+	return parse_const__int<int_l_t>(function);
 }
 
 /* parse -> const <real_s_t> */
 template<>
-inline real_s_t parse__base_const<real_s_t>(std::string const & function)
+inline real_s_t parse_const<real_s_t>(std::string const & function)
 {
-	return parse__base_const__real<real_s_t>(function);
+	return parse_const__real<real_s_t>(function);
 }
 
 /* parse -> const <real_t> */
 template<>
-inline real_t parse__base_const<real_t>(std::string const & function)
+inline real_t parse_const<real_t>(std::string const & function)
 {
-	return parse__base_const__real<real_t>(function);
+	return parse_const__real<real_t>(function);
 }
 
 /* parse -> const <real_l_t> */
 template<>
-inline real_l_t parse__base_const<real_l_t>(std::string const & function)
+inline real_l_t parse_const<real_l_t>(std::string const & function)
 {
-	return parse__base_const__real<real_l_t>(function);
+	return parse_const__real<real_l_t>(function);
 }
 
 /* parse -> const <string_t> */
 template<>
-inline string_t parse__base_const<string_t>(std::string const & function)
+inline string_t parse_const<string_t>(std::string const & function)
 {
-	return parse__base_const__string<string_t>(function);
+	return parse_const__string<string_t>(function);
 }
 
 /* parse -> const <string8_t> */
 template<>
-inline string8_t parse__base_const<string8_t>(std::string const & function)
+inline string8_t parse_const<string8_t>(std::string const & function)
 {
-	return parse__base_const__string<string8_t>(function);
+	return parse_const__string<string8_t>(function);
 }
 
 /* parse -> const <string16_t> */
 template<>
-inline string16_t parse__base_const<string16_t>(std::string const & function)
+inline string16_t parse_const<string16_t>(std::string const & function)
 {
-	return parse__base_const__string<string16_t>(function);
+	return parse_const__string<string16_t>(function);
 }
 
 /* parse -> const <string32_t> */
 template<>
-inline string32_t parse__base_const<string32_t>(std::string const & function)
+inline string32_t parse_const<string32_t>(std::string const & function)
 {
-	return parse__base_const__string<string32_t>(function);
+	return parse_const__string<string32_t>(function);
 }
 
 /* parse -> const <string80_t> */
 template<>
-inline string80_t parse__base_const<string80_t>(std::string const & function)
+inline string80_t parse_const<string80_t>(std::string const & function)
 {
-	return parse__base_const__string<string80_t>(function);
+	return parse_const__string<string80_t>(function);
 }
 
 /* parse -> const <string320t> */
 template<>
-inline string320_t parse__base_const<string320_t>(std::string const & function)
+inline string320_t parse_const<string320_t>(std::string const & function)
 {
-	return parse__base_const__string<string320_t>(function);
+	return parse_const__string<string320_t>(function);
 }
 
 /* parse -> const <ubyte_t> */
 template<>
-inline ubyte_t parse__base_const<ubyte_t>(std::string const & function)
+inline ubyte_t parse_const<ubyte_t>(std::string const & function)
 {
-	return parse__base_const__int<ubyte_t>(function);
+	return parse_const__int<ubyte_t>(function);
 }
 
 /* parse -> const <sword_t> */
 template<>
-inline sword_t parse__base_const<sword_t>(std::string const & function)
+inline sword_t parse_const<sword_t>(std::string const & function)
 {
-	return parse__base_const__int<sword_t>(function);
+	return parse_const__int<sword_t>(function);
 }
 
 /* parse -> const <uword_t> */
 template<>
-inline uword_t parse__base_const<uword_t>(std::string const & function)
+inline uword_t parse_const<uword_t>(std::string const & function)
 {
-	return parse__base_const__int<uword_t>(function);
+	return parse_const__int<uword_t>(function);
 }
 
 /* parse -> const <sdword_t> */
 template<>
-inline sdword_t parse__base_const<sdword_t>(std::string const & function)
+inline sdword_t parse_const<sdword_t>(std::string const & function)
 {
-	return parse__base_const__int<sdword_t>(function);
+	return parse_const__int<sdword_t>(function);
 }
 
 /* parse -> const <udword_t> */
 template<>
-inline udword_t parse__base_const<udword_t>(std::string const & function)
+inline udword_t parse_const<udword_t>(std::string const & function)
 {
-	return parse__base_const__int<udword_t>(function);
+	return parse_const__int<udword_t>(function);
 }
 
 
 
 /* parse -> function */
 template<typename T>
-inline bool parse__base_function(ParsingDataDDL<T> & data)
+inline bool parse_function(ParsingDataDDL<T> & data)
 {
 	if ((data.value.size() == 0) || (data.value[0] != '<')) return false;
 
@@ -623,28 +379,28 @@ inline bool parse__base_function(ParsingDataDDL<T> & data)
 
 /* parse -> init */
 template<typename T>
-inline void parse__base_init(T & data)
+inline void parse_init(T & data)
 {
 
 }
 
 /* parse -> init <bool_t> */
 template<>
-inline void parse__base_init<bool_t>(bool_t & data)
+inline void parse_init<bool_t>(bool_t & data)
 {
 	data = false;
 }
 
 /* parse -> init <int_s_t> */
 template<>
-inline void parse__base_init<int_s_t>(int_s_t & data)
+inline void parse_init<int_s_t>(int_s_t & data)
 {
 	data = 0;
 }
 
 /* parse -> init <real_s_t> */
 template<>
-inline void parse__base_init<real_s_t>(real_s_t & data)
+inline void parse_init<real_s_t>(real_s_t & data)
 {
 	data = 0;
 }
@@ -653,31 +409,31 @@ inline void parse__base_init<real_s_t>(real_s_t & data)
 
 /* parse -> math -> bool */
 template<typename T>
-inline bool parse__base_math__bool(ParsingDataDDL<T> & data)
+inline bool parse_math__bool(ParsingDataDDL<T> & data)
 {
 	switch (data.operatorChar)
 	{
 		case -2: return false;
 
-		case '&': data.valueReturn = parse__base<T>(data.valueLeft) && parse__base<T>(data.valueRight); return true;
-		case '|': data.valueReturn = parse__base<T>(data.valueLeft) || parse__base<T>(data.valueRight); return true;
+		case '&': data.valueReturn = parse<T>(data.valueLeft) && parse<T>(data.valueRight); return true;
+		case '|': data.valueReturn = parse<T>(data.valueLeft) || parse<T>(data.valueRight); return true;
 
 		default: throw ParsingException(std::string("non-bool operator:") + (char)data.operatorChar);
 	}
 }
 template<typename T>
-inline bool parse__base_math__bool(T & data, SourceScannerDHLX & sc)
+inline bool parse_math__bool(T & data, SourceScannerDHLX & sc)
 {
 	SourceTokenDHLX st(sc.get());
 
 	switch (st.getType())
 	{
 	case SourceTokenDHLX::TT_OP_AND2:
-		data = data && parse__base_part<T>(sc);
+		data = data && parse_part<T>(sc);
 		return true;
 
 	case SourceTokenDHLX::TT_OP_PIPE2:
-		data = data || parse__base_part<T>(sc);
+		data = data || parse_part<T>(sc);
 		return true;
 
 	default:
@@ -689,56 +445,56 @@ inline bool parse__base_math__bool(T & data, SourceScannerDHLX & sc)
 
 /* parse -> math -> int */
 template<typename T>
-inline bool parse__base_math__int(ParsingDataDDL<T> & data)
+inline bool parse_math__int(ParsingDataDDL<T> & data)
 {
 	switch (data.operatorChar)
 	{
 		case -2: return false;
 
-		case '*': data.valueReturn = parse__base<T>(data.valueLeft) * parse__base<T>(data.valueRight); return true;
-		case '/': data.valueReturn = parse__base<T>(data.valueLeft) / parse__base<T>(data.valueRight); return true;
-		case '%': data.valueReturn = parse__base<T>(data.valueLeft) % parse__base<T>(data.valueRight); return true;
-		case '+': data.valueReturn = parse__base<T>(data.valueLeft) + parse__base<T>(data.valueRight); return true;
-		case '-': data.valueReturn = parse__base<T>(data.valueLeft) - parse__base<T>(data.valueRight); return true;
-		case '&': data.valueReturn = parse__base<T>(data.valueLeft) & parse__base<T>(data.valueRight); return true;
-		case '|': data.valueReturn = parse__base<T>(data.valueLeft) | parse__base<T>(data.valueRight); return true;
+		case '*': data.valueReturn = parse<T>(data.valueLeft) * parse<T>(data.valueRight); return true;
+		case '/': data.valueReturn = parse<T>(data.valueLeft) / parse<T>(data.valueRight); return true;
+		case '%': data.valueReturn = parse<T>(data.valueLeft) % parse<T>(data.valueRight); return true;
+		case '+': data.valueReturn = parse<T>(data.valueLeft) + parse<T>(data.valueRight); return true;
+		case '-': data.valueReturn = parse<T>(data.valueLeft) - parse<T>(data.valueRight); return true;
+		case '&': data.valueReturn = parse<T>(data.valueLeft) & parse<T>(data.valueRight); return true;
+		case '|': data.valueReturn = parse<T>(data.valueLeft) | parse<T>(data.valueRight); return true;
 
 		default: throw ParsingException(std::string("non-int operator:") + (char)data.operatorChar);
 	}
 }
 template<typename T>
-inline bool parse__base_math__int(T & data, SourceScannerDHLX & sc)
+inline bool parse_math__int(T & data, SourceScannerDHLX & sc)
 {
 	SourceTokenDHLX st(sc.get());
 
 	switch (st.getType())
 	{
 	case SourceTokenDHLX::TT_OP_AND:
-		data &= parse__base_part<T>(sc);
+		data &= parse_part<T>(sc);
 		return true;
 
 	case SourceTokenDHLX::TT_OP_ASTERIX:
-		data *= parse__base_part<T>(sc);
+		data *= parse_part<T>(sc);
 		return true;
 
 	case SourceTokenDHLX::TT_OP_MINUS:
-		data -= parse__base_part<T>(sc);
+		data -= parse_part<T>(sc);
 		return true;
 
 	case SourceTokenDHLX::TT_OP_PERCENT:
-		data %= parse__base_part<T>(sc);
+		data %= parse_part<T>(sc);
 		return true;
 
 	case SourceTokenDHLX::TT_OP_PIPE:
-		data |= parse__base_part<T>(sc);
+		data |= parse_part<T>(sc);
 		return true;
 
 	case SourceTokenDHLX::TT_OP_PLUS:
-		data += parse__base_part<T>(sc);
+		data += parse_part<T>(sc);
 		return true;
 
 	case SourceTokenDHLX::TT_OP_SLASH:
-		data /= parse__base_part<T>(sc);
+		data /= parse_part<T>(sc);
 		return true;
 
 	default:
@@ -750,41 +506,41 @@ inline bool parse__base_math__int(T & data, SourceScannerDHLX & sc)
 
 /* parse -> math -> real */
 template<typename T>
-inline bool parse__base_math__real(ParsingDataDDL<T> & data)
+inline bool parse_math__real(ParsingDataDDL<T> & data)
 {
 	switch (data.operatorChar)
 	{
 		case -2: return false;
 
-		case '*': data.valueReturn = parse__base<T>(data.valueLeft) * parse__base<T>(data.valueRight); return true;
-		case '/': data.valueReturn = parse__base<T>(data.valueLeft) / parse__base<T>(data.valueRight); return true;
-		case '+': data.valueReturn = parse__base<T>(data.valueLeft) + parse__base<T>(data.valueRight); return true;
-		case '-': data.valueReturn = parse__base<T>(data.valueLeft) - parse__base<T>(data.valueRight); return true;
+		case '*': data.valueReturn = parse<T>(data.valueLeft) * parse<T>(data.valueRight); return true;
+		case '/': data.valueReturn = parse<T>(data.valueLeft) / parse<T>(data.valueRight); return true;
+		case '+': data.valueReturn = parse<T>(data.valueLeft) + parse<T>(data.valueRight); return true;
+		case '-': data.valueReturn = parse<T>(data.valueLeft) - parse<T>(data.valueRight); return true;
 
 		default: throw ParsingException(std::string("non-float operator:") + (char)data.operatorChar);
 	}
 }
 template<typename T>
-inline bool parse__base_math__real(T & data, SourceScannerDHLX & sc)
+inline bool parse_math__real(T & data, SourceScannerDHLX & sc)
 {
 	SourceTokenDHLX st(sc.get());
 
 	switch (st.getType())
 	{
 	case SourceTokenDHLX::TT_OP_ASTERIX:
-		data *= parse__base_part<T>(sc);
+		data *= parse_part<T>(sc);
 		return true;
 
 	case SourceTokenDHLX::TT_OP_MINUS:
-		data -= parse__base_part<T>(sc);
+		data -= parse_part<T>(sc);
 		return true;
 
 	case SourceTokenDHLX::TT_OP_PLUS:
-		data += parse__base_part<T>(sc);
+		data += parse_part<T>(sc);
 		return true;
 
 	case SourceTokenDHLX::TT_OP_SLASH:
-		data /= parse__base_part<T>(sc);
+		data /= parse_part<T>(sc);
 		return true;
 
 	default:
@@ -796,26 +552,26 @@ inline bool parse__base_math__real(T & data, SourceScannerDHLX & sc)
 
 /* parse -> math -> string */
 template<typename T>
-inline bool parse__base_math__string(ParsingDataDDL<T> & data)
+inline bool parse_math__string(ParsingDataDDL<T> & data)
 {
 	switch (data.operatorChar)
 	{
 		case -2: return false;
 
-		case '+': data.valueReturn = parse__base<T>(data.valueLeft) + parse__base<T>(data.valueRight); return true;
+		case '+': data.valueReturn = parse<T>(data.valueLeft) + parse<T>(data.valueRight); return true;
 
 		default: throw ParsingException(std::string("non-string operator:") + (char)data.operatorChar);
 	}
 }
 template<typename T>
-inline bool parse__base_math__string(T & data, SourceScannerDHLX & sc)
+inline bool parse_math__string(T & data, SourceScannerDHLX & sc)
 {
 	SourceTokenDHLX st(sc.get());
 
 	switch (st.getType())
 	{
 	case SourceTokenDHLX::TT_OP_PLUS:
-		data += parse__base_part<T>(sc);
+		data += parse_part<T>(sc);
 		return true;
 
 	default:
@@ -827,7 +583,7 @@ inline bool parse__base_math__string(T & data, SourceScannerDHLX & sc)
 
 /* parse -> math */
 template<typename T>
-inline bool parse__base_math(ParsingDataDDL<T> & data)
+inline bool parse_math(ParsingDataDDL<T> & data)
 {
 	switch (data.operatorChar)
 	{
@@ -837,232 +593,232 @@ inline bool parse__base_math(ParsingDataDDL<T> & data)
 	}
 }
 template<typename T>
-inline bool parse__base_math(T & data, SourceScannerDHLX & sc)
+inline bool parse_math(T & data, SourceScannerDHLX & sc)
 {
 	return false;
 }
 
 /* parse -> math <bool_t> */
 template<>
-inline bool parse__base_math<bool_t>(ParsingDataDDL<bool_t> & data)
+inline bool parse_math<bool_t>(ParsingDataDDL<bool_t> & data)
 {
-	return parse__base_math__bool<bool_t>(data);
+	return parse_math__bool<bool_t>(data);
 }
 template<>
-inline bool parse__base_math<bool_t>(bool_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<bool_t>(bool_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__bool<bool_t>(data, sc);
+	return parse_math__bool<bool_t>(data, sc);
 }
 
 /* parse -> math <int_s_t> */
 template<>
-inline bool parse__base_math<int_s_t>(ParsingDataDDL<int_s_t> & data)
+inline bool parse_math<int_s_t>(ParsingDataDDL<int_s_t> & data)
 {
-	return parse__base_math__int<int_s_t>(data);
+	return parse_math__int<int_s_t>(data);
 }
 template<>
-inline bool parse__base_math<int_s_t>(int_s_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<int_s_t>(int_s_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__int<int_s_t>(data, sc);
+	return parse_math__int<int_s_t>(data, sc);
 }
 
 /* parse -> math <int_t> */
 template<>
-inline bool parse__base_math<int_t>(ParsingDataDDL<int_t> & data)
+inline bool parse_math<int_t>(ParsingDataDDL<int_t> & data)
 {
-	return parse__base_math__int<int_t>(data);
+	return parse_math__int<int_t>(data);
 }
 template<>
-inline bool parse__base_math<int_t>(int_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<int_t>(int_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__int<int_t>(data, sc);
+	return parse_math__int<int_t>(data, sc);
 }
 
 /* parse -> math <int_l_t> */
 template<>
-inline bool parse__base_math<int_l_t>(ParsingDataDDL<int_l_t> & data)
+inline bool parse_math<int_l_t>(ParsingDataDDL<int_l_t> & data)
 {
-	return parse__base_math__int<int_l_t>(data);
+	return parse_math__int<int_l_t>(data);
 }
 template<>
-inline bool parse__base_math<int_l_t>(int_l_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<int_l_t>(int_l_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__int<int_l_t>(data, sc);
+	return parse_math__int<int_l_t>(data, sc);
 }
 
 /* parse -> math <real_s_t> */
 template<>
-inline bool parse__base_math<real_s_t>(ParsingDataDDL<real_s_t> & data)
+inline bool parse_math<real_s_t>(ParsingDataDDL<real_s_t> & data)
 {
-	return parse__base_math__real<real_s_t>(data);
+	return parse_math__real<real_s_t>(data);
 }
 template<>
-inline bool parse__base_math<real_s_t>(real_s_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<real_s_t>(real_s_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__real<real_s_t>(data, sc);
+	return parse_math__real<real_s_t>(data, sc);
 }
 
 /* parse -> math <real_t> */
 template<>
-inline bool parse__base_math<real_t>(ParsingDataDDL<real_t> & data)
+inline bool parse_math<real_t>(ParsingDataDDL<real_t> & data)
 {
-	return parse__base_math__real<real_t>(data);
+	return parse_math__real<real_t>(data);
 }
 template<>
-inline bool parse__base_math<real_t>(real_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<real_t>(real_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__real<real_t>(data, sc);
+	return parse_math__real<real_t>(data, sc);
 }
 
 /* parse -> math <real_l_t> */
 template<>
-inline bool parse__base_math<real_l_t>(ParsingDataDDL<real_l_t> & data)
+inline bool parse_math<real_l_t>(ParsingDataDDL<real_l_t> & data)
 {
-	return parse__base_math__real<real_l_t>(data);
+	return parse_math__real<real_l_t>(data);
 }
 template<>
-inline bool parse__base_math<real_l_t>(real_l_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<real_l_t>(real_l_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__real<real_l_t>(data, sc);
+	return parse_math__real<real_l_t>(data, sc);
 }
 
 /* parse -> math <string_t> */
 template<>
-inline bool parse__base_math<string_t>(ParsingDataDDL<string_t> & data)
+inline bool parse_math<string_t>(ParsingDataDDL<string_t> & data)
 {
-	return parse__base_math__string<string_t>(data);
+	return parse_math__string<string_t>(data);
 }
 template<>
-inline bool parse__base_math<string_t>(string_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<string_t>(string_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__string<string_t>(data, sc);
+	return parse_math__string<string_t>(data, sc);
 }
 
 /* parse -> math <string8_t> */
 template<>
-inline bool parse__base_math<string8_t>(ParsingDataDDL<string8_t> & data)
+inline bool parse_math<string8_t>(ParsingDataDDL<string8_t> & data)
 {
-	return parse__base_math__string<string8_t>(data);
+	return parse_math__string<string8_t>(data);
 }
 template<>
-inline bool parse__base_math<string8_t>(string8_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<string8_t>(string8_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__string<string8_t>(data, sc);
+	return parse_math__string<string8_t>(data, sc);
 }
 
 /* parse -> math <string16_t> */
 template<>
-inline bool parse__base_math<string16_t>(ParsingDataDDL<string16_t> & data)
+inline bool parse_math<string16_t>(ParsingDataDDL<string16_t> & data)
 {
-	return parse__base_math__string<string16_t>(data);
+	return parse_math__string<string16_t>(data);
 }
 template<>
-inline bool parse__base_math<string16_t>(string16_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<string16_t>(string16_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__string<string16_t>(data, sc);
+	return parse_math__string<string16_t>(data, sc);
 }
 
 /* parse -> math <string32_t> */
 template<>
-inline bool parse__base_math<string32_t>(ParsingDataDDL<string32_t> & data)
+inline bool parse_math<string32_t>(ParsingDataDDL<string32_t> & data)
 {
-	return parse__base_math__string<string32_t>(data);
+	return parse_math__string<string32_t>(data);
 }
 template<>
-inline bool parse__base_math<string32_t>(string32_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<string32_t>(string32_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__string<string32_t>(data, sc);
+	return parse_math__string<string32_t>(data, sc);
 }
 
 /* parse -> math <string80_t> */
 template<>
-inline bool parse__base_math<string80_t>(ParsingDataDDL<string80_t> & data)
+inline bool parse_math<string80_t>(ParsingDataDDL<string80_t> & data)
 {
-	return parse__base_math__string<string80_t>(data);
+	return parse_math__string<string80_t>(data);
 }
 template<>
-inline bool parse__base_math<string80_t>(string80_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<string80_t>(string80_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__string<string80_t>(data, sc);
+	return parse_math__string<string80_t>(data, sc);
 }
 
 /* parse -> math <string320_t> */
 template<>
-inline bool parse__base_math<string320_t>(ParsingDataDDL<string320_t> & data)
+inline bool parse_math<string320_t>(ParsingDataDDL<string320_t> & data)
 {
-	return parse__base_math__string<string320_t>(data);
+	return parse_math__string<string320_t>(data);
 }
 template<>
-inline bool parse__base_math<string320_t>(string320_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<string320_t>(string320_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__string<string320_t>(data, sc);
+	return parse_math__string<string320_t>(data, sc);
 }
 
 /* parse -> math <ubyte_t> */
 template<>
-inline bool parse__base_math<ubyte_t>(ParsingDataDDL<ubyte_t> & data)
+inline bool parse_math<ubyte_t>(ParsingDataDDL<ubyte_t> & data)
 {
-	return parse__base_math__int<ubyte_t>(data);
+	return parse_math__int<ubyte_t>(data);
 }
 template<>
-inline bool parse__base_math<ubyte_t>(ubyte_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<ubyte_t>(ubyte_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__int<ubyte_t>(data, sc);
+	return parse_math__int<ubyte_t>(data, sc);
 }
 
 /* parse -> math <sword_t> */
 template<>
-inline bool parse__base_math<sword_t>(ParsingDataDDL<sword_t> & data)
+inline bool parse_math<sword_t>(ParsingDataDDL<sword_t> & data)
 {
-	return parse__base_math__int<sword_t>(data);
+	return parse_math__int<sword_t>(data);
 }
 template<>
-inline bool parse__base_math<sword_t>(sword_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<sword_t>(sword_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__int<sword_t>(data, sc);
+	return parse_math__int<sword_t>(data, sc);
 }
 
 /* parse -> math <uword_t> */
 template<>
-inline bool parse__base_math<uword_t>(ParsingDataDDL<uword_t> & data)
+inline bool parse_math<uword_t>(ParsingDataDDL<uword_t> & data)
 {
-	return parse__base_math__int<uword_t>(data);
+	return parse_math__int<uword_t>(data);
 }
 template<>
-inline bool parse__base_math<uword_t>(uword_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<uword_t>(uword_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__int<uword_t>(data, sc);
+	return parse_math__int<uword_t>(data, sc);
 }
 
 /* parse -> math <sdword_t> */
 template<>
-inline bool parse__base_math<sdword_t>(ParsingDataDDL<sdword_t> & data)
+inline bool parse_math<sdword_t>(ParsingDataDDL<sdword_t> & data)
 {
-	return parse__base_math__int<sdword_t>(data);
+	return parse_math__int<sdword_t>(data);
 }
 template<>
-inline bool parse__base_math<sdword_t>(sdword_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<sdword_t>(sdword_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__int<sdword_t>(data, sc);
+	return parse_math__int<sdword_t>(data, sc);
 }
 
 /* parse -> math <udword_t> */
 template<>
-inline bool parse__base_math<udword_t>(ParsingDataDDL<udword_t> & data)
+inline bool parse_math<udword_t>(ParsingDataDDL<udword_t> & data)
 {
-	return parse__base_math__int<udword_t>(data);
+	return parse_math__int<udword_t>(data);
 }
 template<>
-inline bool parse__base_math<udword_t>(udword_t & data, SourceScannerDHLX & sc)
+inline bool parse_math<udword_t>(udword_t & data, SourceScannerDHLX & sc)
 {
-	return parse__base_math__int<udword_t>(data, sc);
+	return parse_math__int<udword_t>(data, sc);
 }
 
 
 
 /* parse -> part -> IDENTIFIER */
 template<typename T>
-inline void parse__base_part_IDENTIFIER(T & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_IDENTIFIER(T & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	sc.unget(st);
 	data = convert<T, obj_t>(get_object(parse_name(sc)));
@@ -1070,7 +826,7 @@ inline void parse__base_part_IDENTIFIER(T & data, SourceTokenDHLX const & st, So
 
 /* parse -> part -> IDENTIFIER <bool_t> */
 template<>
-inline void parse__base_part_IDENTIFIER<bool_t>(bool_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_IDENTIFIER<bool_t>(bool_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	if (st.getData() == "true")
 		data = true;
@@ -1086,84 +842,84 @@ inline void parse__base_part_IDENTIFIER<bool_t>(bool_t & data, SourceTokenDHLX c
 
 /* parse -> part -> NUMBER */
 template<typename T>
-inline void parse__base_part_NUMBER(T & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_NUMBER(T & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	sc.unget(st);
 }
 
 /* parse -> part -> NUMBER <int_s_t> */
 template<>
-inline void parse__base_part_NUMBER<int_s_t>(int_s_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_NUMBER<int_s_t>(int_s_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = num_from_string<int_s_t>(st.getData());
 }
 
 /* parse -> part -> NUMBER <int_t> */
 template<>
-inline void parse__base_part_NUMBER<int_t>(int_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_NUMBER<int_t>(int_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = num_from_string<int_t>(st.getData());
 }
 
 /* parse -> part -> NUMBER <int_l_t> */
 template<>
-inline void parse__base_part_NUMBER<int_l_t>(int_l_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_NUMBER<int_l_t>(int_l_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = num_from_string<int_l_t>(st.getData());
 }
 
 /* parse -> part -> NUMBER <real_s_t> */
 template<>
-inline void parse__base_part_NUMBER<real_s_t>(real_s_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_NUMBER<real_s_t>(real_s_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = num_from_string<real_s_t>(st.getData());
 }
 
 /* parse -> part -> NUMBER <real_t> */
 template<>
-inline void parse__base_part_NUMBER<real_t>(real_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_NUMBER<real_t>(real_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = num_from_string<real_t>(st.getData());
 }
 
 /* parse -> part -> NUMBER <real_l_t> */
 template<>
-inline void parse__base_part_NUMBER<real_l_t>(real_l_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_NUMBER<real_l_t>(real_l_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = num_from_string<real_l_t>(st.getData());
 }
 
 /* parse -> part -> NUMBER <ubyte_t> */
 template<>
-inline void parse__base_part_NUMBER<ubyte_t>(ubyte_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_NUMBER<ubyte_t>(ubyte_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = num_from_string<ubyte_t>(st.getData());
 }
 
 /* parse -> part -> NUMBER <sword_t> */
 template<>
-inline void parse__base_part_NUMBER<sword_t>(sword_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_NUMBER<sword_t>(sword_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = num_from_string<sword_t>(st.getData());
 }
 
 /* parse -> part -> NUMBER <uword_t> */
 template<>
-inline void parse__base_part_NUMBER<uword_t>(uword_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_NUMBER<uword_t>(uword_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = num_from_string<uword_t>(st.getData());
 }
 
 /* parse -> part -> NUMBER <sdword_t> */
 template<>
-inline void parse__base_part_NUMBER<sdword_t>(sdword_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_NUMBER<sdword_t>(sdword_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = num_from_string<sdword_t>(st.getData());
 }
 
 /* parse -> part -> NUMBER <udword_t> */
 template<>
-inline void parse__base_part_NUMBER<udword_t>(udword_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_NUMBER<udword_t>(udword_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = num_from_string<udword_t>(st.getData());
 }
@@ -1171,49 +927,49 @@ inline void parse__base_part_NUMBER<udword_t>(udword_t & data, SourceTokenDHLX c
 
 /* parse -> part -> STRING */
 template<typename T>
-inline void parse__base_part_STRING(T & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_STRING(T & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	sc.unget(st);
 }
 
 /* parse -> part -> STRING <string_t> */
 template<>
-inline void parse__base_part_STRING<string_t>(string_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_STRING<string_t>(string_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = string_t(st.getData());
 }
 
 /* parse -> part -> STRING <string8_t> */
 template<>
-inline void parse__base_part_STRING<string8_t>(string8_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_STRING<string8_t>(string8_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = string8_t(st.getData());
 }
 
 /* parse -> part -> STRING <string16_t> */
 template<>
-inline void parse__base_part_STRING<string16_t>(string16_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_STRING<string16_t>(string16_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = string16_t(st.getData());
 }
 
 /* parse -> part -> STRING <string32_t> */
 template<>
-inline void parse__base_part_STRING<string32_t>(string32_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_STRING<string32_t>(string32_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = string32_t(st.getData());
 }
 
 /* parse -> part -> STRING <string80_t> */
 template<>
-inline void parse__base_part_STRING<string80_t>(string80_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_STRING<string80_t>(string80_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = string80_t(st.getData());
 }
 
 /* parse -> part -> STRING <string320_t> */
 template<>
-inline void parse__base_part_STRING<string320_t>(string320_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
+inline void parse_part_STRING<string320_t>(string320_t & data, SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 {
 	data = string320_t(st.getData());
 }
@@ -1221,11 +977,11 @@ inline void parse__base_part_STRING<string320_t>(string320_t & data, SourceToken
 
 /* parse -> part */
 template<typename T>
-inline T parse__base_part(SourceScannerDHLX & sc)
+inline T parse_part(SourceScannerDHLX & sc)
 {
 	T data;
 
-	parse__base_init<T>(data);
+	parse_init<T>(data);
 
 	SourceTokenDHLX st(sc.get());
 
@@ -1240,7 +996,7 @@ inline T parse__base_part(SourceScannerDHLX & sc)
 			std::string function(st.getData());
 
 			if (type_t::has_type(function))
-				parse__base_typecast<T>(data, type_t::get_type(function), sc);
+				parse_typecast<T>(data, type_t::get_type(function), sc);
 			else
 				data = FunctionHandler<T>::get_function(function)(sc);
 
@@ -1252,27 +1008,27 @@ inline T parse__base_part(SourceScannerDHLX & sc)
 			sc.unget(st2);
 		}
 	}
-		parse__base_part_IDENTIFIER<T>(data, st, sc);
+		parse_part_IDENTIFIER<T>(data, st, sc);
 		break;
 
 	case SourceTokenDHLX::TT_NUMBER:
-		parse__base_part_NUMBER<T>(data, st, sc);
+		parse_part_NUMBER<T>(data, st, sc);
 		break;
 
 	case SourceTokenDHLX::TT_STRING:
-		parse__base_part_STRING<T>(data, st, sc);
+		parse_part_STRING<T>(data, st, sc);
 		break;
 
 	case SourceTokenDHLX::TT_OP_BRACKET_O:
 		st = sc.get(SourceTokenDHLX::TT_IDENTIFIER);
 		sc.get(SourceTokenDHLX::TT_OP_BRACKET_C);
-		data = parse__base_const<T>(st.getData());
+		data = parse_const<T>(st.getData());
 		break;
 
 	case SourceTokenDHLX::TT_OP_CMP_LT:
 		st = sc.get(SourceTokenDHLX::TT_IDENTIFIER);
 		sc.get(SourceTokenDHLX::TT_OP_CMP_GT);
-		data = parse__base_unary<T>(st.getData(), sc);
+		data = parse_unary<T>(st.getData(), sc);
 		break;
 
 	case SourceTokenDHLX::TT_OP_PARENTHESIS_O:
@@ -1282,7 +1038,7 @@ inline T parse__base_part(SourceScannerDHLX & sc)
 
 		if ((st2.getType() == SourceTokenDHLX::TT_IDENTIFIER) && (st3.getType() == SourceTokenDHLX::TT_OP_PARENTHESIS_C) && type_t::has_type(st2.getData()))
 		{
-			parse__base_typecast<T>(data, type_t::get_type(st2.getData()), sc);
+			parse_typecast<T>(data, type_t::get_type(st2.getData()), sc);
 			break;
 		}
 		else
@@ -1291,7 +1047,7 @@ inline T parse__base_part(SourceScannerDHLX & sc)
 			sc.unget(st2);
 		}
 	}
-		data = parse__base<T>(sc);
+		data = parse<T>(sc);
 		sc.get(SourceTokenDHLX::TT_OP_PARENTHESIS_C);
 		break;
 
@@ -1307,7 +1063,7 @@ inline T parse__base_part(SourceScannerDHLX & sc)
 
 /* parse -> typecast */
 template<typename T>
-inline bool parse__base_typecast(ParsingDataDDL<T> & data)
+inline bool parse_typecast(ParsingDataDDL<T> & data)
 {
 	if ((data.value.size() == 0) || (data.value[0] != '(')) return false;
 
@@ -1325,28 +1081,28 @@ inline bool parse__base_typecast(ParsingDataDDL<T> & data)
 
 	std::string value(data.value, bracketIndex + 1);
 
-	     if (type == type_t::type_bool())       data.valueReturn = convert<T, bool_t>(parse_bool(value));
+	     if (type == type_t::type_bool())       data.valueReturn = convert<T, bool_t>(parse<bool_t>(value));
 
-	else if (type == type_t::type_shortint())   data.valueReturn = convert<T, int_s_t>(parse_int_s(value));
-	else if (type == type_t::type_int())        data.valueReturn = convert<T, int_t>(parse_int(value));
-	else if (type == type_t::type_longint())    data.valueReturn = convert<T, int_l_t>(parse_int_l(value));
+	else if (type == type_t::type_shortint())   data.valueReturn = convert<T, int_s_t>(parse<int_s_t>(value));
+	else if (type == type_t::type_int())        data.valueReturn = convert<T, int_t>(parse<int_t>(value));
+	else if (type == type_t::type_longint())    data.valueReturn = convert<T, int_l_t>(parse<int_l_t>(value));
 
-	else if (type == type_t::type_shortfloat()) data.valueReturn = convert<T, real_s_t>(parse_real_s(value));
-	else if (type == type_t::type_float())      data.valueReturn = convert<T, real_t>(parse_real(value));
-	else if (type == type_t::type_longfloat())  data.valueReturn = convert<T, real_l_t>(parse_real_l(value));
+	else if (type == type_t::type_shortfloat()) data.valueReturn = convert<T, real_s_t>(parse<real_s_t>(value));
+	else if (type == type_t::type_float())      data.valueReturn = convert<T, real_t>(parse<real_t>(value));
+	else if (type == type_t::type_longfloat())  data.valueReturn = convert<T, real_l_t>(parse<real_l_t>(value));
 
-	else if (type == type_t::type_string())     data.valueReturn = convert<T, string_t>(parse_string(value));
-	else if (type == type_t::type_string8())    data.valueReturn = convert<T, string8_t>(parse_string8(value));
-	else if (type == type_t::type_string16())   data.valueReturn = convert<T, string16_t>(parse_string16(value));
-	else if (type == type_t::type_string32())   data.valueReturn = convert<T, string32_t>(parse_string32(value));
-	else if (type == type_t::type_string80())   data.valueReturn = convert<T, string80_t>(parse_string80(value));
-	else if (type == type_t::type_string320())  data.valueReturn = convert<T, string320_t>(parse_string320(value));
+	else if (type == type_t::type_string())     data.valueReturn = convert<T, string_t>(parse<string_t>(value));
+	else if (type == type_t::type_string8())    data.valueReturn = convert<T, string8_t>(parse<string8_t>(value));
+	else if (type == type_t::type_string16())   data.valueReturn = convert<T, string16_t>(parse<string16_t>(value));
+	else if (type == type_t::type_string32())   data.valueReturn = convert<T, string32_t>(parse<string32_t>(value));
+	else if (type == type_t::type_string80())   data.valueReturn = convert<T, string80_t>(parse<string80_t>(value));
+	else if (type == type_t::type_string320())  data.valueReturn = convert<T, string320_t>(parse<string320_t>(value));
 
-	else if (type == type_t::type_ubyte())      data.valueReturn = convert<T, ubyte_t>(parse_ubyte(value));
-	else if (type == type_t::type_sword())      data.valueReturn = convert<T, sword_t>(parse_sword(value));
-	else if (type == type_t::type_uword())      data.valueReturn = convert<T, uword_t>(parse_uword(value));
-	else if (type == type_t::type_sdword())     data.valueReturn = convert<T, sdword_t>(parse_sdword(value));
-	else if (type == type_t::type_udword())     data.valueReturn = convert<T, udword_t>(parse_udword(value));
+	else if (type == type_t::type_ubyte())      data.valueReturn = convert<T, ubyte_t>(parse<ubyte_t>(value));
+	else if (type == type_t::type_sword())      data.valueReturn = convert<T, sword_t>(parse<sword_t>(value));
+	else if (type == type_t::type_uword())      data.valueReturn = convert<T, uword_t>(parse<uword_t>(value));
+	else if (type == type_t::type_sdword())     data.valueReturn = convert<T, sdword_t>(parse<sdword_t>(value));
+	else if (type == type_t::type_udword())     data.valueReturn = convert<T, udword_t>(parse<udword_t>(value));
 
 	else
 		throw ParsingException("unknown typecast:" + type.makeString());
@@ -1354,30 +1110,30 @@ inline bool parse__base_typecast(ParsingDataDDL<T> & data)
 	return true;
 }
 template<typename T>
-inline void parse__base_typecast(T & data, type_t const type, SourceScannerDHLX & sc)
+inline void parse_typecast(T & data, type_t const type, SourceScannerDHLX & sc)
 {
-	     if (type == type_t::type_bool())       data = convert<T, bool_t>(parse_bool(sc));
+	     if (type == type_t::type_bool())       data = convert<T, bool_t>(parse<bool_t>(sc));
 
-	else if (type == type_t::type_shortint())   data = convert<T, int_s_t>(parse_int_s(sc));
-	else if (type == type_t::type_int())        data = convert<T, int_t>(parse_int(sc));
-	else if (type == type_t::type_longint())    data = convert<T, int_l_t>(parse_int_l(sc));
+	else if (type == type_t::type_shortint())   data = convert<T, int_s_t>(parse<int_s_t>(sc));
+	else if (type == type_t::type_int())        data = convert<T, int_t>(parse<int_t>(sc));
+	else if (type == type_t::type_longint())    data = convert<T, int_l_t>(parse<int_l_t>(sc));
 
-	else if (type == type_t::type_shortfloat()) data = convert<T, real_s_t>(parse_real_s(sc));
-	else if (type == type_t::type_float())      data = convert<T, real_t>(parse_real(sc));
-	else if (type == type_t::type_longfloat())  data = convert<T, real_l_t>(parse_real_l(sc));
+	else if (type == type_t::type_shortfloat()) data = convert<T, real_s_t>(parse<real_s_t>(sc));
+	else if (type == type_t::type_float())      data = convert<T, real_t>(parse<real_t>(sc));
+	else if (type == type_t::type_longfloat())  data = convert<T, real_l_t>(parse<real_l_t>(sc));
 
-	else if (type == type_t::type_string())     data = convert<T, string_t>(parse_string(sc));
-	else if (type == type_t::type_string8())    data = convert<T, string8_t>(parse_string8(sc));
-	else if (type == type_t::type_string16())   data = convert<T, string16_t>(parse_string16(sc));
-	else if (type == type_t::type_string32())   data = convert<T, string32_t>(parse_string32(sc));
-	else if (type == type_t::type_string80())   data = convert<T, string80_t>(parse_string80(sc));
-	else if (type == type_t::type_string320())  data = convert<T, string320_t>(parse_string320(sc));
+	else if (type == type_t::type_string())     data = convert<T, string_t>(parse<string_t>(sc));
+	else if (type == type_t::type_string8())    data = convert<T, string8_t>(parse<string8_t>(sc));
+	else if (type == type_t::type_string16())   data = convert<T, string16_t>(parse<string16_t>(sc));
+	else if (type == type_t::type_string32())   data = convert<T, string32_t>(parse<string32_t>(sc));
+	else if (type == type_t::type_string80())   data = convert<T, string80_t>(parse<string80_t>(sc));
+	else if (type == type_t::type_string320())  data = convert<T, string320_t>(parse<string320_t>(sc));
 
-	else if (type == type_t::type_ubyte())      data = convert<T, ubyte_t>(parse_ubyte(sc));
-	else if (type == type_t::type_sword())      data = convert<T, sword_t>(parse_sword(sc));
-	else if (type == type_t::type_uword())      data = convert<T, uword_t>(parse_uword(sc));
-	else if (type == type_t::type_sdword())     data = convert<T, sdword_t>(parse_sdword(sc));
-	else if (type == type_t::type_udword())     data = convert<T, udword_t>(parse_udword(sc));
+	else if (type == type_t::type_ubyte())      data = convert<T, ubyte_t>(parse<ubyte_t>(sc));
+	else if (type == type_t::type_sword())      data = convert<T, sword_t>(parse<sword_t>(sc));
+	else if (type == type_t::type_uword())      data = convert<T, uword_t>(parse<uword_t>(sc));
+	else if (type == type_t::type_sdword())     data = convert<T, sdword_t>(parse<sdword_t>(sc));
+	else if (type == type_t::type_udword())     data = convert<T, udword_t>(parse<udword_t>(sc));
 
 	else
 		throw ParsingException("unknown typecast:" + type.makeString());
@@ -1387,13 +1143,13 @@ inline void parse__base_typecast(T & data, type_t const type, SourceScannerDHLX 
 
 /* parse -> unary -> bool */
 template<typename T>
-inline T parse__base_unary__bool(std::string const & function, std::string const & value)
+inline T parse_unary__bool(std::string const & function, std::string const & value)
 {
 	if (function == function_name_exists())
 		return has_object(name_t(value));
 
 	if (function == function_name_not())
-		return !parse__base<T>(value);
+		return !parse<T>(value);
 
 	throw UnknownFunctionException(function);
 }
@@ -1401,19 +1157,19 @@ inline T parse__base_unary__bool(std::string const & function, std::string const
 
 /* parse -> unary -> byte */
 template<typename T>
-inline T parse__base_unary__byte(std::string const & function, std::string const & value)
+inline T parse_unary__byte(std::string const & function, std::string const & value)
 {
 	// Bytes are too small for certain operations.
 
 	if (function == function_name_abs())
-		return abs(parse__base<T>(value));
+		return abs(parse<T>(value));
 
 	// TODO
 	//if (function == function_name_random())
-	//	return random<T>(parse__base<T>(value));
+	//	return random<T>(parse<T>(value));
 
 	if (function == function_name_sqrt())
-		return sqrt(parse__base<T>(value));
+		return sqrt(parse<T>(value));
 
 	throw UnknownFunctionException(function);
 }
@@ -1421,31 +1177,31 @@ inline T parse__base_unary__byte(std::string const & function, std::string const
 
 /* parse -> unary -> int */
 template<typename T>
-inline T parse__base_unary__int(std::string const & function, std::string const & value)
+inline T parse_unary__int(std::string const & function, std::string const & value)
 {
 	if (function == function_name_abs())
-		return abs(parse__base<T>(value));
+		return abs(parse<T>(value));
 
 	if (function == function_name_byte2deg())
-		return (parse__base<T>(value) * T(360)) / T(256);
+		return (parse<T>(value) * T(360)) / T(256);
 
 	// TODO
 	//if (function == function_name_byteangle())
-	//	return clamp<T>(parse__base<T>(value), T(0), T(256));
+	//	return clamp<T>(parse<T>(value), T(0), T(256));
 
 	if (function == function_name_deg2byte())
-		return (parse__base<T>(value) * T(256)) / T(360);
+		return (parse<T>(value) * T(256)) / T(360);
 
 	// TODO
 	//if (function == function_name_degrees())
-	//	return clamp<T>(parse__base<T>(value), T(0), T(360));
+	//	return clamp<T>(parse<T>(value), T(0), T(360));
 
 	// TODO
 	//if (function == function_name_random())
-	//	return random<T>(parse__base<T>(value));
+	//	return random<T>(parse<T>(value));
 
 	if (function == function_name_sqrt())
-		return sqrt(parse__base<T>(value));
+		return sqrt(parse<T>(value));
 
 	throw UnknownFunctionException(function);
 }
@@ -1453,70 +1209,70 @@ inline T parse__base_unary__int(std::string const & function, std::string const 
 
 /* parse -> unary -> real */
 template<typename T>
-inline T parse__base_unary__real(std::string const & function, std::string const & value)
+inline T parse_unary__real(std::string const & function, std::string const & value)
 {
 	if (function == function_name_abs())
-		return abs(parse__base<T>(value));
+		return abs(parse<T>(value));
 
 	if (function == function_name_acos())
-		return acos(parse__base<T>(value));
+		return acos(parse<T>(value));
 
 	if (function == function_name_asin())
-		return asin(parse__base<T>(value));
+		return asin(parse<T>(value));
 
 	if (function == function_name_atan())
-		return atan(parse__base<T>(value));
+		return atan(parse<T>(value));
 
 	if (function == function_name_byte2deg())
-		return (parse__base<T>(value) * T(360)) / T(256);
+		return (parse<T>(value) * T(360)) / T(256);
 
 	if (function == function_name_byte2rad())
-		return (parse__base<T>(value) * convert<T, real_t>(pi())) / T(128);
+		return (parse<T>(value) * convert<T, real_t>(pi())) / T(128);
 
 	// TODO
 	//if (function == function_name_byteangle())
-	//	return clamp<T>(parse__base<T>(value), T(0), T(256));
+	//	return clamp<T>(parse<T>(value), T(0), T(256));
 
 	if (function == function_name_cos())
-		return cos(parse__base<T>(value));
+		return cos(parse<T>(value));
 
 	if (function == function_name_deg2byte())
-		return (parse__base<T>(value) * T(256)) / T(360);
+		return (parse<T>(value) * T(256)) / T(360);
 
 	if (function == function_name_deg2rad())
-		return (parse__base<T>(value) * convert<T, real_t>(pi())) / T(180);
+		return (parse<T>(value) * convert<T, real_t>(pi())) / T(180);
 
 	// TODO
 	//if (function == function_name_degrees())
-	//	return clamp<T>(parse__base<T>(value), T(0), T(360));
+	//	return clamp<T>(parse<T>(value), T(0), T(360));
 
 	if (function == function_name_rad2byte())
-		return (parse__base<T>(value) * T(128)) / convert<T, real_t>(pi());
+		return (parse<T>(value) * T(128)) / convert<T, real_t>(pi());
 
 	if (function == function_name_rad2deg())
-		return (parse__base<T>(value) * T(180)) / convert<T, real_t>(pi());
+		return (parse<T>(value) * T(180)) / convert<T, real_t>(pi());
 
 	// TODO
 	//if (function == function_name_radians())
-	//	return clamp<T>(parse__base<T>(value), T(0), convert<T, real_t>(pi()*2));
+	//	return clamp<T>(parse<T>(value), T(0), convert<T, real_t>(pi()*2));
 
 	// TODO
 	//if (function == function_name_random())
-	//	return random<T>(parse__base<T>(value));
+	//	return random<T>(parse<T>(value));
 
 	// TODO
 	if (function == function_name_round())
-		return convert<T, int_l_t>(convert<int_l_t, T>(parse__base<T>(value) + T(0.5)));
-	//	return round(parse__base<T>(value));
+		return convert<T, int_l_t>(convert<int_l_t, T>(parse<T>(value) + T(0.5)));
+	//	return round(parse<T>(value));
 
 	if (function == function_name_sin())
-		return sin(parse__base<T>(value));
+		return sin(parse<T>(value));
 
 	if (function == function_name_sqrt())
-		return sqrt(parse__base<T>(value));
+		return sqrt(parse<T>(value));
 
 	if (function == function_name_tan())
-		return tan(parse__base<T>(value));
+		return tan(parse<T>(value));
 
 	throw UnknownFunctionException(function);
 }
@@ -1524,15 +1280,15 @@ inline T parse__base_unary__real(std::string const & function, std::string const
 
 /* parse -> unary -> string */
 template<typename T>
-inline T parse__base_unary__string(std::string const & function, std::string const & value)
+inline T parse_unary__string(std::string const & function, std::string const & value)
 {
 	if (function == function_name_lower())
-		return T(tolower(parse__base<T>(value).makeString()));
+		return T(tolower(parse<T>(value).makeString()));
 
 	if (function == function_name_quote())
 	{
 		std::ostringstream oss;
-		std::istringstream iss(parse__base<T>(value).makeString());
+		std::istringstream iss(parse<T>(value).makeString());
 
 		oss.put('"');
 
@@ -1573,7 +1329,7 @@ inline T parse__base_unary__string(std::string const & function, std::string con
 	}
 
 	if (function == function_name_upper())
-		return T(toupper(parse__base<T>(value).makeString()));
+		return T(toupper(parse<T>(value).makeString()));
 
 	throw UnknownFunctionException(function);
 }
@@ -1581,7 +1337,7 @@ inline T parse__base_unary__string(std::string const & function, std::string con
 
 /* parse -> unary */
 template<typename T>
-inline bool parse__base_unary(ParsingDataDDL<T> & data)
+inline bool parse_unary(ParsingDataDDL<T> & data)
 {
 	if ((data.value.size() == 0) || (data.value[0] != '[')) return false;
 
@@ -1592,154 +1348,154 @@ inline bool parse__base_unary(ParsingDataDDL<T> & data)
 	std::string function = data.value.substr(1, bracketIndex-1);
 
 	if (bracketIndex == (data.value.size() - 1))
-		data.valueReturn = parse__base_const<T>(function);
+		data.valueReturn = parse_const<T>(function);
 	else
-		data.valueReturn = parse__base_unary<T>(function, data.value.substr(bracketIndex + 1));
+		data.valueReturn = parse_unary<T>(function, data.value.substr(bracketIndex + 1));
 
 	return true;
 }
 template<typename T>
-inline T parse__base_unary(std::string const & function, SourceScannerDHLX & sc)
+inline T parse_unary(std::string const & function, SourceScannerDHLX & sc)
 {
 	throw UnknownFunctionException(function);
 }
 template<typename T>
-inline T parse__base_unary(std::string const & function, std::string const & value)
+inline T parse_unary(std::string const & function, std::string const & value)
 {
 	throw UnknownFunctionException(function);
 }
 
 /* parse -> unary <bool_t> */
 template<>
-inline bool_t parse__base_unary<bool_t>(std::string const & function, std::string const & value)
+inline bool_t parse_unary<bool_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__bool<bool_t>(function, value);
+	return parse_unary__bool<bool_t>(function, value);
 }
 
 /* parse -> unary <int_s_t> */
 template<>
-inline int_s_t parse__base_unary<int_s_t>(std::string const & function, std::string const & value)
+inline int_s_t parse_unary<int_s_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__int<int_s_t>(function, value);
+	return parse_unary__int<int_s_t>(function, value);
 }
 
 /* parse -> unary <int_t> */
 template<>
-inline int_t parse__base_unary<int_t>(std::string const & function, std::string const & value)
+inline int_t parse_unary<int_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__int<int_t>(function, value);
+	return parse_unary__int<int_t>(function, value);
 }
 
 /* parse -> unary <int_l_t> */
 template<>
-inline int_l_t parse__base_unary<int_l_t>(std::string const & function, std::string const & value)
+inline int_l_t parse_unary<int_l_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__int<int_l_t>(function, value);
+	return parse_unary__int<int_l_t>(function, value);
 }
 
 /* parse -> unary <real_s_t> */
 template<>
-inline real_s_t parse__base_unary<real_s_t>(std::string const & function, std::string const & value)
+inline real_s_t parse_unary<real_s_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__real<real_s_t>(function, value);
+	return parse_unary__real<real_s_t>(function, value);
 }
 
 /* parse -> unary <real_t> */
 template<>
-inline real_t parse__base_unary<real_t>(std::string const & function, std::string const & value)
+inline real_t parse_unary<real_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__real<real_t>(function, value);
+	return parse_unary__real<real_t>(function, value);
 }
 
 /* parse -> unary <real_l_t> */
 template<>
-inline real_l_t parse__base_unary<real_l_t>(std::string const & function, std::string const & value)
+inline real_l_t parse_unary<real_l_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__real<real_l_t>(function, value);
+	return parse_unary__real<real_l_t>(function, value);
 }
 
 /* parse -> unary <string_t> */
 template<>
-inline string_t parse__base_unary<string_t>(std::string const & function, std::string const & value)
+inline string_t parse_unary<string_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__string<string_t>(function, value);
+	return parse_unary__string<string_t>(function, value);
 }
 
 /* parse -> unary <string8_t> */
 template<>
-inline string8_t parse__base_unary<string8_t>(std::string const & function, std::string const & value)
+inline string8_t parse_unary<string8_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__string<string8_t>(function, value);
+	return parse_unary__string<string8_t>(function, value);
 }
 
 /* parse -> unary <string16_t> */
 template<>
-inline string16_t parse__base_unary<string16_t>(std::string const & function, std::string const & value)
+inline string16_t parse_unary<string16_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__string<string16_t>(function, value);
+	return parse_unary__string<string16_t>(function, value);
 }
 
 /* parse -> unary <string32_t> */
 template<>
-inline string32_t parse__base_unary<string32_t>(std::string const & function, std::string const & value)
+inline string32_t parse_unary<string32_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__string<string32_t>(function, value);
+	return parse_unary__string<string32_t>(function, value);
 }
 
 /* parse -> unary <string80_t> */
 template<>
-inline string80_t parse__base_unary<string80_t>(std::string const & function, std::string const & value)
+inline string80_t parse_unary<string80_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__string<string80_t>(function, value);
+	return parse_unary__string<string80_t>(function, value);
 }
 
 /* parse -> unary <string320t> */
 template<>
-inline string320_t parse__base_unary<string320_t>(std::string const & function, std::string const & value)
+inline string320_t parse_unary<string320_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__string<string320_t>(function, value);
+	return parse_unary__string<string320_t>(function, value);
 }
 
 /* parse -> unary <ubyte_t> */
 template<>
-inline ubyte_t parse__base_unary<ubyte_t>(std::string const & function, std::string const & value)
+inline ubyte_t parse_unary<ubyte_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__byte<ubyte_t>(function, value);
+	return parse_unary__byte<ubyte_t>(function, value);
 }
 
 /* parse -> unary <sword_t> */
 template<>
-inline sword_t parse__base_unary<sword_t>(std::string const & function, std::string const & value)
+inline sword_t parse_unary<sword_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__int<sword_t>(function, value);
+	return parse_unary__int<sword_t>(function, value);
 }
 
 /* parse -> unary <uword_t> */
 template<>
-inline uword_t parse__base_unary<uword_t>(std::string const & function, std::string const & value)
+inline uword_t parse_unary<uword_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__int<uword_t>(function, value);
+	return parse_unary__int<uword_t>(function, value);
 }
 
 /* parse -> unary <sdword_t> */
 template<>
-inline sdword_t parse__base_unary<sdword_t>(std::string const & function, std::string const & value)
+inline sdword_t parse_unary<sdword_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__int<sdword_t>(function, value);
+	return parse_unary__int<sdword_t>(function, value);
 }
 
 /* parse -> unary <udword_t> */
 template<>
-inline udword_t parse__base_unary<udword_t>(std::string const & function, std::string const & value)
+inline udword_t parse_unary<udword_t>(std::string const & function, std::string const & value)
 {
-	return parse__base_unary__int<udword_t>(function, value);
+	return parse_unary__int<udword_t>(function, value);
 }
 
 
 
 /* parse -> value -> bool */
 template<typename T>
-inline bool parse__base_value__bool(ParsingDataDDL<T> & data)
+inline bool parse_value__bool(ParsingDataDDL<T> & data)
 {
 	if ((data.value == "true") || (data.value == "TRUE"))
 	{
@@ -1759,7 +1515,7 @@ inline bool parse__base_value__bool(ParsingDataDDL<T> & data)
 
 /* parse -> value -> number */
 template<typename T>
-inline bool parse__base_value__number(ParsingDataDDL<T> & data)
+inline bool parse_value__number(ParsingDataDDL<T> & data)
 {
 	if ((data.value.size() == 0) || (data.value[0] != '0'))
 		return false;
@@ -1772,7 +1528,7 @@ inline bool parse__base_value__number(ParsingDataDDL<T> & data)
 
 /* parse -> value -> string */
 template<typename T>
-inline bool parse__base_value__string(ParsingDataDDL<T> & data)
+inline bool parse_value__string(ParsingDataDDL<T> & data)
 {
 	if (data.value.size() == 0)
 		return false;
@@ -1795,265 +1551,180 @@ inline bool parse__base_value__string(ParsingDataDDL<T> & data)
 
 /* parse -> value */
 template<typename T>
-inline bool parse__base_value(ParsingDataDDL<T> & data)
+inline bool parse_value(ParsingDataDDL<T> & data)
 {
 	return false;
 }
 
 /* parse -> value <bool_t> */
 template<>
-inline bool parse__base_value<bool_t>(ParsingDataDDL<bool_t> & data)
+inline bool parse_value<bool_t>(ParsingDataDDL<bool_t> & data)
 {
-	return parse__base_value__bool<bool_t>(data);
+	return parse_value__bool<bool_t>(data);
 }
 
 /* parse -> value <int_s_t> */
 template<>
-inline bool parse__base_value<int_s_t>(ParsingDataDDL<int_s_t> & data)
+inline bool parse_value<int_s_t>(ParsingDataDDL<int_s_t> & data)
 {
-	return parse__base_value__number<int_s_t>(data);
+	return parse_value__number<int_s_t>(data);
 }
 
 /* parse -> value <int_t> */
 template<>
-inline bool parse__base_value<int_t>(ParsingDataDDL<int_t> & data)
+inline bool parse_value<int_t>(ParsingDataDDL<int_t> & data)
 {
-	return parse__base_value__number<int_t>(data);
+	return parse_value__number<int_t>(data);
 }
 
 /* parse -> value <int_l_t> */
 template<>
-inline bool parse__base_value<int_l_t>(ParsingDataDDL<int_l_t> & data)
+inline bool parse_value<int_l_t>(ParsingDataDDL<int_l_t> & data)
 {
-	return parse__base_value__number<int_l_t>(data);
+	return parse_value__number<int_l_t>(data);
 }
 
 /* parse -> value <real_s_t> */
 template<>
-inline bool parse__base_value<real_s_t>(ParsingDataDDL<real_s_t> & data)
+inline bool parse_value<real_s_t>(ParsingDataDDL<real_s_t> & data)
 {
-	return parse__base_value__number<real_s_t>(data);
+	return parse_value__number<real_s_t>(data);
 }
 
 /* parse -> value <real_t> */
 template<>
-inline bool parse__base_value<real_t>(ParsingDataDDL<real_t> & data)
+inline bool parse_value<real_t>(ParsingDataDDL<real_t> & data)
 {
-	return parse__base_value__number<real_t>(data);
+	return parse_value__number<real_t>(data);
 }
 
 /* parse -> value <real_l_t> */
 template<>
-inline bool parse__base_value<real_l_t>(ParsingDataDDL<real_l_t> & data)
+inline bool parse_value<real_l_t>(ParsingDataDDL<real_l_t> & data)
 {
-	return parse__base_value__number<real_l_t>(data);
+	return parse_value__number<real_l_t>(data);
 }
 
 /* parse -> value <string_t> */
 template<>
-inline bool parse__base_value<string_t>(ParsingDataDDL<string_t> & data)
+inline bool parse_value<string_t>(ParsingDataDDL<string_t> & data)
 {
-	return parse__base_value__string<string_t>(data);
+	return parse_value__string<string_t>(data);
 }
 
 /* parse -> value <string8_t> */
 template<>
-inline bool parse__base_value<string8_t>(ParsingDataDDL<string8_t> & data)
+inline bool parse_value<string8_t>(ParsingDataDDL<string8_t> & data)
 {
-	return parse__base_value__string<string8_t>(data);
+	return parse_value__string<string8_t>(data);
 }
 
 /* parse -> value <string16_t> */
 template<>
-inline bool parse__base_value<string16_t>(ParsingDataDDL<string16_t> & data)
+inline bool parse_value<string16_t>(ParsingDataDDL<string16_t> & data)
 {
-	return parse__base_value__string<string16_t>(data);
+	return parse_value__string<string16_t>(data);
 }
 
 /* parse -> value <string32_t> */
 template<>
-inline bool parse__base_value<string32_t>(ParsingDataDDL<string32_t> & data)
+inline bool parse_value<string32_t>(ParsingDataDDL<string32_t> & data)
 {
-	return parse__base_value__string<string32_t>(data);
+	return parse_value__string<string32_t>(data);
 }
 
 /* parse -> value <string80_t> */
 template<>
-inline bool parse__base_value<string80_t>(ParsingDataDDL<string80_t> & data)
+inline bool parse_value<string80_t>(ParsingDataDDL<string80_t> & data)
 {
-	return parse__base_value__string<string80_t>(data);
+	return parse_value__string<string80_t>(data);
 }
 
 /* parse -> value <string320_t> */
 template<>
-inline bool parse__base_value<string320_t>(ParsingDataDDL<string320_t> & data)
+inline bool parse_value<string320_t>(ParsingDataDDL<string320_t> & data)
 {
-	return parse__base_value__string<string320_t>(data);
+	return parse_value__string<string320_t>(data);
 }
 
 /* parse -> value <ubyte_t> */
 template<>
-inline bool parse__base_value<ubyte_t>(ParsingDataDDL<ubyte_t> & data)
+inline bool parse_value<ubyte_t>(ParsingDataDDL<ubyte_t> & data)
 {
-	return parse__base_value__number<ubyte_t>(data);
+	return parse_value__number<ubyte_t>(data);
 }
 
 /* parse -> value <sword_t> */
 template<>
-inline bool parse__base_value<sword_t>(ParsingDataDDL<sword_t> & data)
+inline bool parse_value<sword_t>(ParsingDataDDL<sword_t> & data)
 {
-	return parse__base_value__number<sword_t>(data);
+	return parse_value__number<sword_t>(data);
 }
 
 /* parse -> value <uword_t> */
 template<>
-inline bool parse__base_value<uword_t>(ParsingDataDDL<uword_t> & data)
+inline bool parse_value<uword_t>(ParsingDataDDL<uword_t> & data)
 {
-	return parse__base_value__number<uword_t>(data);
+	return parse_value__number<uword_t>(data);
 }
 
 /* parse -> value <sdword_t> */
 template<>
-inline bool parse__base_value<sdword_t>(ParsingDataDDL<sdword_t> & data)
+inline bool parse_value<sdword_t>(ParsingDataDDL<sdword_t> & data)
 {
-	return parse__base_value__number<sdword_t>(data);
+	return parse_value__number<sdword_t>(data);
 }
 
 /* parse -> value <udword_t> */
 template<>
-inline bool parse__base_value<udword_t>(ParsingDataDDL<udword_t> & data)
+inline bool parse_value<udword_t>(ParsingDataDDL<udword_t> & data)
 {
-	return parse__base_value__number<udword_t>(data);
+	return parse_value__number<udword_t>(data);
 }
 
 
 
 /* parse */
 template<typename T>
-T parse__base(std::string const & value)
+T parse(std::string const & value)
 {
 	ParsingDataDDL<T> data(value);
 
-	if (parse__base_math<T>(data))
+	if (parse_math<T>(data))
 		return data.valueReturn;
 
-	if (parse__base_typecast<T>(data))
+	if (parse_typecast<T>(data))
 		return data.valueReturn;
 
-	if (parse__base_unary<T>(data))
+	if (parse_unary<T>(data))
 		return data.valueReturn;
 
-	if (parse__base_function<T>(data))
+	if (parse_function<T>(data))
 		return data.valueReturn;
 
 	if (data.hasBracket)
-		return parse__base<T>(data.value.substr(1, data.value.length()-2));
+		return parse<T>(data.value.substr(1, data.value.length()-2));
 
-	if (parse__base_value<T>(data))
+	if (parse_value<T>(data))
 		return data.valueReturn;
 
 	return convert<T, obj_t>(get_object(name_t(value)));
 }
 template<typename T>
-T parse__base(SourceScannerDHLX & sc)
+T parse(SourceScannerDHLX & sc)
 {
 	T data;
 
-	parse__base_init<T>(data);
+	parse_init<T>(data);
 
-	data = parse__base_part<T>(sc);
+	data = parse_part<T>(sc);
 
-	while (parse__base_math<T>(data, sc));
+	while (parse_math<T>(data, sc));
 
 	return data;
 }
 
 
-
-bool_t parse_bool(SourceScannerDHLX & sc)
-{
-	return parse__base<bool_t>(sc);
-}
-bool_t parse_bool(std::string const & value)
-{
-	return parse__base<bool_t>(value);
-	/*if (value.empty())
-		return false;
-
-	if (value == "true" || value == "TRUE")
-		return true;
-
-	if (value == "false" || value == "FALSE")
-		return false;
-
-	ParsingDataDDL<bool_t> data(value);
-
-	if (check_all<bool_t, parse_bool, convert<bool_t, any_t>, parse_bool_const, parse_bool_unary>(&data))
-		return data.valueReturn;
-
-	return convert<bool_t, obj_t>(get_object(name_t(value)));*/
-}
-
-template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &)>
-static T parse_num_base(std::string const & value)
-{
-	if (value.empty()) return T();
-
-	ParsingDataDDL<T> data(value);
-
-	if (check_all<T, Tparse, Tconv, Tconst, Tunary>(&data))
-		return data.valueReturn;
-
-	if (data.hasExponent)
-	{
-		size_t pos = value.find_first_of("+-");
-
-		if (pos != std::string::npos)
-		{
-			if (isdigit(value[0]))
-				return Tconv(string_t(value));
-
-			std::string valueLeft(value, 0, pos);
-			std::string valueRight(value, pos+1);
-
-			if (value[pos] == '+')
-				return Tparse(valueLeft) + Tparse(valueRight);
-
-			if (value[pos] == '-')
-				return Tparse(valueLeft) - Tparse(valueRight);
-		}
-	}
-
-	if (isdigit(value[0]))
-		return Tconv(string_t(value));
-
-	return Tconv(get_object(name_t(value)));
-}
-
-int_s_t parse_int_s(SourceScannerDHLX & sc)
-{
-	return parse__base<int_s_t>(sc);
-}
-int_s_t parse_int_s(std::string const & value)
-{
-	return parse_num_base<int_s_t, parse_int_s, convert<int_s_t, any_t>, parse_int_s_const, parse_int_s_unary>(value);
-}
-int_t parse_int(SourceScannerDHLX & sc)
-{
-	return parse__base<int_t>(sc);
-}
-int_t parse_int(std::string const & value)
-{
-	return parse_num_base<int_t, parse_int, convert<int_t, any_t>, parse_int_const, parse_int_unary>(value);
-}
-int_l_t parse_int_l(SourceScannerDHLX & sc)
-{
-	return parse__base<int_l_t>(sc);
-}
-int_l_t parse_int_l(std::string const & value)
-{
-	return parse_num_base<int_l_t, parse_int_l, convert<int_l_t, any_t>, parse_int_l_const, parse_int_l_unary>(value);
-}
 
 name_t parse_name(SourceScannerDHLX & sc)
 {
@@ -2079,7 +1750,7 @@ name_t parse_name(SourceScannerDHLX & sc)
 		{
 			if (hasDynamic)
 				nameElement += '.';
-			nameElement += make_string(parse_int_s(sc));
+			nameElement += make_string(parse<int_s_t>(sc));
 			hasDynamic   = true;
 
 			sc.get(SourceTokenDHLX::TT_OP_BRACKET_C);
@@ -2088,7 +1759,7 @@ name_t parse_name(SourceScannerDHLX & sc)
 		{
 			if (hasDynamic)
 				nameElement += '.';
-			nameElement += make_string(parse_string(sc));
+			nameElement += make_string(parse<string_t>(sc));
 			hasDynamic   = true;
 
 			sc.get(SourceTokenDHLX::TT_OP_CMP_GT);
@@ -2110,144 +1781,47 @@ obj_t parse_obj(std::string const & value, type_t const type)
 	if (has_object(name_t(value)))
 		return get_object(name_t(value), type);
 
-	return get_object(parse_int_s(value), type);
+	return get_object(parse<int_s_t>(value), type);
 }
 
-real_s_t parse_real_s(SourceScannerDHLX & sc)
-{
-	return parse__base<real_s_t>(sc);
-}
-real_s_t parse_real_s(std::string const & value)
-{
-	return parse_num_base<real_s_t, parse_real_s, convert<real_s_t, any_t>, parse_real_s_const, parse_real_s_unary>(value);
-}
-real_t parse_real(SourceScannerDHLX & sc)
-{
-	return parse__base<real_t>(sc);
-}
-real_t parse_real(std::string const & value)
-{
-	return parse_num_base<real_t, parse_real, convert<real_t, any_t>, parse_real_const, parse_real_unary>(value);
-}
-real_l_t parse_real_l(SourceScannerDHLX & sc)
-{
-	return parse__base<real_l_t>(sc);
-}
-real_l_t parse_real_l(std::string const & value)
-{
-	return parse_num_base<real_l_t, parse_real_l, convert<real_l_t, any_t>, parse_real_l_const, parse_real_l_unary>(value);
-}
 
-template <class T, T (Tparse)(std::string const &), T (Tconv)(any_t const &), T (Tconst)(std::string const &), T (Tunary)(std::string const &, std::string const &)>
-static T parse_string_base(std::string const & value)
-{
-	if (value.empty())
-		return T(value);
 
-	if (value[0] == '$')
-		return T(value.substr(1));
-
-	ParsingDataDDL<T> data(value);
-
-	if (check_all<T, Tparse, Tconv, Tconst, Tunary>(&data))
-		return data.valueReturn;
-
-	// This is required to be able to parse UDMF.
-	if (!option_strict_strings && !has_object(name_t(value)))
-		return T(value);
-
-	return Tconv(get_object(name_t(value)));
-}
-
-string_t parse_string(SourceScannerDHLX & sc)
-{
-	return parse__base<string_t>(sc);
-}
-string_t parse_string(std::string const & value)
-{
-	return parse_string_base<string_t, parse_string, convert<string_t, any_t>, parse_string_const, parse_string_unary>(value);
-}
-string8_t parse_string8(SourceScannerDHLX & sc)
-{
-	return parse__base<string8_t>(sc);
-}
-string8_t parse_string8(std::string const & value)
-{
-	return parse_string_base<string8_t, parse_string8, convert<string8_t, any_t>, parse_string8_const, parse_string8_unary>(value);
-}
-string16_t parse_string16(SourceScannerDHLX & sc)
-{
-	return parse__base<string16_t>(sc);
-}
-string16_t parse_string16(std::string const & value)
-{
-	return parse_string_base<string16_t, parse_string16, convert<string16_t, any_t>, parse_string16_const, parse_string16_unary>(value);
-}
-string32_t parse_string32(SourceScannerDHLX & sc)
-{
-	return parse__base<string32_t>(sc);
-}
-string32_t parse_string32(std::string const & value)
-{
-	return parse_string_base<string32_t, parse_string32, convert<string32_t, any_t>, parse_string32_const, parse_string32_unary>(value);
-}
-string80_t parse_string80(SourceScannerDHLX & sc)
-{
-	return parse__base<string80_t>(sc);
-}
-string80_t parse_string80(std::string const & value)
-{
-	return parse_string_base<string80_t, parse_string80, convert<string80_t, any_t>, parse_string80_const, parse_string80_unary>(value);
-}
-string320_t parse_string320(SourceScannerDHLX & sc)
-{
-	return parse__base<string320_t>(sc);
-}
-string320_t parse_string320(std::string const & value)
-{
-	return parse_string_base<string320_t, parse_string320, convert<string320_t, any_t>, parse_string320_const, parse_string320_unary>(value);
-}
-
-ubyte_t parse_ubyte(SourceScannerDHLX & sc)
-{
-	return parse__base<ubyte_t>(sc);
-}
-ubyte_t parse_ubyte(std::string const & value)
-{
-	return parse_num_base<ubyte_t, parse_ubyte, convert<ubyte_t, any_t>, parse_ubyte_const, parse_ubyte_unary>(value);
-}
-sword_t parse_sword(SourceScannerDHLX & sc)
-{
-	return parse__base<sword_t>(sc);
-}
-sword_t parse_sword(std::string const & value)
-{
-	return parse_num_base<sword_t, parse_sword, convert<sword_t, any_t>, parse_sword_const, parse_sword_unary>(value);
-}
-uword_t parse_uword(SourceScannerDHLX & sc)
-{
-	return parse__base<uword_t>(sc);
-}
-uword_t parse_uword(std::string const & value)
-{
-	return parse_num_base<uword_t, parse_uword, convert<uword_t, any_t>, parse_uword_const, parse_uword_unary>(value);
-}
-sdword_t parse_sdword(SourceScannerDHLX & sc)
-{
-	return parse__base<sdword_t>(sc);
-}
-sdword_t parse_sdword(std::string const & value)
-{
-	return parse_num_base<sdword_t, parse_sdword, convert<sdword_t, any_t>, parse_sdword_const, parse_sdword_unary>(value);
-}
-udword_t parse_udword(SourceScannerDHLX & sc)
-{
-	return parse__base<udword_t>(sc);
-}
-udword_t parse_udword(std::string const & value)
-{
-	return parse_num_base<udword_t, parse_udword, convert<udword_t, any_t>, parse_udword_const, parse_udword_unary>(value);
-}
+template bool_t      parse<bool_t>     (std::string const & value);
+template bool_t      parse<bool_t>     (SourceScannerDHLX & sc);
+template int_s_t     parse<int_s_t>    (std::string const & value);
+template int_s_t     parse<int_s_t>    (SourceScannerDHLX & sc);
+template int_t       parse<int_t>      (std::string const & value);
+template int_t       parse<int_t>      (SourceScannerDHLX & sc);
+template int_l_t     parse<int_l_t>    (std::string const & value);
+template int_l_t     parse<int_l_t>    (SourceScannerDHLX & sc);
+template real_s_t    parse<real_s_t>   (std::string const & value);
+template real_s_t    parse<real_s_t>   (SourceScannerDHLX & sc);
+template real_t      parse<real_t>     (std::string const & value);
+template real_t      parse<real_t>     (SourceScannerDHLX & sc);
+template real_l_t    parse<real_l_t>   (std::string const & value);
+template real_l_t    parse<real_l_t>   (SourceScannerDHLX & sc);
+template string_t    parse<string_t>   (std::string const & value);
+template string_t    parse<string_t>   (SourceScannerDHLX & sc);
+template string8_t   parse<string8_t>  (std::string const & value);
+template string8_t   parse<string8_t>  (SourceScannerDHLX & sc);
+template string16_t  parse<string16_t> (std::string const & value);
+template string16_t  parse<string16_t> (SourceScannerDHLX & sc);
+template string32_t  parse<string32_t> (std::string const & value);
+template string32_t  parse<string32_t> (SourceScannerDHLX & sc);
+template string80_t  parse<string80_t> (std::string const & value);
+template string80_t  parse<string80_t> (SourceScannerDHLX & sc);
+template string320_t parse<string320_t>(std::string const & value);
+template string320_t parse<string320_t>(SourceScannerDHLX & sc);
+template ubyte_t     parse<ubyte_t>    (std::string const & value);
+template ubyte_t     parse<ubyte_t>    (SourceScannerDHLX & sc);
+template sword_t     parse<sword_t>    (std::string const & value);
+template sword_t     parse<sword_t>    (SourceScannerDHLX & sc);
+template uword_t     parse<uword_t>    (std::string const & value);
+template uword_t     parse<uword_t>    (SourceScannerDHLX & sc);
+template sdword_t    parse<sdword_t>   (std::string const & value);
+template sdword_t    parse<sdword_t>   (SourceScannerDHLX & sc);
+template udword_t    parse<udword_t>   (std::string const & value);
+template udword_t    parse<udword_t>   (SourceScannerDHLX & sc);
 
 
 

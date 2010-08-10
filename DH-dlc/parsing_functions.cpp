@@ -48,7 +48,7 @@
 #define ADD_FUNCTION2(TYPE1, TYPE2, FUNC, NAME) \
 FunctionHandler<TYPE1##_t> const * \
 parse_function_##TYPE1##_##TYPE2##_##FUNC##_##NAME = \
-FunctionHandler<TYPE1##_t>::add_function(#NAME, new FunctionHandlerNative<TYPE1##_t>(parse_function_##FUNC<TYPE2##_t, parse_##TYPE2>))
+FunctionHandler<TYPE1##_t>::add_function(#NAME, new FunctionHandlerNative<TYPE1##_t>(parse_function_##FUNC<TYPE2##_t>))
 
 #define ADD_FUNCTION(TYPE, FUNC, NAME) \
 ADD_FUNCTION2(TYPE, TYPE, FUNC, NAME)
@@ -89,7 +89,7 @@ ADD_FUNCTION(string80,  FUNC, NAME); \
 ADD_FUNCTION(string320, FUNC, NAME)
 
 #define DEFINE_FUNCTION2(TYPE, FUNC) \
-template <class T, T(Tparse)(std::string const &)> \
+template <class T> \
 TYPE parse_function_##FUNC(std::vector<std::string> const & args)
 
 #define DEFINE_FUNCTION(FUNC) \
@@ -102,7 +102,7 @@ DEFINE_FUNCTION(cmp)
 	if (args.size() != 2)
 		throw FunctionException("2 args required");
 
-	return convert<T, int_s_t>(int_s_t( cmp(Tparse(args[0]), Tparse(args[1])) ));
+	return convert<T, int_s_t>(int_s_t( cmp(parse<T>(args[0]), parse<T>(args[1])) ));
 }
 ADD_FUNC_NUMBER(cmp, cmp);
 ADD_FUNC_STRING(cmp, cmp);
@@ -112,7 +112,7 @@ DEFINE_FUNCTION2(bool_t, bcmp)
 	if (args.size() != 3)
 		throw FunctionException("3 args required");
 
-	int cmpResult = cmp(Tparse(args[0]), Tparse(args[2]));
+	int cmpResult = cmp(parse<T>(args[0]), parse<T>(args[2]));
 
 	if (args[1] == cmp_name_eq()) return cmpResult == 0;
 	if (args[1] == cmp_name_ne()) return cmpResult != 0;
@@ -148,10 +148,10 @@ DEFINE_FUNCTION(distance)
 	}
 	else if (args.size() == 4)
 	{
-		x1 = Tparse(args[0]);
-		y1 = Tparse(args[1]);
-		x2 = Tparse(args[2]);
-		y2 = Tparse(args[3]);
+		x1 = parse<T>(args[0]);
+		y1 = parse<T>(args[1]);
+		x2 = parse<T>(args[2]);
+		y2 = parse<T>(args[3]);
 	}
 	else
 		throw FunctionException("2 or 4 args required");
@@ -179,11 +179,11 @@ DEFINE_FUNCTION(facing)
 	/* ([float] x1, [float] y1, [float] x2, [float] y2) */
 	else if (args.size() == 4)
 	{
-		x1 = Tparse(args[0]);
-		x2 = Tparse(args[2]);
+		x1 = parse<T>(args[0]);
+		x2 = parse<T>(args[2]);
 
-		y1 = Tparse(args[1]);
-		y2 = Tparse(args[3]);
+		y1 = parse<T>(args[1]);
+		y2 = parse<T>(args[3]);
 	}
 	else
 		throw FunctionException("2 or 4 args required");
@@ -220,7 +220,7 @@ DEFINE_FUNCTION(hypot)
 	if (args.size() != 2)
 		throw FunctionException("2 args required");
 
-	return hypot(Tparse(args[0]), Tparse(args[1]));
+	return hypot(parse<T>(args[0]), parse<T>(args[1]));
 }
 ADD_FUNC_NUMBER(hypot, hypot);
 
@@ -230,7 +230,7 @@ TYPE##_t parse_##TYPE##_function_random(std::vector<std::string> const & args) \
 	if (args.size() != 2) \
 		throw FunctionException("2 args required"); \
 	\
-	return random_##TYPE(parse_##TYPE(args[0]), parse_##TYPE(args[1])); \
+	return random_##TYPE(parse<TYPE##_t>(args[0]), parse<TYPE##_t>(args[1])); \
 } \
 FunctionHandler<TYPE##_t> const * parse_function_random_##TYPE = FunctionHandler<TYPE##_t>::add_function("random", new FunctionHandlerNative<TYPE##_t>(parse_##TYPE##_function_random))
 FUNCTION_RANDOM(int_s);

@@ -153,24 +153,24 @@ bool LevelObject::addDataIf(std::string const & data, std::string const & value1
 		cmpResult = cmp( get_object(name_t(value1))->_data, get_object(name_t(value2))->_data );
 
 	else if (type == type_name_bool())
-		cmpResult = cmp( parse_bool(value1), parse_bool(value2) );
+		cmpResult = cmp( parse<bool_t>(value1), parse<bool_t>(value2) );
 
 	else if (type == type_name_shortint())
-		cmpResult = cmp( parse_int_s(value1), parse_int_s(value2) );
+		cmpResult = cmp( parse<int_s_t>(value1), parse<int_s_t>(value2) );
 	else if (type == type_name_int())
-		cmpResult = cmp( parse_int(value1), parse_int(value2) );
+		cmpResult = cmp( parse<int_t>(value1), parse<int_t>(value2) );
 	else if (type == type_name_longint())
-		cmpResult = cmp( parse_int_l(value1), parse_int_l(value2) );
+		cmpResult = cmp( parse<int_l_t>(value1), parse<int_l_t>(value2) );
 
 	else if (type == type_name_shortfloat())
-		cmpResult = cmp( parse_real_s(value1), parse_real_s(value2) );
+		cmpResult = cmp( parse<real_s_t>(value1), parse<real_s_t>(value2) );
 	else if (type == type_name_float())
-		cmpResult = cmp( parse_real(value1), parse_real(value2) );
+		cmpResult = cmp( parse<real_t>(value1), parse<real_t>(value2) );
 	else if (type == type_name_longfloat())
-		cmpResult = cmp( parse_real_l(value1), parse_real_l(value2) );
+		cmpResult = cmp( parse<real_l_t>(value1), parse<real_l_t>(value2) );
 
 	else if (type == type_name_string())
-		cmpResult = cmp( parse_string(value1), parse_string(value2) );
+		cmpResult = cmp( parse<string_t>(value1), parse<string_t>(value2) );
 
 	else
 		throw UnknownCommandException("#cmp type:" + type);
@@ -276,7 +276,7 @@ bool LevelObject::addDataIf(std::string const & data, std::vector<std::string> c
 			case OP_NONE:
 			case OP_BOOL:
 
-			if (parse_bool(*it) != op_not)
+			if (parse<bool_t>(*it) != op_not)
 				CHECK_RESULT
 
 			case OP_EXISTS:
@@ -456,7 +456,7 @@ void LevelObject::addObject(SourceScannerDHLX & sc)
 		if (newType.getMode() == type_t::MODE_VALUE)
 			newObject = create(newType, sc);
 		else
-			newObject = get_object(parse_int_s(sc), newType);
+			newObject = get_object(parse<int_s_t>(sc), newType);
 		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
 		break;
 

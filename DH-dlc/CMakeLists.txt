@@ -257,7 +257,6 @@ add_executable(DH-dlc
 	options.cpp
 	parsing.cpp
 	parsing_functions.cpp
-	parsing_unary.cpp
 	process_file.cpp
 	process_stream.cpp
 	process_token.cpp

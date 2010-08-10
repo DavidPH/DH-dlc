@@ -38,37 +38,10 @@ name_t parse_name(SourceScannerDHLX &);
 
 obj_t parse_obj(std::string const &, type_t const);
 
-#define DECLARE_PARSE(TYPE) \
-TYPE##_t parse_##TYPE(SourceScannerDHLX &); \
-TYPE##_t parse_##TYPE(std::string const &); \
-TYPE##_t parse_##TYPE##_const(std::string const &); \
-TYPE##_t parse_##TYPE##_unary(std::string const &, SourceScannerDHLX &); \
-TYPE##_t parse_##TYPE##_unary(std::string const &, std::string const &);
-
-DECLARE_PARSE(bool);
-
-DECLARE_PARSE(int_s);
-DECLARE_PARSE(int);
-DECLARE_PARSE(int_l);
-
-DECLARE_PARSE(real_s);
-DECLARE_PARSE(real);
-DECLARE_PARSE(real_l);
-
-DECLARE_PARSE(string);
-DECLARE_PARSE(string8);
-DECLARE_PARSE(string16);
-DECLARE_PARSE(string32);
-DECLARE_PARSE(string80);
-DECLARE_PARSE(string320);
-
-DECLARE_PARSE(ubyte);
-DECLARE_PARSE(sword);
-DECLARE_PARSE(uword);
-DECLARE_PARSE(sdword);
-DECLARE_PARSE(udword);
-
-#undef DECLARE_PARSE
+template<typename T>
+T parse(SourceScannerDHLX &);
+template<typename T>
+T parse(std::string const &);
 
 
 

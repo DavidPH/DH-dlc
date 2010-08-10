@@ -188,7 +188,7 @@ static std::string parse_name(std::string const & value)
 				std::string valueBase(value, 0, index);
 				std::string valueRest(value, index+1, (value.size() - (index+1)) - 1);
 
-				return valueBase + make_string(parse_int_l(valueRest));
+				return valueBase + make_string(parse<int_l_t>(valueRest));
 			}
 
 			if (index == 0) break;
@@ -215,7 +215,7 @@ static std::string parse_name(std::string const & value)
 				std::string valueBase(value, 0, index);
 				std::string valueRest(value, index+1, (value.size() - (index+1)) - 1);
 
-				return valueBase + parse_string(valueRest).makeString();
+				return valueBase + parse<string_t>(valueRest).makeString();
 			}
 
 			if (index == 0) break;
