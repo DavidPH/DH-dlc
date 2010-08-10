@@ -156,34 +156,6 @@ Tto convert(Tfrom const &);
 
 
 
-#define TEMPLATE_TAKE_TfuncDDL \
-T(Tunary)(std::string const &, std::string const &), \
-T(Tconst)(std::string const &)
-#define TEMPLATE_TAKE_TfuncDHLX \
-T(Tunary)(std::string const &, SourceScannerDHLX &), \
-T(Tconst)(std::string const &)
-#define TEMPLATE_PUSH_Tfunc \
-Tunary, \
-Tconst
-#define TEMPLATE_PUSH_Tfunc_type(TYPE) \
-parse_##TYPE##_unary, \
-parse_##TYPE##_const
-
-#define TEMPLATE_TAKE_DDL \
-typename T, \
-TEMPLATE_TAKE_TfuncDDL
-#define TEMPLATE_TAKE_DHLX \
-typename T, \
-TEMPLATE_TAKE_TfuncDHLX
-#define TEMPLATE_PUSH \
-T, \
-TEMPLATE_PUSH_Tfunc
-#define TEMPLATE_PUSH_type(TYPE) \
-TYPE##_t, \
-TEMPLATE_PUSH_Tfunc_type(TYPE)
-
-
-
 #endif /* TYPES_H */
 
 
