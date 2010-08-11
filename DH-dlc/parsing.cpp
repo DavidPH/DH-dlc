@@ -165,6 +165,7 @@ template<typename T> T    parse_const   (std::string const & function);
 template<typename T> bool parse_function(ParsingDataDDL<T> & data);
 template<typename T> void parse_init    (T & data);
 template<typename T> T    parse_part    (SourceScannerDHLX & sc);
+template<typename T> bool parse_special (ParsingDataDDL<T> & data, std::string const & value);
 template<typename T> bool parse_typecast(ParsingDataDDL<T> & data);
 template<typename T> void parse_typecast(T & data, type_t const type, SourceScannerDHLX & sc);
 template<typename T> bool parse_unary   (ParsingDataDDL<T> & data);
@@ -1062,6 +1063,71 @@ inline T parse_part(SourceScannerDHLX & sc)
 
 
 
+/* parse -> special -> string */
+template<typename T>
+inline bool parse_special__string(ParsingDataDDL<T> & data, std::string const & value)
+{
+	if (data.value[0] == '$')
+	{
+		data.valueReturn = T(data.value);
+		return true;
+	}
+
+	return false;
+}
+
+
+/* parse -> special */
+template<typename T>
+inline bool parse_special(ParsingDataDDL<T> & data, std::string const & value)
+{
+	return false;
+}
+
+/* parse -> special <string_t> */
+template<>
+inline bool parse_special<string_t>(ParsingDataDDL<string_t> & data, std::string const & value)
+{
+	return parse_special__string<string_t>(data, value);
+}
+
+/* parse -> special <string8_t> */
+template<>
+inline bool parse_special<string8_t>(ParsingDataDDL<string8_t> & data, std::string const & value)
+{
+	return parse_special__string<string8_t>(data, value);
+}
+
+/* parse -> special <string16_t> */
+template<>
+inline bool parse_special<string16_t>(ParsingDataDDL<string16_t> & data, std::string const & value)
+{
+	return parse_special__string<string16_t>(data, value);
+}
+
+/* parse -> special <string32_t> */
+template<>
+inline bool parse_special<string32_t>(ParsingDataDDL<string32_t> & data, std::string const & value)
+{
+	return parse_special__string<string32_t>(data, value);
+}
+
+/* parse -> special <string80_t> */
+template<>
+inline bool parse_special<string80_t>(ParsingDataDDL<string80_t> & data, std::string const & value)
+{
+	return parse_special__string<string80_t>(data, value);
+}
+
+/* parse -> special <string320_t> */
+template<>
+inline bool parse_special<string320_t>(ParsingDataDDL<string320_t> & data, std::string const & value)
+{
+	return parse_special__string<string320_t>(data, value);
+}
+
+
+
 /* parse -> typecast */
 template<typename T>
 inline bool parse_typecast(ParsingDataDDL<T> & data)
@@ -1682,6 +1748,9 @@ T parse(std::string const & value)
 	if (value.empty()) return T();
 
 	ParsingDataDDL<T> data(value);
+
+	if (parse_special<T>(data, value))
+		return data.valueReturn;
 
 	if (parse_math<T>(data))
 		return data.valueReturn;
