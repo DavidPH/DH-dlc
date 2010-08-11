@@ -246,6 +246,52 @@ int main(int argc, char** argv)
 			*it += PATH_SEP;
 	}
 
+	if (option_seed_default)
+	{
+		std::ifstream ifs("/dev/random");
+
+		if (ifs)
+		{
+			for (size_t index = sizeof(option_seed); index; --index)
+			{
+				option_seed <<= CHAR_BIT;
+				option_seed += ifs.get();
+			}
+
+			option_seed_default = false;
+		}
+	}
+	if (option_seed_default)
+	{
+		std::ifstream ifs("/dev/urandom");
+
+		if (ifs)
+		{
+			for (size_t index = sizeof(option_seed); index; --index)
+			{
+				option_seed <<= CHAR_BIT;
+				option_seed += ifs.get();
+			}
+
+			option_seed_default = false;
+		}
+	}
+	if (option_seed_default)
+	{
+		option_seed = time(NULL);
+
+		option_seed_default = false;
+	}
+
+
+
+	srand(option_seed);
+
+
+
+	if (option_debug_seed)
+		std::cerr << "seed:" << option_seed << ";\n";
+
 
 
 	if (option_lib_std)

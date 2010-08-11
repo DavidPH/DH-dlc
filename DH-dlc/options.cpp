@@ -40,6 +40,7 @@
 
 PROCESS_OPTION_DEFINE_bool(debug,       false)
 PROCESS_OPTION_DEFINE_bool(debug_dump,  false)
+PROCESS_OPTION_DEFINE_bool(debug_seed,  false)
 PROCESS_OPTION_DEFINE_bool(debug_token, false)
 
 PROCESS_OPTION_DEFINE_bool(case_sensitive, true)
@@ -77,6 +78,7 @@ PROCESS_OPTION_DECLARE_int(precision, POINTER_BIT*2)
 
 	return 2;
 }
+PROCESS_OPTION_DEFINE_int(seed, 0)
 
 PROCESS_OPTION_DEFINE_string(directory,        "")
 PROCESS_OPTION_DEFINE_string(map_name,         "")
@@ -109,6 +111,7 @@ PROCESS_OPTION_LONG_DECLARE
 
 	PROCESS_OPTION_HANDLE_LONG_bool(debug,       "debug",        6);
 	PROCESS_OPTION_HANDLE_LONG_bool(debug_dump,  "debug-dump",  11);
+	PROCESS_OPTION_HANDLE_LONG_bool(debug_seed,  "debug-seed",  11);
 	PROCESS_OPTION_HANDLE_LONG_bool(debug_token, "debug-token", 12);
 
 	PROCESS_OPTION_HANDLE_LONG_bool(case_sensitive, "case-sensitive", 15);
@@ -138,6 +141,7 @@ PROCESS_OPTION_LONG_DECLARE
 
 	PROCESS_OPTION_HANDLE_LONG_int(error_limit, "error-limit", 12);
 	PROCESS_OPTION_HANDLE_LONG_int(precision,   "precision",    4);
+	PROCESS_OPTION_HANDLE_LONG_int(seed,        "seed",         5);
 
 	PROCESS_OPTION_HANDLE_LONG_string(directory,        "directory",         3);
 	PROCESS_OPTION_HANDLE_LONG_string(map_name,         "map-name",          3);

@@ -37,6 +37,7 @@
 
 PROCESS_OPTION_EXTERN_bool(debug);
 PROCESS_OPTION_EXTERN_bool(debug_dump);
+PROCESS_OPTION_EXTERN_bool(debug_seed);
 PROCESS_OPTION_EXTERN_bool(debug_token);
 
 PROCESS_OPTION_EXTERN_bool(case_sensitive);
@@ -66,6 +67,7 @@ PROCESS_OPTION_EXTERN_bool(use_file_extensions);
 
 PROCESS_OPTION_EXTERN_int(error_limit);
 PROCESS_OPTION_EXTERN_int(precision);
+PROCESS_OPTION_EXTERN_int(seed);
 
 PROCESS_OPTION_EXTERN_string(directory);
 PROCESS_OPTION_EXTERN_string(map_name);
