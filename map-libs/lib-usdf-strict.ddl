@@ -1,7 +1,7 @@
 // USDF definitions.
 
-#typedefnew:CHOICE      :object;
-#typedefnew:CONVERSATION:inline;
+#typedefnew:CHOICE      :inline;
+#typedefnew:CONVERSATION:object;
 #typedefnew:COST        :inline;
 #typedefnew:IFITEM      :inline;
 #typedefnew:PAGE        :inline;
