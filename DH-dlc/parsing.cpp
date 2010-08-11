@@ -100,8 +100,10 @@ struct ParsingDataDDL
 				{
 					operatorChar = indexChar;
 
-					valueLeft  = value.substr(0, index);
-					valueRight = value.substr(index+1);
+					valueLeft = value.substr(0, index);
+
+					if (index+1 < value.size())
+						valueRight = value.substr(index+1);
 				}
 			}
 
