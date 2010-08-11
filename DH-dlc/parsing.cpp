@@ -357,7 +357,7 @@ inline udword_t parse_const<udword_t>(std::string const & function)
 template<typename T>
 inline bool parse_function(ParsingDataDDL<T> & data)
 {
-	if ((data.value.size() == 0) || (data.value[0] != '<')) return false;
+	if (data.value[0] != '<') return false;
 
 	size_t bracketIndex = data.value.find('>');
 
@@ -1066,7 +1066,7 @@ inline T parse_part(SourceScannerDHLX & sc)
 template<typename T>
 inline bool parse_typecast(ParsingDataDDL<T> & data)
 {
-	if ((data.value.size() == 0) || (data.value[0] != '(')) return false;
+	if (data.value[0] != '(') return false;
 
 	size_t bracketIndex = data.value.find(')');
 
@@ -1332,7 +1332,7 @@ inline T parse_unary__string(std::string const & function, std::string const & v
 template<typename T>
 inline bool parse_unary(ParsingDataDDL<T> & data)
 {
-	if ((data.value.size() == 0) || (data.value[0] != '[')) return false;
+	if (data.value[0] != '[') return false;
 
 	size_t bracketIndex = data.value.find(']');
 
@@ -1510,12 +1510,6 @@ inline bool parse_value__bool(ParsingDataDDL<T> & data)
 template<typename T>
 inline bool parse_value__number(ParsingDataDDL<T> & data)
 {
-	if (data.value.size() == 0)
-	{
-		data.valueReturn = T();
-		return true;
-	}
-
 	if (isdigit(data.value[0]))
 	{
 		data.valueReturn = num_from_string<T>(data.value);
@@ -1530,9 +1524,6 @@ inline bool parse_value__number(ParsingDataDDL<T> & data)
 template<typename T>
 inline bool parse_value__string(ParsingDataDDL<T> & data)
 {
-	if (data.value.size() == 0)
-		return false;
-
 	if (data.value[0] == '$')
 	{
 		data.valueReturn = T(data.value);
@@ -1688,6 +1679,8 @@ inline bool parse_value<udword_t>(ParsingDataDDL<udword_t> & data)
 template<typename T>
 T parse(std::string const & value)
 {
+	if (value.empty()) return T();
+
 	ParsingDataDDL<T> data(value);
 
 	if (parse_math<T>(data))
