@@ -45,16 +45,47 @@ public:
 		MODE_INLINE,
 	};
 
+	enum NativeType
+	{
+		NT_NONE,
+
+		NT_BOOL_T,
+
+		NT_INT_S_T,
+		NT_INT_T,
+		NT_INT_L_T,
+
+		NT_REAL_S_T,
+		NT_REAL_T,
+		NT_REAL_L_T,
+
+		NT_STRING_T,
+		NT_STRING8_T,
+		NT_STRING16_T,
+		NT_STRING32_T,
+		NT_STRING80_T,
+		NT_STRING320_T,
+
+		NT_UBYTE_T,
+		NT_SWORD_T,
+		NT_UWORD_T,
+		NT_SDWORD_T,
+		NT_UDWORD_T,
+	};
+
 	typedef unsigned short index_t;
 	typedef std::map<LevelObjectName, LevelObjectType> default_type_map_context_t;
 	typedef std::map<LevelObjectType, default_type_map_context_t> default_type_map_t;
 	typedef std::vector<Mode> mode_vector_t;
+	typedef std::vector<NativeType> native_vector_t;
 	typedef std::map<std::string, LevelObjectType> redirect_type_map_t;
 	typedef std::map<std::string, LevelObjectType> type_map_t;
 
 	LevelObjectType();
 
-	Mode getMode() const;
+	Mode       getMode()       const;
+	NativeType getNativeType() const;
+
 	std::string makeString() const;
 
 	friend int cmp(LevelObjectType const, LevelObjectType const);
@@ -116,6 +147,7 @@ private:
 
 	static default_type_map_t default_type_map;
 	static mode_vector_t mode_vector;
+	static native_vector_t native_vector;
 	static redirect_type_map_t redirect_type_map;
 	static type_map_t type_map;
 };
@@ -145,6 +177,10 @@ inline LevelObjectType::LevelObjectType(LevelObjectType::index_t const index) : 
 inline LevelObjectType::Mode LevelObjectType::getMode() const
 {
 	return mode_vector[_index];
+}
+inline LevelObjectType::NativeType LevelObjectType::getNativeType() const
+{
+	return native_vector[_index];
 }
 
 

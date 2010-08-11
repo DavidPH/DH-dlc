@@ -40,6 +40,7 @@ LevelObjectType const LevelObjectType::type_null;
 // default_type_map[context][name] = type
 LevelObjectType::default_type_map_t  LevelObjectType::default_type_map;
 LevelObjectType::mode_vector_t       LevelObjectType::mode_vector(1, LevelObjectType::MODE_NONE);
+LevelObjectType::native_vector_t     LevelObjectType::native_vector(1, LevelObjectType::NT_NONE);
 LevelObjectType::redirect_type_map_t LevelObjectType::redirect_type_map;
 LevelObjectType::type_map_t          LevelObjectType::type_map;
 
@@ -99,6 +100,33 @@ void LevelObjectType::add_type(std::string const & type_name, LevelObjectType::M
 {
 	type_map[type_name] = LevelObjectType(mode_vector.size());
 	mode_vector.push_back(mode);
+
+	     if (mode != MODE_VALUE)                  native_vector.push_back(NT_NONE);
+
+	else if (type_name == type_name_bool())       native_vector.push_back(NT_BOOL_T);
+
+	else if (type_name == type_name_shortint())   native_vector.push_back(NT_INT_S_T);
+	else if (type_name == type_name_int())        native_vector.push_back(NT_INT_T);
+	else if (type_name == type_name_longint())    native_vector.push_back(NT_INT_L_T);
+
+	else if (type_name == type_name_shortfloat()) native_vector.push_back(NT_REAL_S_T);
+	else if (type_name == type_name_float())      native_vector.push_back(NT_REAL_T);
+	else if (type_name == type_name_longfloat())  native_vector.push_back(NT_REAL_L_T);
+
+	else if (type_name == type_name_string())     native_vector.push_back(NT_STRING_T);
+	else if (type_name == type_name_string8())    native_vector.push_back(NT_STRING8_T);
+	else if (type_name == type_name_string16())   native_vector.push_back(NT_STRING16_T);
+	else if (type_name == type_name_string32())   native_vector.push_back(NT_STRING32_T);
+	else if (type_name == type_name_string80())   native_vector.push_back(NT_STRING80_T);
+	else if (type_name == type_name_string320())  native_vector.push_back(NT_STRING320_T);
+
+	else if (type_name == type_name_ubyte())      native_vector.push_back(NT_UBYTE_T);
+	else if (type_name == type_name_sword())      native_vector.push_back(NT_SWORD_T);
+	else if (type_name == type_name_uword())      native_vector.push_back(NT_UWORD_T);
+	else if (type_name == type_name_sdword())     native_vector.push_back(NT_SDWORD_T);
+	else if (type_name == type_name_udword())     native_vector.push_back(NT_UDWORD_T);
+
+	else                                          native_vector.push_back(NT_NONE);
 }
 LevelObjectType LevelObjectType::get_type(std::string const & type_name)
 {
