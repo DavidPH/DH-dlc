@@ -1069,7 +1069,7 @@ inline bool parse_special__string(ParsingDataDDL<T> & data, std::string const & 
 {
 	if (data.value[0] == '$')
 	{
-		data.valueReturn = T(data.value);
+		data.valueReturn = T(data.value.substr(1));
 		return true;
 	}
 
@@ -1592,7 +1592,7 @@ inline bool parse_value__string(ParsingDataDDL<T> & data)
 {
 	if (data.value[0] == '$')
 	{
-		data.valueReturn = T(data.value);
+		data.valueReturn = T(data.value.substr(1));
 		return true;
 	}
 
