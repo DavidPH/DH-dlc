@@ -367,7 +367,7 @@ inline bool parse_function(ParsingDataDDL<T> & data)
 		throw FunctionException("missing argument list");
 
 	std::string function(data.value, 1, bracketIndex - 1);
-	std::string value(data.value, bracketIndex + 2, (data.value.size() - 2) - (bracketIndex + 2));
+	std::string value(data.value, bracketIndex + 2, (data.value.size() - 1) - (bracketIndex + 2));
 
 	std::vector<std::string> args(parse_args(value));
 
