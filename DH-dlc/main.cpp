@@ -249,7 +249,7 @@ int main(int argc, char** argv)
 
 	if (option_seed_default)
 	{
-		std::ifstream ifs("/dev/random");
+		std::ifstream ifs("/dev/urandom");
 
 		if (ifs)
 		{
@@ -264,7 +264,7 @@ int main(int argc, char** argv)
 	}
 	if (option_seed_default)
 	{
-		std::ifstream ifs("/dev/urandom");
+		std::ifstream ifs("/dev/random");
 
 		if (ifs)
 		{
