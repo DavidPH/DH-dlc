@@ -43,7 +43,6 @@
 #include "../global_object.hpp"
 #include "../math.hpp"
 #include "../options.hpp"
-#include "../parsing.hpp"
 #include "../scripts.hpp"
 #include "../SourceStream.hpp"
 #include "../SourceToken.hpp"
@@ -54,6 +53,8 @@
 #include "../exceptions/NoSuchElementException.hpp"
 #include "../exceptions/SyntaxException.hpp"
 #include "../exceptions/UnknownCommandException.hpp"
+
+#include "../parsing/parsing.hpp"
 
 #include "../types/int_t.hpp"
 #include "../types/real_t.hpp"

@@ -28,10 +28,11 @@
 #include "../compound_objects.hpp"
 #include "../global_object.hpp"
 #include "../options.hpp"
-#include "../parsing.hpp"
 #include "../scripts.hpp"
 
 #include "../exceptions/UnknownCommandException.hpp"
+
+#include "../parsing/parsing.hpp"
 
 #include "../types/string_t.hpp"
 

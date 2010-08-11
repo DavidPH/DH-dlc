@@ -23,9 +23,9 @@
 
 #include "LevelObjectName.hpp"
 
-#include "../parsing.hpp"
-
 #include "../exceptions/ParsingException.hpp"
+
+#include "../parsing/parsing.hpp"
 
 #include "../types/int_t.hpp"
 #include "../types/string_t.hpp"

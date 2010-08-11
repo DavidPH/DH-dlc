@@ -26,7 +26,6 @@
 #include "compound_objects.hpp"
 #include "global_object.hpp"
 #include "options.hpp"
-#include "parsing.hpp"
 #include "process_file.hpp"
 #include "SourceToken.hpp"
 
@@ -34,6 +33,7 @@
 #include "exceptions/SyntaxException.hpp"
 
 #include "parsing/FunctionHandlerDDL.hpp"
+#include "parsing/parsing.hpp"
 
 
 

@@ -33,7 +33,6 @@
 
 #include "global_object.hpp"
 #include "options.hpp"
-#include "parsing.hpp"
 
 #include "exceptions/ParsingException.hpp"
 

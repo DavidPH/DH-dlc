@@ -40,7 +40,6 @@
 #include "../global_object.hpp"
 #include "../math.hpp"
 #include "../options.hpp"
-#include "../parsing.hpp"
 #include "../scripts.hpp"
 #include "../SourceStream.hpp"
 #include "../types.hpp"
@@ -48,6 +47,8 @@
 #include "../exceptions/InvalidTypeException.hpp"
 #include "../exceptions/NoSuchElementException.hpp"
 #include "../exceptions/UnknownCommandException.hpp"
+
+#include "../parsing/parsing.hpp"
 
 #include "../types/binary.hpp"
 #include "../types/int_t.hpp"

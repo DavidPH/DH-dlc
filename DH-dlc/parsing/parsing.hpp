@@ -24,8 +24,8 @@
 #ifndef PARSING_H
 #define PARSING_H
 
-#include "SourceScanner.hpp"
-#include "types.hpp"
+#include "../SourceScanner.hpp"
+#include "../types.hpp"
 
 #include <string>
 #include <vector>

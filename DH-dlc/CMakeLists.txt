@@ -255,8 +255,6 @@ add_executable(DH-dlc
 	main.cpp
 	math.cpp
 	options.cpp
-	parsing.cpp
-	parsing_functions.cpp
 	process_file.cpp
 	process_stream.cpp
 	process_token.cpp
@@ -289,6 +287,8 @@ add_executable(DH-dlc
 	parsing/FunctionHandler.cpp
 	parsing/FunctionHandlerDDL.cpp
 	parsing/FunctionHandlerNative.cpp
+	parsing/parsing.cpp
+	parsing/parsing_functions.cpp
 
 	types/binary.cpp
 	types/int_t.cpp
