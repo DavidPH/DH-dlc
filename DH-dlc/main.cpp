@@ -287,7 +287,7 @@ int main(int argc, char** argv)
 
 
 	srand(option_seed);
-	#ifdef USE_GMPLIB
+	#if USE_GMPLIB
 	random_source.seed(option_seed);
 	#endif
 

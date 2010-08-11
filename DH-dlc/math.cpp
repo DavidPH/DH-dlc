@@ -40,7 +40,7 @@
 
 
 
-#ifdef USE_GMPLIB
+#if USE_GMPLIB
 gmp_randclass random_source(gmp_randinit_default);
 #endif
 

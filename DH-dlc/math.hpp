@@ -27,13 +27,13 @@
 #include "types.hpp"
 
 #include <cmath>
-#ifdef USE_GMPLIB
+#if USE_GMPLIB
 #include <gmpxx.h>
 #endif
 
 
 
-#ifdef USE_GMPLIB
+#if USE_GMPLIB
 extern gmp_randclass random_source;
 #endif
 
