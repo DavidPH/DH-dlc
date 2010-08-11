@@ -49,6 +49,11 @@ void add_object(name_t const & name, obj_t newObject)
 {
 	if (newObject == NULL || !newObject->_addGlobal) return;
 
+	// Native types can't be output and can't have their address taken.
+	// While inline/compound object modes also don't need to be added for
+	// output, they do need to have their index taken.
+	if (newObject->getType().getNativeType() != type_t::NT_NONE) return;
+
 	// Must not have duplicate entries in list...
 	newObject->_addGlobal = false;
 
@@ -61,21 +66,7 @@ void add_object(name_t const & name, obj_t newObject)
 
 void clean_objects()
 {
-	FOREACH_T(global_object_map_t, mapIt, global_object_map)
-	{
-		if (mapIt->first.getMode() != type_t::MODE_VALUE) continue;
 
-		FOREACH_T(global_object_list_t, listIt, mapIt->second)
-		{
-			if (listIt->isLastPointer())
-			{
-				// Erasing the element invalidates it, must reset.
-				// Post-decrementing works because the new value
-				// is fetched before the erase.
-				mapIt->second.erase(listIt--);
-			}
-		}
-	}
 }
 
 obj_t get_object(name_t const & name)
@@ -147,7 +138,7 @@ bool has_object(name_t const & name)
 
 	return global_object->hasObject(name);
 }
-#include <iostream>
+
 bool rem_object(obj_t oldObject)
 {
 	bool removed = false;
