@@ -40,6 +40,12 @@
 
 
 
+#ifdef USE_GMPLIB
+gmp_randclass random_source(gmp_randinit_default);
+#endif
+
+
+
 real_t pi_make()
 {
 	// Gauss-Legrende algorithm
@@ -80,164 +86,8 @@ const real_t& pi()
 
 
 
-real_s_t random_real_s()
+template<typename T> inline T random__int(T const & max)
 {
-	return convert<real_s_t, real_t>(random_real());
-}
-real_s_t random_real_s(const real_s_t& max)
-{
-	return random_real_s() * max;
-}
-real_s_t random_real_s(const real_s_t& min, const real_s_t& max)
-{
-	return (random_real_s() * (max-min)) + min;
-}
-
-real_t random_real()
-{
-	#if USE_GMPLIB
-	static gmp_randclass random_source(gmp_randinit_default);
-	static unsigned long random_seed(0UL);
-
-	if (random_seed == 0UL)
-	{
-		std::ifstream ifs("/dev/urandom");
-
-		if (ifs)
-		{
-			for (size_t index = sizeof(random_seed); index; --index)
-			{
-				random_seed <<= CHAR_BIT;
-				random_seed += (unsigned long)ifs.get();
-			}
-		}
-		else
-			random_seed = time(NULL);
-
-		ifs.close();
-
-		random_source.seed(random_seed);
-	}
-
-	return real_t(random_source.get_f(option_precision));
-	#else
-	return convert<real_t, int_l_t>(random_int_l(int_l_t(SINT_BIGGEST_MAX))) / real_t(SINT_BIGGEST_MAX);
-	#endif
-}
-real_t random_real(const real_t& max)
-{
-	return random_real() * max;
-}
-real_t random_real(const real_t& min, const real_t& max)
-{
-	return (random_real() * (max-min)) + min;
-}
-
-real_l_t random_real_l()
-{
-	return convert<real_l_t, real_t>(random_real());
-}
-real_l_t random_real_l(const real_l_t& max)
-{
-	return random_real_l() * max;
-}
-real_l_t random_real_l(const real_l_t& min, const real_l_t& max)
-{
-	return (random_real_l() * (max-min)) + min;
-}
-
-int_s_t random_int_s(const int_s_t& max)
-{
-	return convert<int_s_t, int_l_t>(random_int_l(convert<int_l_t, int_s_t>(max)));
-}
-int_s_t random_int_s(const int_s_t& min, const int_s_t& max)
-{
-	return convert<int_s_t, int_l_t>(random_int_l(convert<int_l_t, int_s_t>(min), convert<int_l_t, int_s_t>(max)));
-}
-
-int_t random_int(const int_t& max)
-{
-	return convert<int_t, int_l_t>(random_int_l(convert<int_l_t, int_t>(max)));
-}
-int_t random_int(const int_t& min, const int_t& max)
-{
-	return convert<int_t, int_l_t>(random_int_l(convert<int_l_t, int_t>(min), convert<int_l_t, int_t>(max)));
-}
-
-int_l_t random_int_l(const int_l_t& max)
-{
-	#if USE_GMPLIB
-	static gmp_randclass random_source(gmp_randinit_default);
-	static unsigned long random_seed(0UL);
-
-	if (random_seed == 0UL)
-	{
-		std::ifstream ifs("/dev/urandom");
-
-		if (ifs)
-		{
-			for (size_t index = sizeof(random_seed); index; --index)
-			{
-				random_seed <<= CHAR_BIT;
-				random_seed += (unsigned long)ifs.get();
-			}
-		}
-		else
-			random_seed = time(NULL);
-
-		ifs.close();
-
-		random_source.seed(random_seed);
-	}
-
-	return int_l_t(random_source.get_z_range(max._data + 1));
-	#else
-	static unsigned int random_seed(0U);
-
-	if (random_seed == 0U)
-	{
-		while (random_seed == 0U)
-		{
-			std::ifstream ifs("/dev/urandom");
-
-			if (ifs)
-			{
-				for (size_t index = sizeof(random_seed); index; --index)
-				{
-					random_seed <<= CHAR_BIT;
-					random_seed += (unsigned int)ifs.get();
-				}
-
-				ifs.close();
-
-				break;
-			}
-
-			ifs.close();
-			ifs.clear();
-			ifs.open("/dev/random");
-
-			if (ifs)
-			{
-				for (size_t index = sizeof(random_seed); index; --index)
-				{
-					random_seed <<= CHAR_BIT;
-					random_seed += (unsigned int)ifs.get();
-				}
-
-				ifs.close();
-
-				break;
-			}
-
-			ifs.close();
-
-			random_seed = time(NULL);
-		}
-
-		srand(random_seed);
-	}
-
 	sint_biggest_t random_sink = 0;
 
 	for (size_t i = sizeof(sint_biggest_t); i; --i)
@@ -252,58 +102,152 @@ int_l_t random_int_l(const int_l_t& max)
 	// +1 because this function produces 0..max inclusive.
 	random_sink %= max.makeInt() + 1;
 
-	return int_l_t(random_sink);
+	return T(random_sink);
+}
+template<> inline int_s_t random__int(int_s_t const & max)
+{
+	int_s_t random_sink = 0;
 
+	for (size_t i = sizeof(int_s_t); i; --i)
+	{
+		random_sink <<= CHAR_BIT;
+		random_sink += rand();
+	}
+
+	// If this number is negative, it causes problems.
+	random_sink &= int_s_t_MAX;
+
+	// +1 because this function produces 0..max inclusive.
+	random_sink %= max + 1;
+
+	return int_s_t(random_sink);
+}
+
+template<> real_s_t random<real_s_t>()
+{
+	return real_s_t(rand()) / real_s_t(RAND_MAX);
+}
+template<> real_s_t random<real_s_t>(real_s_t const & max)
+{
+	return random<real_s_t>() * max;
+}
+template<> real_s_t random<real_s_t>(real_s_t const & min, real_s_t const & max)
+{
+	return (random<real_s_t>() * (max-min)) + min;
+}
+
+template<> real_t random<real_t>()
+{
+	#if USE_GMPLIB
+	return real_t(random_source.get_f(option_precision));
+	#else
+	return real_t(rand()) / real_t(RAND_MAX);
 	#endif
 }
-int_l_t random_int_l(const int_l_t& min, const int_l_t& max)
+template<> real_t random<real_t>(real_t const & max)
 {
-	return random_int_l(max-min) + min;
+	return random<real_t>() * max;
+}
+template<> real_t random<real_t>(real_t const & min, real_t const & max)
+{
+	return (random<real_t>() * (max-min)) + min;
 }
 
-ubyte_t random_ubyte(const ubyte_t& max)
+template<> real_l_t random<real_l_t>()
 {
-	return convert<ubyte_t, int_l_t>(random_int_l(convert<int_l_t, ubyte_t>(max)));
+	#if USE_GMPLIB
+	return real_l_t(random_source.get_f(option_precision));
+	#else
+	return real_l_t(rand()) / real_l_t(RAND_MAX);
+	#endif
 }
-ubyte_t random_ubyte(const ubyte_t& min, const ubyte_t& max)
+template<> real_l_t random<real_l_t>(real_l_t const & max)
 {
-	return convert<ubyte_t, int_l_t>(random_int_l(convert<int_l_t, ubyte_t>(min), convert<int_l_t, ubyte_t>(max)));
+	return random<real_l_t>() * max;
 }
-
-sword_t random_sword(const sword_t& max)
+template<> real_l_t random<real_l_t>(real_l_t const & min, real_l_t const & max)
 {
-	return convert<sword_t, int_l_t>(random_int_l(convert<int_l_t, sword_t>(max)));
-}
-sword_t random_sword(const sword_t& min, const sword_t& max)
-{
-	return convert<sword_t, int_l_t>(random_int_l(convert<int_l_t, sword_t>(min), convert<int_l_t, sword_t>(max)));
-}
-
-uword_t random_uword(const uword_t& max)
-{
-	return convert<uword_t, int_l_t>(random_int_l(convert<int_l_t, uword_t>(max)));
-}
-uword_t random_uword(const uword_t& min, const uword_t& max)
-{
-	return convert<uword_t, int_l_t>(random_int_l(convert<int_l_t, uword_t>(min), convert<int_l_t, uword_t>(max)));
+	return (random<real_l_t>() * (max-min)) + min;
 }
 
-sdword_t random_sdword(const sdword_t& max)
+template<> int_s_t random<int_s_t>(int_s_t const & max)
 {
-	return convert<sdword_t, int_l_t>(random_int_l(convert<int_l_t, sdword_t>(max)));
+	return random__int<int_s_t>(max);
 }
-sdword_t random_sdword(const sdword_t& min, const sdword_t& max)
+template<> int_s_t random<int_s_t>(int_s_t const & min, int_s_t const & max)
 {
-	return convert<sdword_t, int_l_t>(random_int_l(convert<int_l_t, sdword_t>(min), convert<int_l_t, sdword_t>(max)));
+	return random<int_s_t>(max-min) + min;
 }
 
-udword_t random_udword(const udword_t& max)
+template<> int_t random<int_t>(int_t const & max)
 {
-	return convert<udword_t, int_l_t>(random_int_l(convert<int_l_t, udword_t>(max)));
+	#if USE_GMPLIB
+	return int_t(random_source.get_z_range(max._data + 1));
+	#else
+	return random__int<int_t>(max);
+	#endif
 }
-udword_t random_udword(const udword_t& min, const udword_t& max)
+template<> int_t random<int_t>(int_t const & min, int_t const & max)
 {
-	return convert<udword_t, int_l_t>(random_int_l(convert<int_l_t, udword_t>(min), convert<int_l_t, udword_t>(max)));
+	return random<int_t>(max-min) + min;
+}
+
+template<> int_l_t random<int_l_t>(int_l_t const & max)
+{
+	#if USE_GMPLIB
+	return int_l_t(random_source.get_z_range(max._data + 1));
+	#else
+	return random__int<int_l_t>(max);
+	#endif
+}
+template<> int_l_t random<int_l_t>(int_l_t const & min, int_l_t const & max)
+{
+	return random<int_l_t>(max-min) + min;
+}
+
+template<> ubyte_t random<ubyte_t>(ubyte_t const & max)
+{
+	return random__int<ubyte_t>(max);
+}
+template<> ubyte_t random<ubyte_t>(ubyte_t const & min, ubyte_t const & max)
+{
+	return random<ubyte_t>(max-min) + min;
+}
+
+template<> sword_t random<sword_t>(sword_t const & max)
+{
+	return random__int<sword_t>(max);
+}
+template<> sword_t random<sword_t>(sword_t const & min, sword_t const & max)
+{
+	return random<sword_t>(max-min) + min;
+}
+
+template<> uword_t random<uword_t>(uword_t const & max)
+{
+	return random__int<uword_t>(max);
+}
+template<> uword_t random<uword_t>(uword_t const & min, uword_t const & max)
+{
+	return random<uword_t>(max-min) + min;
+}
+
+template<> sdword_t random<sdword_t>(sdword_t const & max)
+{
+	return random__int<sdword_t>(max);
+}
+template<> sdword_t random<sdword_t>(sdword_t const & min, sdword_t const & max)
+{
+	return random<sdword_t>(max-min) + min;
+}
+
+template<> udword_t random<udword_t>(udword_t const & max)
+{
+	return random__int<udword_t>(max);
+}
+template<> udword_t random<udword_t>(udword_t const & min, udword_t const & max)
+{
+	return random<udword_t>(max-min) + min;
 }
 
 

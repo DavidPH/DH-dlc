@@ -26,6 +26,7 @@
 #include "main.hpp"
 
 #include "global_object.hpp"
+#include "math.hpp"
 #include "options.hpp"
 #include "process_file.hpp"
 #include "process_stream.hpp"
@@ -286,6 +287,9 @@ int main(int argc, char** argv)
 
 
 	srand(option_seed);
+	#ifdef USE_GMPLIB
+	random_source.seed(option_seed);
+	#endif
 
 
 

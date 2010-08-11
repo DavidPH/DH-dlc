@@ -24,9 +24,18 @@
 #ifndef LO_MATH_H
 #define LO_MATH_H
 
-#include <cmath>
-
 #include "types.hpp"
+
+#include <cmath>
+#ifdef USE_GMPLIB
+#include <gmpxx.h>
+#endif
+
+
+
+#ifdef USE_GMPLIB
+extern gmp_randclass random_source;
+#endif
 
 
 
@@ -45,33 +54,9 @@ const real_t& pi();
 
 
 
-real_s_t random_real_s();
-real_s_t random_real_s(const real_s_t&);
-real_s_t random_real_s(const real_s_t&, const real_s_t&);
-real_t   random_real();
-real_t   random_real(const real_t&);
-real_t   random_real(const real_t&, const real_t&);
-real_l_t random_real_l();
-real_l_t random_real_l(const real_l_t&);
-real_l_t random_real_l(const real_l_t&, const real_l_t&);
-
-int_s_t random_int_s(const int_s_t&);
-int_s_t random_int_s(const int_s_t&, const int_s_t&);
-int_t   random_int(const int_t&);
-int_t   random_int(const int_t&, const int_t&);
-int_l_t random_int_l(const int_l_t&);
-int_l_t random_int_l(const int_l_t&, const int_l_t&);
-
-ubyte_t random_ubyte(const ubyte_t&);
-ubyte_t random_ubyte(const ubyte_t&, const ubyte_t&);
-sword_t random_sword(const sword_t&);
-sword_t random_sword(const sword_t&, const sword_t&);
-uword_t random_uword(const uword_t&);
-uword_t random_uword(const uword_t&, const uword_t&);
-sdword_t random_sdword(const sdword_t&);
-sdword_t random_sdword(const sdword_t&, const sdword_t&);
-udword_t random_udword(const udword_t&);
-udword_t random_udword(const udword_t&, const udword_t&);
+template<typename T> T random();
+template<typename T> T random(T const &);
+template<typename T> T random(T const &, T const &);
 
 
 

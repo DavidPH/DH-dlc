@@ -24,11 +24,12 @@
 #ifndef INT_T_H
 #define INT_T_H
 
-#include <ostream>
-
 #include "types_limits.hpp"
+
+#include "../math.hpp"
 #include "../types.hpp"
 
+#include <ostream>
 #if USE_GMPLIB
 #include <gmpxx.h>
 #else
@@ -78,6 +79,8 @@ class int_t
 		friend int cmp(int_t const &, int_t const &);
 
 		friend std::ostream& operator << (std::ostream&, const int_t&);
+
+		friend int_t random<int_t>(int_t const &);
 
 		friend int_t sqrt(int_t const &);
 
@@ -141,7 +144,7 @@ class int_l_t
 
 		friend std::ostream& operator << (std::ostream&, const int_l_t&);
 
-		friend int_l_t random_int_l(int_l_t const &);
+		friend int_l_t random<int_l_t>(int_l_t const &);
 
 		friend int_l_t sqrt(int_l_t const &);
 

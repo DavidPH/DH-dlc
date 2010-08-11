@@ -177,7 +177,7 @@ template<typename T>
 inline T parse_const__bool(std::string const & function)
 {
 	if (function == function_name_random())
-		return random_int_s(0, 1) != 0;
+		return random<int_s_t>(0, 1) != 0;
 
 	throw UnknownFunctionException(function);
 }
@@ -198,9 +198,8 @@ inline T parse_const__real(std::string const & function)
 	if (function == function_name_pi())
 		return convert<T, real_t>(pi());
 
-	// TODO
-	//if (function == function_name_random())
-	//	return random<T>();
+	if (function == function_name_random())
+		return random<T>();
 
 	throw UnknownFunctionException(function);
 }
@@ -1164,9 +1163,8 @@ inline T parse_unary__byte(std::string const & function, std::string const & val
 	if (function == function_name_abs())
 		return abs(parse<T>(value));
 
-	// TODO
-	//if (function == function_name_random())
-	//	return random<T>(parse<T>(value));
+	if (function == function_name_random())
+		return random<T>(parse<T>(value));
 
 	if (function == function_name_sqrt())
 		return sqrt(parse<T>(value));
@@ -1196,9 +1194,8 @@ inline T parse_unary__int(std::string const & function, std::string const & valu
 	//if (function == function_name_degrees())
 	//	return clamp<T>(parse<T>(value), T(0), T(360));
 
-	// TODO
-	//if (function == function_name_random())
-	//	return random<T>(parse<T>(value));
+	if (function == function_name_random())
+		return random<T>(parse<T>(value));
 
 	if (function == function_name_sqrt())
 		return sqrt(parse<T>(value));
@@ -1256,9 +1253,8 @@ inline T parse_unary__real(std::string const & function, std::string const & val
 	//if (function == function_name_radians())
 	//	return clamp<T>(parse<T>(value), T(0), convert<T, real_t>(pi()*2));
 
-	// TODO
-	//if (function == function_name_random())
-	//	return random<T>(parse<T>(value));
+	if (function == function_name_random())
+		return random<T>(parse<T>(value));
 
 	// TODO
 	if (function == function_name_round())

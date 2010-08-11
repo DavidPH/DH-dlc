@@ -224,24 +224,14 @@ DEFINE_FUNCTION(hypot)
 }
 ADD_FUNC_NUMBER(hypot, hypot);
 
-#define FUNCTION_RANDOM(TYPE) \
-TYPE##_t parse_##TYPE##_function_random(std::vector<std::string> const & args) \
-{ \
-	if (args.size() != 2) \
-		throw FunctionException("2 args required"); \
-	\
-	return random_##TYPE(parse<TYPE##_t>(args[0]), parse<TYPE##_t>(args[1])); \
-} \
-FunctionHandler<TYPE##_t> const * parse_function_random_##TYPE = FunctionHandler<TYPE##_t>::add_function("random", new FunctionHandlerNative<TYPE##_t>(parse_##TYPE##_function_random))
-FUNCTION_RANDOM(int_s);
-FUNCTION_RANDOM(int);
-FUNCTION_RANDOM(int_l);
-FUNCTION_RANDOM(real_s);
-FUNCTION_RANDOM(real);
-FUNCTION_RANDOM(real_l);
-FUNCTION_RANDOM(sword);
-FUNCTION_RANDOM(ubyte);
-FUNCTION_RANDOM(uword);
+DEFINE_FUNCTION(random)
+{
+	if (args.size() != 2)
+		throw FunctionException("2 args required");
+
+	return random<T>(parse<T>(args[0]), parse<T>(args[1]));
+}
+ADD_FUNC_NUMBER(random, random);
 
 
 
