@@ -55,6 +55,8 @@ template<typename T> T random();
 template<typename T> T random(T const &);
 template<typename T> T random(T const &, T const &);
 
+template<typename T> T round(T const &);
+
 real_l_t sqrt(const real_l_t&);
 
 
@@ -67,8 +69,6 @@ inline T clamp(T value, T const & min, T const & max)
 
 	return value;
 }
-
-
 
 inline int cmp(bool_t val1, bool_t val2)
 {
@@ -100,8 +100,6 @@ inline int cmp(const std::string& val1, const std::string& val2)
 	return 0;
 }
 
-
-
 inline int isoperator(int c)
 {
 	switch (c)
@@ -118,6 +116,11 @@ inline int isoperator(int c)
 		default:
 			return false;
 	}
+}
+
+template<typename T> T round(T const & value)
+{
+	return floor(value + T(0.5));
 }
 
 

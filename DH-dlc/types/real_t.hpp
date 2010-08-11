@@ -71,6 +71,8 @@ class real_t
 
 		friend int cmp(real_t const &, real_t const &);
 
+		friend real_t floor(real_t const &);
+
 		friend std::ostream& operator << (std::ostream&, const real_t&);
 
 		friend real_t sqrt(real_t const &);
@@ -121,6 +123,8 @@ class real_l_t
 
 		friend int cmp(real_l_t const &, real_l_t const &);
 
+		friend real_l_t floor(real_l_t const &);
+
 		friend std::ostream& operator << (std::ostream&, const real_l_t&);
 
 		friend real_l_t sqrt(real_l_t const &);
@@ -151,6 +155,9 @@ real_l_t abs(real_l_t const &);
 
 int cmp(real_t   const &, real_t   const &);
 int cmp(real_l_t const &, real_l_t const &);
+
+real_t   floor(real_t   const &);
+real_l_t floor(real_l_t const &);
 
 std::ostream & operator << (std::ostream &, real_t   const &);
 std::ostream & operator << (std::ostream &, real_l_t const &);
@@ -197,6 +204,8 @@ real_t    tan(real_t   const &);
 real_l_t  tan(real_l_t const &);
 
 
+
+inline real_t   floor(real_t   const & x) {return real_t  (floor(x._data));}
 
 inline real_t   hypot(real_t   const & x, real_t   const & y) {return sqrt((x*x) + (y*y));}
 inline real_l_t hypot(real_l_t const & x, real_l_t const & y) {return sqrt((x*x) + (y*y));}

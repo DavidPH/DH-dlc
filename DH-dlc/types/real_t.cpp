@@ -127,6 +127,15 @@ int cmp(real_l_t const & l, real_l_t const & r)
 	#endif
 }
 
+real_l_t floor(real_l_t const & x)
+{
+	#if USE_GMPLIB
+	return real_l_t(mpz_class(x._data));
+	#else
+	return real_l_t(floor(x._data));
+	#endif
+}
+
 std::ostream & operator << (std::ostream & out, real_t const & in)
 {
 	return out << in._data;

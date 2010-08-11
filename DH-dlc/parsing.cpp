@@ -1319,10 +1319,8 @@ inline T parse_unary__real(std::string const & function, std::string const & val
 	if (function == function_name_random())
 		return random<T>(parse<T>(value));
 
-	// TODO
 	if (function == function_name_round())
-		return convert<T, int_l_t>(convert<int_l_t, T>(parse<T>(value) + T(0.5)));
-	//	return round(parse<T>(value));
+		return round(parse<T>(value));
 
 	if (function == function_name_sin())
 		return sin(parse<T>(value));
