@@ -1508,12 +1508,19 @@ inline bool parse_value__bool(ParsingDataDDL<T> & data)
 template<typename T>
 inline bool parse_value__number(ParsingDataDDL<T> & data)
 {
-	if ((data.value.size() == 0) || (data.value[0] != '0'))
-		return false;
+	if (data.value.size() == 0)
+	{
+		data.valueReturn = T();
+		return true;
+	}
 
-	data.valueReturn = num_from_string<T>(data.value);
+	if (isdigit(data.value[0]))
+	{
+		data.valueReturn = num_from_string<T>(data.value);
+		return true;
+	}
 
-	return true;
+	return false;
 }
 
 
