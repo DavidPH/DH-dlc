@@ -39,28 +39,34 @@ extern gmp_randclass random_source;
 
 
 
+template<typename T>
+T clamp(T value, T const & min, T const & max);
+
 int cmp(bool_t, bool_t);
 int cmp(int_s_t, int_s_t);
 int cmp(real_s_t, real_s_t);
 int cmp(const std::string&, const std::string&);
 
-
-
 int isoperator(int);
 
-
-
 const real_t& pi();
-
-
 
 template<typename T> T random();
 template<typename T> T random(T const &);
 template<typename T> T random(T const &, T const &);
 
-
-
 real_l_t sqrt(const real_l_t&);
+
+
+
+template<typename T>
+inline T clamp(T value, T const & min, T const & max)
+{
+	while (value <  min) value += max;
+	while (value >= max) value -= max;
+
+	return value;
+}
 
 
 

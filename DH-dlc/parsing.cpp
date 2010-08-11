@@ -1183,16 +1183,14 @@ inline T parse_unary__int(std::string const & function, std::string const & valu
 	if (function == function_name_byte2deg())
 		return (parse<T>(value) * T(360)) / T(256);
 
-	// TODO
-	//if (function == function_name_byteangle())
-	//	return clamp<T>(parse<T>(value), T(0), T(256));
+	if (function == function_name_byteangle())
+		return clamp<T>(parse<T>(value), T(0), T(256));
 
 	if (function == function_name_deg2byte())
 		return (parse<T>(value) * T(256)) / T(360);
 
-	// TODO
-	//if (function == function_name_degrees())
-	//	return clamp<T>(parse<T>(value), T(0), T(360));
+	if (function == function_name_degrees())
+		return clamp<T>(parse<T>(value), T(0), T(360));
 
 	if (function == function_name_random())
 		return random<T>(parse<T>(value));
@@ -1226,9 +1224,8 @@ inline T parse_unary__real(std::string const & function, std::string const & val
 	if (function == function_name_byte2rad())
 		return (parse<T>(value) * convert<T, real_t>(pi())) / T(128);
 
-	// TODO
-	//if (function == function_name_byteangle())
-	//	return clamp<T>(parse<T>(value), T(0), T(256));
+	if (function == function_name_byteangle())
+		return clamp<T>(parse<T>(value), T(0), T(256));
 
 	if (function == function_name_cos())
 		return cos(parse<T>(value));
@@ -1239,9 +1236,8 @@ inline T parse_unary__real(std::string const & function, std::string const & val
 	if (function == function_name_deg2rad())
 		return (parse<T>(value) * convert<T, real_t>(pi())) / T(180);
 
-	// TODO
-	//if (function == function_name_degrees())
-	//	return clamp<T>(parse<T>(value), T(0), T(360));
+	if (function == function_name_degrees())
+		return clamp<T>(parse<T>(value), T(0), T(360));
 
 	if (function == function_name_rad2byte())
 		return (parse<T>(value) * T(128)) / convert<T, real_t>(pi());
@@ -1249,9 +1245,8 @@ inline T parse_unary__real(std::string const & function, std::string const & val
 	if (function == function_name_rad2deg())
 		return (parse<T>(value) * T(180)) / convert<T, real_t>(pi());
 
-	// TODO
-	//if (function == function_name_radians())
-	//	return clamp<T>(parse<T>(value), T(0), convert<T, real_t>(pi()*2));
+	if (function == function_name_radians())
+		return clamp<T>(parse<T>(value), T(0), convert<T, real_t>(pi() * real_t(2)));
 
 	if (function == function_name_random())
 		return random<T>(parse<T>(value));
