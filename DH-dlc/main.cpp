@@ -173,6 +173,8 @@ void version()
 
 int main(int argc, char** argv)
 {
+	clock_t clock_total(0);
+
 	PROCESS_OPTIONS();
 
 	if (option_arg.size() == 0)
@@ -299,6 +301,16 @@ int main(int argc, char** argv)
 
 
 
+	clock_t clock_options(clock() - clock_total);
+	clock_total += clock_options;
+	if (option_debug_time)
+	{
+		std::cerr.precision(255);
+		std::cerr << "Toptions = " << (clock_options / double(CLOCKS_PER_SEC)) << ";\n";
+	}
+
+
+
 	if (option_lib_std)
 		process_file("lib-std.ddl");
 
@@ -331,6 +343,16 @@ int main(int argc, char** argv)
 
 
 
+	clock_t clock_compile(clock() - clock_total);
+	clock_total += clock_compile;
+	if (option_debug_time)
+	{
+		std::cerr.precision(255);
+		std::cerr << "Tcompile = " << (clock_compile / double(CLOCKS_PER_SEC)) << ";\n";
+	}
+
+
+
 	if (option_debug_dump)
 	{
 		std::cerr << "global=";
@@ -347,7 +369,20 @@ int main(int argc, char** argv)
 
 
 
-	if (!option_output_any) return 0;
+	if (!option_output_any)
+	{
+		clock_t clock_output(clock() - clock_total);
+		clock_total += clock_output;
+
+		if (option_debug_time)
+		{
+			std::cerr.precision(255);
+			std::cerr << "Toutput  = " << (clock_output  / double(CLOCKS_PER_SEC)) << ";\n";
+			std::cerr << "Ttotal   = " << (clock_total   / double(CLOCKS_PER_SEC)) << ";\n";
+		}
+
+		return 0;
+	}
 
 	#define OPENFILE(NAME, EXT) \
 	std::string name##NAME(#NAME); \
@@ -635,6 +670,26 @@ int main(int argc, char** argv)
 
 		fileSCRIPT.close();
 	}
+
+
+
+	clock_t clock_output(clock() - clock_total);
+	clock_total += clock_output;
+	if (option_debug_time)
+	{
+		std::cerr.precision(255);
+		std::cerr << "Toutput  = " << (clock_output  / double(CLOCKS_PER_SEC)) << ";\n";
+	}
+
+
+
+	if (option_debug_time)
+	{
+		std::cerr.precision(255);
+		std::cerr << "Ttotal   = " << (clock_total   / double(CLOCKS_PER_SEC)) << ";\n";
+	}
+
+
 
 	return 0;
 }

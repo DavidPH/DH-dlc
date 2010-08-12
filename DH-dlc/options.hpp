@@ -38,6 +38,7 @@
 PROCESS_OPTION_EXTERN_bool(debug);
 PROCESS_OPTION_EXTERN_bool(debug_dump);
 PROCESS_OPTION_EXTERN_bool(debug_seed);
+PROCESS_OPTION_EXTERN_bool(debug_time);
 PROCESS_OPTION_EXTERN_bool(debug_token);
 
 PROCESS_OPTION_EXTERN_bool(case_sensitive);

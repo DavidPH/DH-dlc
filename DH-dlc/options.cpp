@@ -41,6 +41,7 @@
 PROCESS_OPTION_DEFINE_bool(debug,       false)
 PROCESS_OPTION_DEFINE_bool(debug_dump,  false)
 PROCESS_OPTION_DEFINE_bool(debug_seed,  false)
+PROCESS_OPTION_DEFINE_bool(debug_time,  false)
 PROCESS_OPTION_DEFINE_bool(debug_token, false)
 
 PROCESS_OPTION_DEFINE_bool(case_sensitive, true)
@@ -112,6 +113,7 @@ PROCESS_OPTION_LONG_DECLARE
 	PROCESS_OPTION_HANDLE_LONG_bool(debug,       "debug",        6);
 	PROCESS_OPTION_HANDLE_LONG_bool(debug_dump,  "debug-dump",  11);
 	PROCESS_OPTION_HANDLE_LONG_bool(debug_seed,  "debug-seed",  11);
+	PROCESS_OPTION_HANDLE_LONG_bool(debug_time,  "debug-time",  11);
 	PROCESS_OPTION_HANDLE_LONG_bool(debug_token, "debug-token", 12);
 
 	PROCESS_OPTION_HANDLE_LONG_bool(case_sensitive, "case-sensitive", 15);
