@@ -984,7 +984,7 @@ void LevelObject::encodeUSDF(std::ostream & out, int depth)
 			}
 
 			for(int i = depth; i; --i) out.put('\t');
-			out << _type.makeString() << " /* " << get_object_index(this) << " */\n";
+			out << _type.makeString() << " /* " << ((_type.getMode() == type_t::MODE_OBJECT) ? get_object_index(this) : -1) << " */\n";
 
 			for(int i = depth; i; --i) out.put('\t');
 			out << "{\n";
