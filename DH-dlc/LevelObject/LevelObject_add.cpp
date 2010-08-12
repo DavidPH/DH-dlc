@@ -73,7 +73,7 @@ void LevelObject::addBase(std::string const & base)
 	if (_data.getType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
 
-	obj_t other = get_object(name_t(base));
+	obj_t other = get_object(parse_name(base));
 
 	if (other->_data.getType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
@@ -117,7 +117,11 @@ void LevelObject::addData(std::string const & data, std::string const & name)
 		{
 			st.clear();
 			ss >> st;
-			addObject(name_t(st.getName()), st);
+
+			if (!st.getName().empty() && st.getName()[0] == '#')
+				doCommand(st.getName(), st);
+			else
+				addObject(parse_name(st.getName()), st);
 		}
 		catch (CompilerException& e)
 		{
@@ -151,7 +155,7 @@ bool LevelObject::addDataIf(std::string const & data, std::string const & value1
 	int cmpResult;
 
 	if (type.empty())
-		cmpResult = cmp( get_object(name_t(value1))->_data, get_object(name_t(value2))->_data );
+		cmpResult = cmp( get_object(parse_name(value1))->_data, get_object(parse_name(value2))->_data );
 
 	else if (type == type_name_bool())
 		cmpResult = cmp( parse<bool_t>(value1), parse<bool_t>(value2) );
@@ -283,15 +287,15 @@ bool LevelObject::addDataIf(std::string const & data, std::vector<std::string> c
 			case OP_EXISTS:
 
 			if (
-				(op_local ? hasObject(name_t(*it)) : has_object(name_t(*it))) != op_not)
+				(op_local ? hasObject(parse_name(*it)) : has_object(parse_name(*it))) != op_not)
 				CHECK_RESULT
 
 			case OP_FALSE:
 
 			if (
 				(
-					!(op_local ? hasObject(name_t(*it)) : has_object(name_t(*it))) ||
-					!convert<bool_t, obj_t>(op_local ? getObject(name_t(*it)) : get_object(name_t(*it)))
+					!(op_local ? hasObject(parse_name(*it)) : has_object(parse_name(*it))) ||
+					!convert<bool_t, obj_t>(op_local ? getObject(parse_name(*it)) : get_object(parse_name(*it)))
 				) != op_not
 			)
 				CHECK_RESULT
@@ -300,8 +304,8 @@ bool LevelObject::addDataIf(std::string const & data, std::vector<std::string> c
 
 			if (
 				(
-					(op_local ? hasObject(name_t(*it)) : has_object(name_t(*it))) &&
-					convert<bool_t, obj_t>(op_local ? getObject(name_t(*it)) : get_object(name_t(*it)))
+					(op_local ? hasObject(parse_name(*it)) : has_object(parse_name(*it))) &&
+					convert<bool_t, obj_t>(op_local ? getObject(parse_name(*it)) : get_object(parse_name(*it)))
 				) != op_not
 			)
 				CHECK_RESULT
@@ -374,11 +378,11 @@ void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 	if (st.getType().empty())
 	{
 		if (!st.getBase(0).empty())
-			newType = get_object(name_t(st.getBase(0)))->_type;
+			newType = get_object(parse_name(st.getBase(0)))->_type;
 		else if (hasObject(name))
 			newType = getObject(name)->_type;
-		else if (has_object(name_t(st.getValue())))
-			newType = get_object(name_t(st.getValue()))->_type;
+		else if (has_object(parse_name(st.getValue())))
+			newType = get_object(parse_name(st.getValue()))->_type;
 		else
 			newType = type_t::get_default_type(name, _type);
 	}

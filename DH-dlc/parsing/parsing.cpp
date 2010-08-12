@@ -128,36 +128,6 @@ struct ParsingDataDDL
 };
 
 
-std::vector<std::string> parse_args(std::string const & value)
-{
-	std::vector<std::string> args;
-
-	int    bracketCount = 0;
-	size_t lastSep      = 0;
-
-	for (size_t index = 0; index < value.size(); ++index)
-	{
-		if (value[index] == '(')
-			++bracketCount;
-
-		else if (value[index] == ')')
-			--bracketCount;
-
-		if (value[index] == ',' && bracketCount == 0)
-		{
-			args.push_back( value.substr(lastSep, index-lastSep) );
-
-			lastSep = index+1;
-		}
-	}
-
-	if (lastSep < value.size())
-		args.push_back( value.substr(lastSep) );
-
-	return args;
-}
-
-
 
 template<typename T> T    parse         (std::string const & value);
 template<typename T> T    parse         (SourceScannerDHLX & sc);
@@ -591,7 +561,7 @@ inline bool parse_math(ParsingDataDDL<T> & data)
 	{
 		case -2: return false;
 
-		default: throw ParsingException(std::string("non-string operator:") + (char)data.operatorChar);
+		default: throw ParsingException(std::string("non- operator:") + (char)data.operatorChar);
 	}
 }
 template<typename T>
@@ -1213,7 +1183,7 @@ template<typename T>
 inline T parse_unary__bool(std::string const & function, std::string const & value)
 {
 	if (function == function_name_exists())
-		return has_object(name_t(value));
+		return has_object(parse_name(value));
 
 	if (function == function_name_not())
 		return !parse<T>(value);
@@ -1594,7 +1564,7 @@ inline bool parse_value__string(ParsingDataDDL<T> & data)
 		return true;
 	}
 
-	if (!option_strict_strings && !has_object(name_t(data.value)))
+	if (!option_strict_strings && !has_object(parse_name(data.value)))
 	{
 		data.valueReturn = T(data.value);
 		return true;
@@ -1762,13 +1732,13 @@ T parse(std::string const & value)
 	if (parse_function<T>(data))
 		return data.valueReturn;
 
-	if (data.hasBracket)
+	if (data.hasBracket && data.value[0] == '(')
 		return parse<T>(data.value.substr(1, data.value.length()-2));
 
 	if (parse_value<T>(data))
 		return data.valueReturn;
 
-	return convert<T, obj_t>(get_object(name_t(value)));
+	return convert<T, obj_t>(get_object(parse_name(value)));
 }
 template<typename T>
 T parse(SourceScannerDHLX & sc)
@@ -1785,6 +1755,35 @@ T parse(SourceScannerDHLX & sc)
 }
 
 
+
+std::vector<std::string> parse_args(std::string const & value)
+{
+	std::vector<std::string> args;
+
+	int    bracketCount = 0;
+	size_t lastSep      = 0;
+
+	for (size_t index = 0; index < value.size(); ++index)
+	{
+		if (value[index] == '(')
+			++bracketCount;
+
+		else if (value[index] == ')')
+			--bracketCount;
+
+		if (value[index] == ',' && bracketCount == 0)
+		{
+			args.push_back( value.substr(lastSep, index-lastSep) );
+
+			lastSep = index+1;
+		}
+	}
+
+	if (lastSep < value.size())
+		args.push_back( value.substr(lastSep) );
+
+	return args;
+}
 
 name_t parse_name(SourceScannerDHLX & sc)
 {
@@ -1835,12 +1834,108 @@ name_t parse_name(SourceScannerDHLX & sc)
 
 	return name_t(nameVector);
 }
+name_t parse_name(std::string const & value)
+{
+	int bracketCount(0);
+
+	std::vector<std::string> nameVector;
+
+	if (value.empty() || (!isalpha(value[0]) && value[0] != '_'))
+	{
+		nameVector.push_back("");
+		return name_t(nameVector);
+	}
+
+	std::string nameElement;
+	std::string nameDynamic;
+
+	bool getDynamic(false);
+	bool hasDynamic(false);
+
+	bool skipChar(false);
+
+	for (size_t index = 0; index < value.size(); ++index)
+	{
+		char indexChar = value[index];
+
+		     if ((indexChar == '[') || (indexChar == '<') || (indexChar == '(')) ++bracketCount;
+		else if ((indexChar == ']') || (indexChar == '>') || (indexChar == ')')) --bracketCount;
+
+		if (bracketCount == 0)
+		{
+			if (indexChar == '.')
+			{
+				nameVector.push_back(nameElement);
+				nameElement.clear();
+				hasDynamic = false;
+				skipChar   = true;
+			}
+			else if (indexChar == ']')
+			{
+				getDynamic = false;
+				skipChar   = true;
+
+				if (hasDynamic)
+					nameElement += '.';
+				nameElement += make_string(parse<int_s_t>(nameDynamic));
+				nameDynamic.clear();
+
+				hasDynamic = true;
+			}
+			else if (indexChar == '>')
+			{
+				getDynamic = false;
+				skipChar   = true;
+
+				if (hasDynamic)
+					nameElement += '.';
+				nameElement += make_string(parse<string_t>(nameDynamic));
+				nameDynamic.clear();
+
+				hasDynamic = true;
+			}
+			else if (isoperator(indexChar))
+			{
+				return name_t("");
+			}
+		}
+		else if (bracketCount == 1)
+		{
+			if (indexChar == '[')
+			{
+				getDynamic = true;
+				skipChar   = true;
+
+				if (nameElement.empty()) return name_t("");
+			}
+			else if (indexChar == '<')
+			{
+				getDynamic = true;
+				skipChar   = true;
+
+				if (nameElement.empty()) return name_t("");
+			}
+		}
+
+		if (skipChar)
+		{
+			skipChar = false;
+			continue;
+		}
+
+		if (getDynamic)
+			nameDynamic += indexChar;
+		else
+			nameElement += indexChar;
+	}
+
+	nameVector.push_back(nameElement);
+
+	return name_t(nameVector);
+}
 
 obj_t parse_obj(std::string const & value, type_t const type)
 {
-	if (has_object(name_t(value)))
-		return get_object(name_t(value), type);
-
 	return get_object(parse<int_s_t>(value), type);
 }
 

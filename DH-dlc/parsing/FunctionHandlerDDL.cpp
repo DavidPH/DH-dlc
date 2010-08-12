@@ -23,6 +23,8 @@
 
 #include "FunctionHandlerDDL.hpp"
 
+#include "parsing.hpp"
+
 #include "../options.hpp"
 
 #include "../exceptions/UnknownFunctionException.hpp"
@@ -80,7 +82,7 @@ T FunctionHandlerDDL<T>::operator () (std::vector<std::string> const & args) con
 		// TODO: Should make an arg_t for undefined types.
 		obj_t argObj = LevelObject::create(type_t::type_string(), string_t(args[index]));
 
-		name_t argName(std::string(key_name_arg()) + make_string(index));
+		name_t argName(parse_name(key_name_arg() + make_string(index)));
 
 		funcObj->addObject(argName, argObj);
 	}

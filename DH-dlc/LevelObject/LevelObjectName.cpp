@@ -32,8 +32,6 @@
 
 #include "../../common/foreach.hpp"
 
-static std::string parse_name(std::string const & value);
-
 
 
 LevelObjectName const LevelObjectName::name_return_value(".return_value");
@@ -50,37 +48,6 @@ LevelObjectName::LevelObjectName(LevelObjectName const & other, size_t count)
 LevelObjectName::LevelObjectName(char const * name)
 {
 	this->_name.push_back(name);
-}
-LevelObjectName::LevelObjectName(std::string const & raw_name)
-{
-	//std::cerr << "LevelObject::LevelObject('" << raw_name << "');\n";
-
-	this->_name.push_back("");
-
-	int bracketCount = 0;
-	for (size_t index = 0; index < raw_name.size(); ++index)
-	{
-		char indexChar = raw_name[index];
-
-		     if (indexChar == '[' || indexChar == '<') ++bracketCount;
-		else if (indexChar == ']' || indexChar == '>') --bracketCount;
-
-		if (indexChar == '.' && bracketCount == 0)
-		{
-			this->_name.push_back("");
-		}
-		else
-		{
-			this->_name.rbegin()->push_back(indexChar);
-		}
-	}
-
-	FOREACH_T(std::vector<std::string>, it, this->_name)
-	{
-		//std::cerr << *it << '\n';
-		*it = parse_name(*it);
-		//std::cerr << *it << '\n';
-	}
 }
 LevelObjectName::LevelObjectName(std::vector<std::string> const & nameVector) : _name(nameVector)
 {
@@ -164,68 +131,6 @@ std::ostream & operator << (std::ostream & out, LevelObjectName const & in)
 		out << '.' << in._name[index];
 
 	return out;
-}
-
-static std::string parse_name(std::string const & value)
-{
-	if (value.empty())
-		return value;
-
-	// .*\[.*\] is an index, but \[.*\] is a unary function
-	if (*value.rbegin() == ']' && *value.begin() != '[')
-	{
-		int bracketCount = 0;
-
-		for (size_t index = value.size()-1; ; --index)
-		{
-			char indexChar = value[index];
-
-			     if (indexChar == '[') ++bracketCount;
-			else if (indexChar == ']') --bracketCount;
-
-			if (bracketCount == 0)
-			{
-				std::string valueBase(value, 0, index);
-				std::string valueRest(value, index+1, (value.size() - (index+1)) - 1);
-
-				return valueBase + make_string(parse<int_l_t>(valueRest));
-			}
-
-			if (index == 0) break;
-		}
-
-		if (bracketCount != 0)
-			throw ParsingException("unbalanced brackets:" + value);
-	}
-
-	// .*<.*> is an index, but <.*> is an invalid function.
-	if (*value.rbegin() == '>' && *value.begin() != '<')
-	{
-		int bracketCount = 0;
-
-		for (size_t index = value.size()-1; ; --index)
-		{
-			char indexChar = value[index];
-
-			     if (indexChar == '<') ++bracketCount;
-			else if (indexChar == '>') --bracketCount;
-
-			if (bracketCount == 0)
-			{
-				std::string valueBase(value, 0, index);
-				std::string valueRest(value, index+1, (value.size() - (index+1)) - 1);
-
-				return valueBase + parse<string_t>(valueRest).makeString();
-			}
-
-			if (index == 0) break;
-		}
-
-		if (bracketCount != 0)
-			throw ParsingException("unbalanced brackets:" + value);
-	}
-
-	return value;
 }
 
 

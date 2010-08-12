@@ -86,8 +86,8 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 	// this DOES NOT prevent objects from being output
 	else if (command == command_name_delete() && _data.getType() == any_t::OBJMAP_T)
 	{
-		if (hasObject(name_t(st.getBase(0))))
-			_data.getObjMap().del(name_t(st.getBase(0)));
+		if (hasObject(parse_name(st.getBase(0))))
+			_data.getObjMap().del(parse_name(st.getBase(0)));
 
 		clean_objects();
 	}
@@ -168,7 +168,7 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 		else
 			forType = type_t::get_type(st.getType());
 
-		name_t      forName   (st.getBase(0));
+		name_t      forName(parse_name(st.getBase(0)));
 		std::string forStart = st.getBase(1);
 		std::string forStop  = st.getBase(2);
 		std::string forStep  = st.getBase(3, "1");

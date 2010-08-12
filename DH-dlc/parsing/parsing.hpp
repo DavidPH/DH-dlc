@@ -35,6 +35,7 @@
 std::vector<std::string> parse_args(std::string const &);
 
 name_t parse_name(SourceScannerDHLX &);
+name_t parse_name(std::string const &);
 
 obj_t parse_obj(std::string const &, type_t const);
 

@@ -48,7 +48,7 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 		// # default type : NAME : TYPE : [CONTEXT]
 		if (st.getName() == command_name_defaulttype())
 		{
-			name_t type_name(st.getBase(0));
+			name_t type_name(parse_name(st.getBase(0)));
 			type_t type = type_t::get_type(st.getBase(1));
 			type_t context;
 
@@ -156,9 +156,13 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 
 			return;
 		}
+
+		global_object->doCommand(st.getName(), st);
+
+		return;
 	}
 
-	global_object->addObject(name_t(st.getName()), st);
+	global_object->addObject(parse_name(st.getName()), st);
 }
 
 void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)

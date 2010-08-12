@@ -44,7 +44,6 @@ class LevelObjectName
 			the name. Does not even break up by '.'.
 		*/
 		explicit LevelObjectName(char const * name);
-		explicit LevelObjectName(std::string const & raw_name);
 		explicit LevelObjectName(std::vector<std::string> const & nameVec);
 
 		bool empty() const;
