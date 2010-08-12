@@ -50,9 +50,15 @@ void add_object(name_t const & name, obj_t newObject)
 	if (newObject == NULL || !newObject->_addGlobal) return;
 
 	// Native types can't be output and can't have their address taken.
-	// While inline/compound object modes also don't need to be added for
-	// output, they do need to have their index taken.
 	if (newObject->getType().getNativeType() != type_t::NT_NONE) return;
+
+	// inline mode objects cannot sensibly have their index taken, as their
+	// position in output is undefined.
+	if (newObject->getType().getMode() == type_t::MODE_INLINE) return;
+
+	// Taking the address of a compound object has no valid use, as they are
+	// not output. And storing references to them by index is deprecated.
+	if (newObject->getType().getMode() == type_t::MODE_COMPOUNDOBJECT) return;
 
 	// Must not have duplicate entries in list...
 	newObject->_addGlobal = false;
@@ -113,19 +119,7 @@ int_s_t get_object_index(obj_t oldObject)
 
 	if (oldObject->_index != (size_t)-1) return oldObject->_index;
 
-	throw CompilerException("object has no index set");
-
-	int_s_t typeCount = 0;
-
-	FOREACH_T(global_object_list_t, it, global_object_map[oldObject->getType()])
-	{
-		if (oldObject == *it)
-			return typeCount;
-
-		++typeCount;
-	}
-
-	return -1;
+	throw CompilerException("object has no valid index");
 }
 
 bool has_object(name_t const & name)

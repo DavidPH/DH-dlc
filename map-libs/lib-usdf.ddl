@@ -25,7 +25,7 @@
 #defaulttype:arg2       :int   :CHOICE;
 #defaulttype:arg3       :int   :CHOICE;
 #defaulttype:arg4       :int   :CHOICE;
-#defaulttype:nextpage   :PAGE  :CHOICE;
+#defaulttype:nextpage   :int   :CHOICE;
 #defaulttype:closedialog:bool  :CHOICE;
 
 #defaulttype:actor:int:CONVERSATION;
@@ -33,9 +33,9 @@
 #defaulttype:item  :int:COST;
 #defaulttype:amount:int:COST;
 
-#defaulttype:item  :int :IFITEM;
-#defaulttype:amount:int :IFITEM;
-#defaulttype:page  :PAGE:IFITEM;
+#defaulttype:item  :int:IFITEM;
+#defaulttype:amount:int:IFITEM;
+#defaulttype:page  :int:IFITEM;
 
 #defaulttype:name  :string:PAGE;
 #defaulttype:panel :string:PAGE;
