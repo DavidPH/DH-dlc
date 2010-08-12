@@ -173,6 +173,7 @@ void version()
 
 int main(int argc, char** argv)
 {
+	clock_t clock_start(clock());
 	clock_t clock_total(0);
 
 	PROCESS_OPTIONS();
@@ -301,11 +302,11 @@ int main(int argc, char** argv)
 
 
 
-	clock_t clock_options(clock() - clock_total);
+	clock_t clock_options((clock() - clock_start) - clock_total);
 	clock_total += clock_options;
 	if (option_debug_time)
 	{
-		std::cerr.precision(255);
+		std::cerr.precision(8);
 		std::cerr << "Toptions = " << (clock_options / double(CLOCKS_PER_SEC)) << ";\n";
 	}
 
@@ -343,11 +344,11 @@ int main(int argc, char** argv)
 
 
 
-	clock_t clock_compile(clock() - clock_total);
+	clock_t clock_compile((clock() - clock_start) - clock_total);
 	clock_total += clock_compile;
 	if (option_debug_time)
 	{
-		std::cerr.precision(255);
+		std::cerr.precision(8);
 		std::cerr << "Tcompile = " << (clock_compile / double(CLOCKS_PER_SEC)) << ";\n";
 	}
 
@@ -371,12 +372,12 @@ int main(int argc, char** argv)
 
 	if (!option_output_any)
 	{
-		clock_t clock_output(clock() - clock_total);
+		clock_t clock_output((clock() - clock_start) - clock_total);
 		clock_total += clock_output;
 
 		if (option_debug_time)
 		{
-			std::cerr.precision(255);
+			std::cerr.precision(8);
 			std::cerr << "Toutput  = " << (clock_output  / double(CLOCKS_PER_SEC)) << ";\n";
 			std::cerr << "Ttotal   = " << (clock_total   / double(CLOCKS_PER_SEC)) << ";\n";
 		}
@@ -673,11 +674,11 @@ int main(int argc, char** argv)
 
 
 
-	clock_t clock_output(clock() - clock_total);
+	clock_t clock_output((clock() - clock_start) - clock_total);
 	clock_total += clock_output;
 	if (option_debug_time)
 	{
-		std::cerr.precision(255);
+		std::cerr.precision(8);
 		std::cerr << "Toutput  = " << (clock_output  / double(CLOCKS_PER_SEC)) << ";\n";
 	}
 
@@ -685,7 +686,7 @@ int main(int argc, char** argv)
 
 	if (option_debug_time)
 	{
-		std::cerr.precision(255);
+		std::cerr.precision(8);
 		std::cerr << "Ttotal   = " << (clock_total   / double(CLOCKS_PER_SEC)) << ";\n";
 	}
 
