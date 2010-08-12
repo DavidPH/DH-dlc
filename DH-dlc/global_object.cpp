@@ -40,6 +40,8 @@
 
 #include "../common/foreach.hpp"
 
+#include <stdexcept>
+
 
 
 obj_t               global_object = LevelObject::create();
@@ -101,7 +103,9 @@ obj_t get_object(int_s_t objectIndex, type_t const type)
 
 	int_s_t typeCount = 0;
 
-	FOREACH_T(global_object_list_t, it, global_object_map[type])
+	global_object_list_t & objectList = global_object_map[type];
+
+	FOREACH_T(global_object_list_t, it, objectList)
 	{
 		if (typeCount == objectIndex)
 			return *it;
@@ -135,32 +139,34 @@ bool has_object(name_t const & name)
 
 bool rem_object(obj_t oldObject)
 {
-	bool removed = false;
+	// And object with an index of -1 is not in an output list.
+	if (oldObject->_index == size_t(-1)) return false;
 
-	size_t index = 0;
+	bool found = false;
 
 	global_object_list_t & objectList = global_object_map[oldObject->getType()];
 
-	FOREACH_T(global_object_list_t, it, objectList)
+	global_object_list_t::reverse_iterator it(objectList.rbegin());
+
+	for (; it != objectList.rend(); ++it)
 	{
 		if (oldObject == *it)
 		{
-			objectList.erase(it--);
-
-			--index;
-
-			removed = true;
+			objectList.erase(--(it.base()));
+			found = true;
+			break;
 		}
 
-		if (removed)
-			(*it)->_index = index;
-
-		++index;
+		--(*it)->_index;
 	}
+
+	// At this point, there is no meaningful way to proceed.
+	if (!found)
+		throw std::invalid_argument("rem_object(obj_t):oldObject not in objectList");
 
 	oldObject->_index = -1;
 
-	return removed;
+	return true;
 }
 
 
