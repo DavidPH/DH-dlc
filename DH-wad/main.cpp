@@ -206,6 +206,7 @@ int main(int argc, char** argv)
 			dirBase += PATHSEP;
 
 		std::string dirSub;
+		bool binaryMapHack;
 
 		FOREACH_T(std::list<Lump>, lumpIt, lump_list)
 		{
@@ -246,10 +247,15 @@ int main(int argc, char** argv)
 						;
 
 					else if (lumpIt2->getName() == "TEXTMAP")
+					{
+						binaryMapHack = false;
 						dirSub = lumpName + PATHSEP;
-
+					}
 					else if (lumpIt2->getName() == "THINGS")
+					{
+						binaryMapHack = false;
 						dirSub = lumpName + PATHSEP;
+					}
 				}
 			}
 
@@ -299,6 +305,28 @@ int main(int argc, char** argv)
 
 				else if (lumpName == "ENDMAP")
 					dirSub.clear();
+
+				else if (binaryMapHack)
+				{
+					if (
+						(lumpName != "THINGS")   &&
+						(lumpName != "LINEDEFS") &&
+						(lumpName != "SIDEDEFS") &&
+						(lumpName != "VERTEXES") &&
+						(lumpName != "SEGS")     &&
+						(lumpName != "SSECTORS") &&
+						(lumpName != "NODES")    &&
+						(lumpName != "SECTORS")  &&
+						(lumpName != "REJECT")   &&
+						(lumpName != "BLOCKMAP") &&
+						(lumpName != "BEHAVIOR") &&
+						(lumpName != "SCRIPTS")  &&
+						(lumpName != "DIALOGUE")
+					)
+					{
+						dirSub.clear();
+					}
+				}
 			}
 		}
 	}
