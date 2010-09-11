@@ -101,7 +101,7 @@ int main(int argc, char** argv)
 {
 	PROCESS_OPTIONS();
 
-	if (option_arg.size() == 0 && option_map.size() == 0 && option_directory.size() == 0)
+	if (option_arg.size() == 0 && option_map.size() == 0 && option_directory.size() == 0 && option_wad.size() == 0)
 	{
 		usage();
 		return 0;
@@ -253,7 +253,7 @@ int main(int argc, char** argv)
 					}
 					else if (lumpIt2->getName() == "THINGS")
 					{
-						binaryMapHack = false;
+						binaryMapHack = true;
 						dirSub = lumpName + PATHSEP;
 					}
 				}
@@ -324,6 +324,7 @@ int main(int argc, char** argv)
 						(lumpName != "DIALOGUE")
 					)
 					{
+						binaryMapHack = false;
 						dirSub.clear();
 					}
 				}
