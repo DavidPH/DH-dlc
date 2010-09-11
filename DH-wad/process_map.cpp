@@ -68,8 +68,8 @@ void process_map(const std::string& dirnameBase, const std::string& dirname)
 		"BLOCKMAP", "BLOCKMAP.lmp",  // O
 		"BEHAVIOR", "BEHAVIOR.o",    // O
 		"SCRIPTS",  "SCRIPTS.acs",   // O
-		"DIALOG",   "DIALOG.txt",    // O
 		"DIALOGUE", "DIALOGUE.o",    // O
+		            "DIALOGUE.txt",  // O
 		NULL
 
 		// * required
