@@ -308,20 +308,23 @@ int main(int argc, char** argv)
 
 				else if (binaryMapHack)
 				{
-					if (
-						(lumpName != "THINGS")   &&
-						(lumpName != "LINEDEFS") &&
-						(lumpName != "SIDEDEFS") &&
-						(lumpName != "VERTEXES") &&
-						(lumpName != "SEGS")     &&
-						(lumpName != "SSECTORS") &&
-						(lumpName != "NODES")    &&
-						(lumpName != "SECTORS")  &&
-						(lumpName != "REJECT")   &&
-						(lumpName != "BLOCKMAP") &&
-						(lumpName != "BEHAVIOR") &&
-						(lumpName != "SCRIPTS")  &&
-						(lumpName != "DIALOGUE")
+					std::list<Lump>::iterator lumpIt2 = lumpIt;
+					std::string lumpName2((++lumpIt2)->getName());
+
+					if ((binaryMapHack == 1) &&
+						(lumpName2 != "THINGS")   &&
+						(lumpName2 != "LINEDEFS") &&
+						(lumpName2 != "SIDEDEFS") &&
+						(lumpName2 != "VERTEXES") &&
+						(lumpName2 != "SEGS")     &&
+						(lumpName2 != "SSECTORS") &&
+						(lumpName2 != "NODES")    &&
+						(lumpName2 != "SECTORS")  &&
+						(lumpName2 != "REJECT")   &&
+						(lumpName2 != "BLOCKMAP") &&
+						(lumpName2 != "BEHAVIOR") &&
+						(lumpName2 != "SCRIPTS")  &&
+						(lumpName2 != "DIALOGUE")
 					)
 					{
 						binaryMapHack = false;
