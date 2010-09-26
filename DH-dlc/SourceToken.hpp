@@ -53,6 +53,10 @@ class SourceTokenDDL
 		std::vector<std::string> const & getBase() const;
 		std::string const & getBase(size_t, std::string const & = "") const;
 
+
+
+		static SourceTokenDDL const EOF_token;
+
 	private:
 		std::string type, name, value, data;
 		std::vector<std::string> base;
@@ -120,7 +124,13 @@ class SourceTokenDHLX
 		std::string const & getData() const;
 		TokenType getType() const;
 
+
+
+		static SourceTokenDHLX const EOF_token;
+
 	private:
+		explicit SourceTokenDHLX(TokenType const);
+
 		std::string _data;
 		TokenType   _type;
 };

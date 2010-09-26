@@ -30,7 +30,20 @@
 
 
 template <typename TT, typename SS>
-SourceScanner<TT, SS>::SourceScanner(SS & in) : _in(in) {}
+SourceScanner<TT, SS>::SourceScanner() : _in(NULL), _ungetStack()
+{
+
+}
+template <typename TT, typename SS>
+SourceScanner<TT, SS>::SourceScanner(SourceScanner<TT, SS> const & sc) : _in(NULL), _ungetStack(sc._ungetStack)
+{
+
+}
+template <typename TT, typename SS>
+SourceScanner<TT, SS>::SourceScanner(SS & in) : _in(&in), _ungetStack()
+{
+
+}
 
 template <typename TT, typename SS>
 TT SourceScanner<TT, SS>::get()
@@ -38,7 +51,12 @@ TT SourceScanner<TT, SS>::get()
 	TT token;
 
 	if (_ungetStack.empty())
-		_in >> token;
+	{
+		if (_in)
+			(*_in) >> token;
+		else
+			token = TT::EOF_token;
+	}
 	else
 	{
 		token = _ungetStack.top();
@@ -48,7 +66,6 @@ TT SourceScanner<TT, SS>::get()
 
 	return token;
 }
-
 template <typename TT, typename SS>
 TT SourceScanner<TT, SS>::get(typename TT::TokenType typeMust)
 {
@@ -59,7 +76,6 @@ TT SourceScanner<TT, SS>::get(typename TT::TokenType typeMust)
 
 	return token;
 }
-
 template <typename TT, typename SS>
 TT SourceScanner<TT, SS>::get(typename TT::TokenType typeMust, typename TT::TokenType typeSkip)
 {
@@ -72,6 +88,32 @@ TT SourceScanner<TT, SS>::get(typename TT::TokenType typeMust, typename TT::Toke
 		throw SyntaxException("expected " + make_string(typeMust) + " got " + make_string(token.getType()));
 
 	return token;
+}
+
+template <typename TT, typename SS>
+SourceScanner<TT, SS> SourceScanner<TT, SS>::getblock(typename TT::TokenType typeOpen, typename TT::TokenType typeClose)
+{
+	SourceScanner<TT, SS> sc;
+
+	int depth = 0;
+
+	while (true)
+	{
+		TT token(get());
+
+		typename TT::TokenType type(token.getType());
+
+		if (type == typeOpen) ++depth;
+		else if (type == typeClose) --depth;
+
+		sc._ungetStack.push(token);
+
+		if (!depth) break;
+
+		if (!*_in) break;
+	}
+
+	return sc;
 }
 
 template <typename TT, typename SS>

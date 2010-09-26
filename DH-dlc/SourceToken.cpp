@@ -37,6 +37,11 @@
 
 
 
+SourceTokenDDL  const SourceTokenDDL::EOF_token;
+SourceTokenDHLX const SourceTokenDHLX::EOF_token(SourceTokenDHLX::TT_EOF);
+
+
+
 SourceTokenDDL::SourceTokenDDL() : type(), name(), value(), data(), base() {}
 
 SourceTokenDDL::SourceTokenDDL(SourceStream& in) : type(), name(), value(), data(), base()
@@ -533,6 +538,10 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 
 		return;
 	}
+}
+SourceTokenDHLX::SourceTokenDHLX(SourceTokenDHLX::TokenType const type) : _data(), _type(type)
+{
+
 }
 
 std::string const & SourceTokenDHLX::getData() const

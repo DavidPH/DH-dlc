@@ -46,6 +46,10 @@ void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
 	if (command == command_name_break())
 		_isBreaked = true;
 
+	// # continue
+	else if (command == command_name_continue())
+		_isContinued = true;
+
 	else
 		throw UnknownCommandException(command);
 }

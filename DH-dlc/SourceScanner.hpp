@@ -35,15 +35,20 @@ template <typename TT, typename SS>
 class SourceScanner
 {
 	public:
+		SourceScanner();
+		SourceScanner(SourceScanner<TT, SS> const & sc);
 		explicit SourceScanner(SS & in);
 
 		TT get();
 		TT get(typename TT::TokenType typeMust);
 		TT get(typename TT::TokenType typeMust, typename TT::TokenType typeSkip);
+
+		SourceScanner<TT, SS> getblock(typename TT::TokenType typeOpen, typename TT::TokenType typeClose);
+
 		void unget(TT token);
 
 	private:
-		SS & _in;
+		SS * _in;
 
 		std::stack<TT> _ungetStack;
 };
