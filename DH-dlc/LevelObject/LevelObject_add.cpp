@@ -85,17 +85,26 @@ void LevelObject::addData(SourceScannerDHLX & sc)
 {
 	LevelObjectStack los(this);
 
-	SourceTokenDHLX st;
+	SourceTokenDHLX st(sc.get());
+
+	// No opening brace means the block is a single statement.
+	if (st.getType() != SourceTokenDHLX::TT_OP_BRACE_O)
+	{
+		sc.unget(st);
+
+		addObject(sc);
+
+		return;
+	}
 
 	while (true)
 	{
 		st = sc.get();
-		sc.unget(st); // TODO: SourceScanner::peek
 
-		if ((st.getType() == SourceTokenDHLX::TT_OP_BRACE_C) || (st.getType() == SourceTokenDHLX::TT_EOF))
-		{
+		if (st.getType() == SourceTokenDHLX::TT_OP_BRACE_C)
 			break;
-		}
+
+		sc.unget(st);
 
 		addObject(sc);
 	}
@@ -422,39 +431,63 @@ void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 }
 void LevelObject::addObject(SourceScannerDHLX & sc)
 {
-	SourceTokenDHLX typeToken = sc.get(SourceTokenDHLX::TT_IDENTIFIER);
+	// Check for semicolon.
+	{
+		SourceTokenDHLX st(sc.get());
+
+		SourceTokenDHLX::TokenType tt(st.getType());
+
+		if (tt == SourceTokenDHLX::TT_OP_SEMICOLON)
+			return;
+
+		sc.unget(st);
+	}
 
 	type_t newType(type_t::type_null);
 
-	if (type_t::has_type(typeToken.getData()))
+	// Check for type.
 	{
-		newType = type_t::get_type(typeToken.getData());
-	}
-	else
-	{
-		sc.unget(typeToken);
+		SourceTokenDHLX typeToken(sc.get(SourceTokenDHLX::TT_IDENTIFIER));
+
+		std::string typeData(typeToken.getData());
+
+		if (type_t::has_type(typeData))
+		{
+			newType = type_t::get_type(typeData);
+		}
+		else
+		{
+			sc.unget(typeToken);
+		}
 	}
 
 	name_t newName(parse_name(sc));
 
+	obj_t newObject(NULL);
+
 	if (newType == type_t::type_null)
 	{
 		if (hasObject(newName))
-			newType = getObject(newName)->_type;
+		{
+			newObject = getObject(newName);
+			newType   = newObject->getType();
+		}
 		else
+		{
 			newType = type_t::get_default_type(newName, _type);
+		}
 	}
-
-	obj_t newObject;
 
 	SourceTokenDHLX opToken(sc.get());
 
 	switch (opToken.getType())
 	{
 	case SourceTokenDHLX::TT_OP_BRACE_O:
-		newObject = create(newType);
+		if (newObject == NULL) newObject = create(newType);
+
+		sc.unget(opToken);
 		newObject->addData(sc);
-		sc.get(SourceTokenDHLX::TT_OP_BRACE_C);
+
 		break;
 
 	case SourceTokenDHLX::TT_OP_EQUALS:
@@ -462,7 +495,9 @@ void LevelObject::addObject(SourceScannerDHLX & sc)
 			newObject = create(newType, sc);
 		else
 			newObject = get_object(parse<int_s_t>(sc), newType);
+
 		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+
 		break;
 
 	default:
