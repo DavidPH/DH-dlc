@@ -446,7 +446,7 @@ void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 }
 void LevelObject::addObject(SourceScannerDHLX & sc)
 {
-	// Check for semicolon.
+	// Check for semicolon/hash.
 	{
 		SourceTokenDHLX st(sc.get());
 
@@ -454,6 +454,13 @@ void LevelObject::addObject(SourceScannerDHLX & sc)
 
 		if (tt == SourceTokenDHLX::TT_OP_SEMICOLON)
 			return;
+
+		if (tt == SourceTokenDHLX::TT_OP_HASH)
+		{
+			doCommand("#" + sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData(), sc);
+
+			return;
+		}
 
 		sc.unget(st);
 	}
