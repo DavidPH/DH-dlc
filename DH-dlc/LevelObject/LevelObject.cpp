@@ -356,17 +356,16 @@ void LevelObject::skipData(SourceScannerDHLX & sc)
 	SourceTokenDHLX st(sc.get());
 
 	// No opening brace means the block is a single statement.
-	if (st.getType() != SourceTokenDHLX::TT_OP_BRACE_O)
+	while (true)
 	{
-		while (true)
-		{
-			if (st.getType() == SourceTokenDHLX::TT_OP_SEMICOLON) return;
+		if (st.getType() == SourceTokenDHLX::TT_OP_BRACE_O) break;
 
-			if (st.getType() == SourceTokenDHLX::TT_EOF)
-				throw CompilerException("Unexpected EOF");
+		if (st.getType() == SourceTokenDHLX::TT_OP_SEMICOLON) return;
 
-			st = sc.get();
-		}
+		if (st.getType() == SourceTokenDHLX::TT_EOF)
+			throw CompilerException("Unexpected EOF");
+
+		st = sc.get();
 	}
 
 	sc.unget(st);
