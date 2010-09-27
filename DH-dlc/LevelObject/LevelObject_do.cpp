@@ -60,6 +60,32 @@ void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
 	else if (command == command_name_if())
 		addDataIf(sc);
 
+	else if (command == command_name_while())
+	{
+		SourceScannerDHLX cond(sc.getblock(SourceTokenDHLX::TT_OP_PARENTHESIS_O, SourceTokenDHLX::TT_OP_PARENTHESIS_C));
+		SourceScannerDHLX data(sc.getblock(SourceTokenDHLX::TT_OP_BRACE_O, SourceTokenDHLX::TT_OP_BRACE_C));
+
+		while (true)
+		{
+			SourceScannerDHLX condcopy(cond);
+			if (!parse<bool_t>(condcopy)) break;
+
+			SourceScannerDHLX datacopy(data);
+			addData(datacopy);
+
+			if (_isContinued)
+			{
+				_isContinued = false;
+				continue;
+			}
+
+			if (_isBreaked)
+			{
+				_isBreaked = false;
+				break;
+			}
+		}
+	}
 	else
 		throw UnknownCommandException(command);
 }
