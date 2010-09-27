@@ -141,6 +141,21 @@ void LevelObject::addData(std::string const & data, std::string const & name)
 	}
 }
 
+bool LevelObject::addDataIf(SourceScannerDHLX & sc)
+{
+	if (parse<bool_t>(sc))
+	{
+		addData(sc);
+		last_if_result = true;
+		return true;
+	}
+	else
+	{
+		skipData(sc);
+		last_if_result = false;
+		return false;
+	}
+}
 // Adds data if (value1 opString value2) == true
 // If checkElse is true, the last if statement must have been false, or data
 // will not be added.

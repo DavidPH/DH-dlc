@@ -65,6 +65,7 @@ class LevelObject
 
 		void addData(SourceScannerDHLX & sc);
 		void addData(std::string const & data, std::string const & name = "...");
+		bool addDataIf(SourceScannerDHLX & sc);
 		bool addDataIf(std::string const & data, std::string const & value1, std::string const & value2, std::string const & op, std::string const & type = "", bool checkElse = false);
 		bool addDataIf(std::string const & data, std::vector<std::string> const & values, std::string const & op, bool checkElse = false);
 
@@ -95,6 +96,8 @@ class LevelObject
 		std::ostream& printOn(std::ostream&, int depth = 0);
 
 		LevelObject & operator = (LevelObject const & other);
+
+		void skipData(SourceScannerDHLX & sc);
 
 		static obj_t create();
 		static obj_t create(type_t const type);

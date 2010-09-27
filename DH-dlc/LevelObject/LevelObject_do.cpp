@@ -50,6 +50,16 @@ void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
 	else if (command == command_name_continue())
 		_isContinued = true;
 
+	else if (command == command_name_else())
+	{
+		if (!last_if_result)
+			addData(sc);
+		else
+			skipData(sc);
+	}
+	else if (command == command_name_if())
+		addDataIf(sc);
+
 	else
 		throw UnknownCommandException(command);
 }

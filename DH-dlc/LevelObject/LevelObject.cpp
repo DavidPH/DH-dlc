@@ -351,6 +351,31 @@ LevelObject & LevelObject::operator = (LevelObject const & other)
 
 
 
+void LevelObject::skipData(SourceScannerDHLX & sc)
+{
+	SourceTokenDHLX st(sc.get());
+
+	// No opening brace means the block is a single statement.
+	if (st.getType() != SourceTokenDHLX::TT_OP_BRACE_O)
+	{
+		while (true)
+		{
+			if (st.getType() == SourceTokenDHLX::TT_OP_SEMICOLON) return;
+
+			if (st.getType() == SourceTokenDHLX::TT_EOF)
+				throw CompilerException("Unexpected EOF");
+
+			st = sc.get();
+		}
+	}
+
+	sc.unget(st);
+
+	sc.getblock(SourceTokenDHLX::TT_OP_BRACE_O, SourceTokenDHLX::TT_OP_BRACE_C);
+}
+
+
+
 std::ostream & operator << (std::ostream & out, LevelObject const & in)
 {
 	out << '[' << in.getType() << ']';
