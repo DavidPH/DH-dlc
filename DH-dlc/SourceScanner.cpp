@@ -94,6 +94,7 @@ template <typename TT, typename SS>
 SourceScanner<TT, SS> SourceScanner<TT, SS>::getblock(typename TT::TokenType typeOpen, typename TT::TokenType typeClose)
 {
 	SourceScanner<TT, SS> sc;
+	std::stack<TT> tempStack;
 
 	int depth = 0;
 
@@ -106,11 +107,18 @@ SourceScanner<TT, SS> SourceScanner<TT, SS>::getblock(typename TT::TokenType typ
 		if (type == typeOpen) ++depth;
 		else if (type == typeClose) --depth;
 
-		sc._ungetStack.push(token);
+		tempStack.push(token);
 
 		if (!depth) break;
 
 		if (!*_in) break;
+	}
+
+	// Need to reverse the stack.
+	while (tempStack.size())
+	{
+		sc._ungetStack.push(tempStack.top());
+		tempStack.pop();
 	}
 
 	return sc;
