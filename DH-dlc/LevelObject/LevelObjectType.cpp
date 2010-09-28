@@ -120,6 +120,8 @@ void LevelObjectType::add_type(std::string const & type_name, LevelObjectType::M
 	else if (type_name == type_name_string80())   native_vector.push_back(NT_STRING80_T);
 	else if (type_name == type_name_string320())  native_vector.push_back(NT_STRING320_T);
 
+	else if (type_name == type_name_type())       native_vector.push_back(NT_TYPE_T);
+
 	else if (type_name == type_name_ubyte())      native_vector.push_back(NT_UBYTE_T);
 	else if (type_name == type_name_sword())      native_vector.push_back(NT_SWORD_T);
 	else if (type_name == type_name_uword())      native_vector.push_back(NT_UWORD_T);
@@ -192,6 +194,7 @@ MAKE_type_X(string16)
 MAKE_type_X(string32)
 MAKE_type_X(string80)
 MAKE_type_X(string320)
+MAKE_type_X(type)
 MAKE_type_X(ubyte)
 MAKE_type_X(sword)
 MAKE_type_X(uword)
@@ -228,6 +231,7 @@ MAKE_type_auto(string16,  string16)
 MAKE_type_auto(string32,  string32)
 MAKE_type_auto(string80,  string80)
 MAKE_type_auto(string320, string320)
+MAKE_type_auto(type,      type)
 MAKE_type_auto(ubyte,     ubyte)
 MAKE_type_auto(sword,     sword)
 MAKE_type_auto(uword,     uword)

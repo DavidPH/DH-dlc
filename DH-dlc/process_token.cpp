@@ -33,7 +33,10 @@
 #include "exceptions/SyntaxException.hpp"
 
 #include "parsing/FunctionHandlerDDL.hpp"
+#include "parsing/FunctionHandlerDHLX.hpp"
 #include "parsing/parsing.hpp"
+
+#include "../common/foreach.hpp"
 
 
 
@@ -176,7 +179,132 @@ void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 
 		std::string commandString('#' + commandToken.getData());
 
-		if (commandString == command_name_include())
+		if (commandString == command_name_function())
+		{
+			std::vector<type_t> returnTypes;
+
+			while (true)
+			{
+				SourceTokenDHLX typeToken(sc.get());
+
+				if (typeToken.getType() != SourceTokenDHLX::TT_IDENTIFIER)
+				{
+					sc.unget(typeToken);
+					break;
+				}
+
+				returnTypes.push_back(type_t::get_type(typeToken.getData()));
+			}
+
+			sc.get(SourceTokenDHLX::TT_OP_COLON);
+
+			std::string functionName(sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData());
+
+			std::vector<type_t> argTypes;
+
+			while (true)
+			{
+				SourceTokenDHLX typeToken(sc.get());
+
+				if (typeToken.getType() != SourceTokenDHLX::TT_IDENTIFIER)
+				{
+					sc.unget(typeToken);
+					break;
+				}
+
+				argTypes.push_back(type_t::get_type(typeToken.getData()));
+			}
+
+			FOREACH_T(std::vector<type_t>, it, returnTypes)
+			{
+				switch (it->getNativeType())
+				{
+				case type_t::NT_NONE:
+					break;
+
+
+				case type_t::NT_BOOL_T:
+					FunctionHandler<bool_t>::add_function(functionName, new FunctionHandlerDHLX<bool_t>(sc, argTypes));
+					break;
+
+
+				case type_t::NT_INT_S_T:
+					FunctionHandler<int_s_t>::add_function(functionName, new FunctionHandlerDHLX<int_s_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_INT_T:
+					FunctionHandler<int_t>::add_function(functionName, new FunctionHandlerDHLX<int_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_INT_L_T:
+					FunctionHandler<int_l_t>::add_function(functionName, new FunctionHandlerDHLX<int_l_t>(sc, argTypes));
+					break;
+
+
+				case type_t::NT_REAL_S_T:
+					FunctionHandler<real_s_t>::add_function(functionName, new FunctionHandlerDHLX<real_s_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_REAL_T:
+					FunctionHandler<real_t>::add_function(functionName, new FunctionHandlerDHLX<real_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_REAL_L_T:
+					FunctionHandler<real_l_t>::add_function(functionName, new FunctionHandlerDHLX<real_l_t>(sc, argTypes));
+					break;
+
+
+				case type_t::NT_STRING_T:
+					FunctionHandler<string_t>::add_function(functionName, new FunctionHandlerDHLX<string_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_STRING8_T:
+					FunctionHandler<string8_t>::add_function(functionName, new FunctionHandlerDHLX<string8_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_STRING16_T:
+					FunctionHandler<string16_t>::add_function(functionName, new FunctionHandlerDHLX<string16_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_STRING32_T:
+					FunctionHandler<string32_t>::add_function(functionName, new FunctionHandlerDHLX<string32_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_STRING80_T:
+					FunctionHandler<string80_t>::add_function(functionName, new FunctionHandlerDHLX<string80_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_STRING320_T:
+					FunctionHandler<string320_t>::add_function(functionName, new FunctionHandlerDHLX<string320_t>(sc, argTypes));
+					break;
+
+
+				case type_t::NT_TYPE_T:
+					break;
+
+				case type_t::NT_UBYTE_T:
+					FunctionHandler<ubyte_t>::add_function(functionName, new FunctionHandlerDHLX<ubyte_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_SWORD_T:
+					FunctionHandler<sword_t>::add_function(functionName, new FunctionHandlerDHLX<sword_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_UWORD_T:
+					FunctionHandler<uword_t>::add_function(functionName, new FunctionHandlerDHLX<uword_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_SDWORD_T:
+					FunctionHandler<sdword_t>::add_function(functionName, new FunctionHandlerDHLX<sdword_t>(sc, argTypes));
+					break;
+
+				case type_t::NT_UDWORD_T:
+					FunctionHandler<udword_t>::add_function(functionName, new FunctionHandlerDHLX<udword_t>(sc, argTypes));
+					break;
+				}
+			}
+		}
+		else if (commandString == command_name_include())
 		{
 			SourceTokenDHLX arg0(sc.get(SourceTokenDHLX::TT_STRING, SourceTokenDHLX::TT_OP_COLON));
 

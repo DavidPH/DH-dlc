@@ -156,7 +156,7 @@ CHECKVALUE1_BINARY(NAME, TYPE) \
 
 void LevelObject::encodeDoom(std::ostream & out)
 {
-	if (_data.getType() != any_t::OBJMAP_T) return;
+	if (_data.get_dataType() != any_t::OBJMAP_T) return;
 
 	if (_type == type_t::type_linedef())
 	{
@@ -298,7 +298,7 @@ void LevelObject::encodeDoom(std::ostream & out)
 
 void LevelObject::encodeExtraData(std::ostream & out)
 {
-	if (_data.getType() != any_t::OBJMAP_T)
+	if (_data.get_dataType() != any_t::OBJMAP_T)
 		return;
 
 	if (_type == type_t::type_linedef())
@@ -521,7 +521,7 @@ void LevelObject::encodeExtraData(std::ostream & out)
 
 void LevelObject::encodeHeretic(std::ostream & out)
 {
-	if (_data.getType() != any_t::OBJMAP_T) return;
+	if (_data.get_dataType() != any_t::OBJMAP_T) return;
 
 	if (_type == type_t::type_linedef())
 	{
@@ -615,7 +615,7 @@ void LevelObject::encodeHeretic(std::ostream & out)
 
 void LevelObject::encodeHexen(std::ostream & out)
 {
-	if (_data.getType() != any_t::OBJMAP_T) return;
+	if (_data.get_dataType() != any_t::OBJMAP_T) return;
 
 	if (_type == type_t::type_linedef())
 	{
@@ -818,7 +818,7 @@ void LevelObject::encodeHexen(std::ostream & out)
 
 void LevelObject::encodeStrife(std::ostream & out)
 {
-	if (_data.getType() != any_t::OBJMAP_T) return;
+	if (_data.get_dataType() != any_t::OBJMAP_T) return;
 
 	if (_type == type_t::type_linedef())
 	{
@@ -912,7 +912,7 @@ void LevelObject::encodeStrife(std::ostream & out)
 
 void LevelObject::encodeUDMF(std::ostream & out, int depth)
 {
-	if (_data.getType() == any_t::OBJMAP_T)
+	if (_data.get_dataType() == any_t::OBJMAP_T)
 	{
 		if (!depth && (_type.getMode() == type_t::MODE_INLINE)) return;
 
@@ -964,7 +964,7 @@ void LevelObject::encodeUDMF(std::ostream & out, int depth)
 
 void LevelObject::encodeUSDF(std::ostream & out, int depth)
 {
-	if (_data.getType() == any_t::OBJMAP_T)
+	if (_data.get_dataType() == any_t::OBJMAP_T)
 	{
 		if (!depth && (_type.getMode() == type_t::MODE_INLINE)) return;
 

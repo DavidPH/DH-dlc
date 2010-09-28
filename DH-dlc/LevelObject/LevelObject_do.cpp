@@ -60,6 +60,17 @@ void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
 	else if (command == command_name_if())
 		addDataIf(sc);
 
+	else if (command == command_name_return())
+	{
+		obj_t returnType  = getObject(name_t::name_return_type);
+		obj_t returnValue = create(returnType->_data.getType(), sc);
+
+		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+
+		addObject(name_t::name_return_value, returnValue);
+
+		_isReturned = 1;
+	}
 	else if (command == command_name_while())
 	{
 		SourceScannerDHLX cond(sc.getblock(SourceTokenDHLX::TT_OP_PARENTHESIS_O, SourceTokenDHLX::TT_OP_PARENTHESIS_C));
@@ -124,7 +135,7 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 	// # delete : KEY
 	// removes KEY from this object
 	// this DOES NOT prevent objects from being output
-	else if (command == command_name_delete() && _data.getType() == any_t::OBJMAP_T)
+	else if (command == command_name_delete() && _data.get_dataType() == any_t::OBJMAP_T)
 	{
 		if (hasObject(parse_name(st.getBase(0))))
 			_data.getObjMap().del(parse_name(st.getBase(0)));
@@ -134,7 +145,7 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 
 	// # delete volatile
 	// removes KEYs that have volatile names
-	else if (command == command_name_deletevolatile() && _data.getType() == any_t::OBJMAP_T)
+	else if (command == command_name_deletevolatile() && _data.get_dataType() == any_t::OBJMAP_T)
 	{
 		FOREACH_T(objmap_t, it, _data.getObjMap())
 		{
@@ -147,7 +158,7 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 
 	// # delete _
 	// removes KEYs that start with _ but not with __
-	else if (command == command_name_delete_() && _data.getType() == any_t::OBJMAP_T)
+	else if (command == command_name_delete_() && _data.get_dataType() == any_t::OBJMAP_T)
 	{
 		FOREACH_T(objmap_t, it, _data.getObjMap())
 		{
@@ -255,10 +266,10 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 
 	// # return : VALUE
 	// Used to return a value from a function.
-	else if (command == command_name_return() && _data.getType() == any_t::OBJMAP_T)
+	else if (command == command_name_return() && _data.get_dataType() == any_t::OBJMAP_T)
 	{
 		obj_t returnType  = getObject(name_t::name_return_type);
-		obj_t returnValue = create(type_t::get_type(convert<string_t, obj_t>(returnType).makeString()), st.getBase(0));
+		obj_t returnValue = create(returnType->_data.getType(), st.getBase(0));
 		addObject(name_t::name_return_value, returnValue);
 		_isReturned = 1;
 	}

@@ -13,6 +13,7 @@
 # typedef new :       string32  : value;
 # typedef new :       string80  : value;
 # typedef new :       string320 : value;
+# typedef new :       objtype   : value;
 # typedef new :       ubyte     : value;
 # typedef new :       sword     : value;
 # typedef new :       uword     : value;

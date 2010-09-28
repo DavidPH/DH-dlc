@@ -66,6 +66,8 @@ public:
 		NT_STRING80_T,
 		NT_STRING320_T,
 
+		NT_TYPE_T,
+
 		NT_UBYTE_T,
 		NT_SWORD_T,
 		NT_UWORD_T,
@@ -115,6 +117,7 @@ public:
 	static LevelObjectType type_string32();
 	static LevelObjectType type_string80();
 	static LevelObjectType type_string320();
+	static LevelObjectType type_type();
 	static LevelObjectType type_ubyte();
 	static LevelObjectType type_sword();
 	static LevelObjectType type_uword();

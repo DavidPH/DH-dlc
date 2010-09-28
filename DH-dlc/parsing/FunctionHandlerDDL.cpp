@@ -69,8 +69,7 @@ T FunctionHandlerDDL<T>::operator () (std::vector<std::string> const & args) con
 {
 	obj_t funcObj = LevelObject::create();
 
-	// TODO: Should be able to make a LevelObject that contains a LevelObjectType.
-	obj_t returnType = LevelObject::create(type_t::type_string(), type_t::type_auto<T>().makeString());
+	obj_t returnType = LevelObject::create(type_t::type_type(), type_t::type_auto<T>());
 	funcObj->addObject(name_t::name_return_type, returnType);
 
 	obj_t argcObj = LevelObject::create(type_t::type_shortint(), int_s_t(args.size()));
@@ -78,9 +77,12 @@ T FunctionHandlerDDL<T>::operator () (std::vector<std::string> const & args) con
 
 	for (size_t index = 0; index < args.size(); ++index)
 	{
-		// TODO: Should actually make use of the _argt vector.
 		// TODO: Should make an arg_t for undefined types.
-		obj_t argObj = LevelObject::create(type_t::type_string(), string_t(args[index]));
+		obj_t argObj;
+		if (index < _argt.size())
+			obj_t argObj = LevelObject::create(_argt[index], args[index]);
+		else
+			obj_t argObj = LevelObject::create(type_t::type_string(), string_t(args[index]));
 
 		name_t argName(parse_name(key_name_arg() + make_string(index)));
 

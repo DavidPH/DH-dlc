@@ -41,8 +41,7 @@
 
 class LevelObjectData
 {
-	public:
-
+public:
 	enum Type
 	{
 		NULL_T = 0,
@@ -66,6 +65,8 @@ class LevelObjectData
 		STRING32_T,
 		STRING80_T,
 		STRING320_T,
+
+		TYPE_T,
 
 		UBYTE_T,
 		SWORD_T,
@@ -95,6 +96,8 @@ class LevelObjectData
 	LevelObjectData(string32_t  const &);
 	LevelObjectData(string80_t  const &);
 	LevelObjectData(string320_t const &);
+
+	LevelObjectData(type_t const &);
 
 	LevelObjectData(ubyte_t  const &);
 	LevelObjectData(sword_t  const &);
@@ -145,6 +148,9 @@ class LevelObjectData
 	string320_t       & getString320();
 	string320_t const & getString320() const;
 
+	type_t       & getType();
+	type_t const & getType() const;
+
 	ubyte_t        & getUByte();
 	ubyte_t  const & getUByte() const;
 	sword_t        & getSWord();
@@ -158,7 +164,7 @@ class LevelObjectData
 
 
 
-	Type getType() const {return _val;}
+	Type get_dataType() const {return _val;}
 
 
 
@@ -178,6 +184,8 @@ class LevelObjectData
 	string32_t  toString32()  const;
 	string80_t  toString80()  const;
 	string320_t toString320() const;
+
+	type_t toType() const;
 
 	ubyte_t  toUByte()  const;
 	sword_t  toSWord()  const;
@@ -206,26 +214,25 @@ class LevelObjectData
 
 
 
-	private:
-
+private:
 	void clear();
 
 	Type _val;
 
 	union
 	{
-		bool_t     _valBool;
+		bool_t        _valBool;
 
-		int_s_t    _valIntShort;
-		int_t    * _valInt;
-		int_l_t  * _valIntLong;
+		int_s_t       _valIntShort;
+		int_t       * _valInt;
+		int_l_t     * _valIntLong;
 
-		obj_t    * _valObj;
-		objmap_t * _valObjMap;
+		obj_t       * _valObj;
+		objmap_t    * _valObjMap;
 
-		real_s_t * _valRealShort;
-		real_t   * _valReal;
-		real_l_t * _valRealLong;
+		real_s_t    * _valRealShort;
+		real_t      * _valReal;
+		real_l_t    * _valRealLong;
 
 		string_t    * _valString;
 		string8_t   * _valString8;
@@ -234,11 +241,13 @@ class LevelObjectData
 		string80_t  * _valString80;
 		string320_t * _valString320;
 
-		ubyte_t  * _valUByte;
-		sword_t  * _valSWord;
-		uword_t  * _valUWord;
-		sdword_t * _valSDWord;
-		udword_t * _valUDWord;
+		type_t      * _valType;
+
+		ubyte_t     * _valUByte;
+		sword_t     * _valSWord;
+		uword_t     * _valUWord;
+		sdword_t    * _valSDWord;
+		udword_t    * _valUDWord;
 	};
 };
 

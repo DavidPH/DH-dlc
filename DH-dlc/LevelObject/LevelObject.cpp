@@ -89,6 +89,8 @@ LevelObject::LevelObject(type_t const type) : LevelObject_INIT_LIST(type, false)
 	case LevelObjectType::NT_STRING80_T:  _data = string80_t();  break;
 	case LevelObjectType::NT_STRING320_T: _data = string320_t(); break;
 
+	case LevelObjectType::NT_TYPE_T: throw CompilerException("cannot create type object");
+
 	case LevelObjectType::NT_UBYTE_T:     _data = ubyte_t();     break;
 	case LevelObjectType::NT_SWORD_T:     _data = sword_t();     break;
 	case LevelObjectType::NT_UWORD_T:     _data = uword_t();     break;
@@ -96,7 +98,10 @@ LevelObject::LevelObject(type_t const type) : LevelObject_INIT_LIST(type, false)
 	case LevelObjectType::NT_UDWORD_T:    _data = udword_t();    break;
 	}
 }
-LevelObject::LevelObject(type_t const type, any_t const & data) : LevelObject_INIT_LIST(type, data) {}
+LevelObject::LevelObject(type_t const type, any_t const & data) : LevelObject_INIT_LIST(type, data)
+{
+
+}
 LevelObject::LevelObject(type_t const type, SourceScannerDHLX & sc) : LevelObject_INIT_LIST(type, false)
 {
 	switch (_type.getNativeType())
@@ -120,6 +125,8 @@ LevelObject::LevelObject(type_t const type, SourceScannerDHLX & sc) : LevelObjec
 	case LevelObjectType::NT_STRING80_T:  _data = parse<string80_t>(sc);  break;
 	case LevelObjectType::NT_STRING320_T: _data = parse<string320_t>(sc); break;
 
+	case LevelObjectType::NT_TYPE_T: throw CompilerException("cannot create type object");
+
 	case LevelObjectType::NT_UBYTE_T:     _data = parse<ubyte_t>(sc);     break;
 	case LevelObjectType::NT_SWORD_T:     _data = parse<sword_t>(sc);     break;
 	case LevelObjectType::NT_UWORD_T:     _data = parse<uword_t>(sc);     break;
@@ -142,6 +149,8 @@ LevelObject::LevelObject(type_t const type, std::string const & value) : LevelOb
 	case LevelObjectType::NT_REAL_S_T:    _data = parse<real_s_t>(value);    break;
 	case LevelObjectType::NT_REAL_T:      _data = parse<real_t>(value);      break;
 	case LevelObjectType::NT_REAL_L_T:    _data = parse<real_l_t>(value);    break;
+
+	case LevelObjectType::NT_TYPE_T: throw CompilerException("cannot create type object");
 
 	case LevelObjectType::NT_STRING_T:    _data = parse<string_t>(value);    break;
 	case LevelObjectType::NT_STRING8_T:   _data = parse<string8_t>(value);   break;
@@ -211,7 +220,7 @@ obj_t LevelObject::create(type_t const type, std::string const & data, std::vect
 
 obj_t LevelObject::getObject(name_t const & name)
 {
-	if (_data.getType() != any_t::OBJMAP_T)
+	if (_data.get_dataType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
 
 	if (name.size() != 1)
@@ -233,7 +242,7 @@ obj_t LevelObject::getObject(name_t const & name)
 
 bool LevelObject::hasObject(name_t const & name)
 {
-	if (_data.getType() != any_t::OBJMAP_T)
+	if (_data.get_dataType() != any_t::OBJMAP_T)
 		return false;
 
 	if (name.size() != 1)
@@ -276,7 +285,7 @@ void LevelObject::setType(type_t const newType, std::string const & value)
 
 	switch (_type.getNativeType())
 	{
-	case LevelObjectType::NT_NONE: if (_data.getType() != any_t::OBJMAP_T) _data = convert<obj_t, any_t>(_data)->_data.getObjMap(); break;
+	case LevelObjectType::NT_NONE: if (_data.get_dataType() != any_t::OBJMAP_T) _data = convert<obj_t, any_t>(_data)->_data.getObjMap(); break;
 
 	case LevelObjectType::NT_BOOL_T:      _data = parse<bool_t>(value);      break;
 
@@ -295,6 +304,8 @@ void LevelObject::setType(type_t const newType, std::string const & value)
 	case LevelObjectType::NT_STRING80_T:  _data = parse<string80_t>(value);  break;
 	case LevelObjectType::NT_STRING320_T: _data = parse<string320_t>(value); break;
 
+	case LevelObjectType::NT_TYPE_T: throw CompilerException("cannot create type object");
+
 	case LevelObjectType::NT_UBYTE_T:     _data = parse<ubyte_t>(value);     break;
 	case LevelObjectType::NT_SWORD_T:     _data = parse<sword_t>(value);     break;
 	case LevelObjectType::NT_UWORD_T:     _data = parse<uword_t>(value);     break;
@@ -309,9 +320,9 @@ void LevelObject::setType(type_t const newType, std::string const & value)
 
 std::ostream & LevelObject::printOn (std::ostream & out, int indent)
 {
-	out << '[' << getType() << ']';
+	out << '[' << getType().makeString() << ']';
 
-	if (_data.getType() == any_t::OBJMAP_T)
+	if (_data.get_dataType() == any_t::OBJMAP_T)
 	{
 		out << '\n';
 
@@ -377,9 +388,9 @@ void LevelObject::skipData(SourceScannerDHLX & sc)
 
 std::ostream & operator << (std::ostream & out, LevelObject const & in)
 {
-	out << '[' << in.getType() << ']';
+	out << '[' << in.getType().makeString() << ']';
 
-	if (in._data.getType() != any_t::OBJMAP_T)
+	if (in._data.get_dataType() != any_t::OBJMAP_T)
 		out << ' ' << make_string(in._data);
 
 	return out;

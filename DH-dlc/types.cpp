@@ -60,7 +60,7 @@ bool_t bool_from_string(T const & value)
 template<typename T>
 T from_obj_t(obj_t o)
 {
-	if (o->getData().getType() == any_t::OBJMAP_T)
+	if (o->getData().get_dataType() == any_t::OBJMAP_T)
 		return convert<T, int_s_t>(get_object_index(o));
 	else
 		return convert<T, any_t>(o->getData());

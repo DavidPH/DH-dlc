@@ -70,12 +70,12 @@
 
 void LevelObject::addBase(std::string const & base)
 {
-	if (_data.getType() != any_t::OBJMAP_T)
+	if (_data.get_dataType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
 
 	obj_t other = get_object(parse_name(base));
 
-	if (other->_data.getType() != any_t::OBJMAP_T)
+	if (other->_data.get_dataType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
 
 	_data.getObjMap() += other->_data.getObjMap();
@@ -346,7 +346,7 @@ bool LevelObject::addDataIf(std::string const & data, std::vector<std::string> c
 
 void LevelObject::addObject(name_t const & name, obj_t newObject)
 {
-	if (_data.getType() != any_t::OBJMAP_T)
+	if (_data.get_dataType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("cannot assign key to non-object");
 
 	if (newObject == NULL)
@@ -394,7 +394,7 @@ void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 		return getObject(name.getFirst())->addObject(name.getRest(), st);
 	}
 
-	if (_data.getType() != any_t::OBJMAP_T)
+	if (_data.get_dataType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("cannot assign key to non-object");
 
 	type_t newType;

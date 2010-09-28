@@ -27,6 +27,7 @@
 
 #include "LevelObjectMap.hpp"
 #include "LevelObjectPointer.hpp"
+#include "LevelObjectType.hpp"
 
 #include "../types.hpp"
 #include "../types/binary.hpp"
@@ -107,6 +108,10 @@ LevelObjectData::LevelObjectData(LevelObjectData const & other)
 			_valString320 = new string320_t(*other._valString320);
 			break;
 
+		case TYPE_T:
+			_valType = new type_t(*other._valType);
+			break;
+
 		case UBYTE_T:
 			_valUByte = new ubyte_t(*other._valUByte);
 			break;
@@ -148,6 +153,8 @@ LevelObjectData::LevelObjectData(string16_t  const & v) : _val(STRING16_T),  _va
 LevelObjectData::LevelObjectData(string32_t  const & v) : _val(STRING32_T),  _valString32( new string32_t (v)) {}
 LevelObjectData::LevelObjectData(string80_t  const & v) : _val(STRING80_T),  _valString80( new string80_t (v)) {}
 LevelObjectData::LevelObjectData(string320_t const & v) : _val(STRING320_T), _valString320(new string320_t(v)) {}
+
+LevelObjectData::LevelObjectData(type_t const & v) : _val(TYPE_T), _valType(new type_t(v)) {}
 
 LevelObjectData::LevelObjectData(ubyte_t  const & v) : _val(UBYTE_T),  _valUByte( new ubyte_t (v)) {}
 LevelObjectData::LevelObjectData(sword_t  const & v) : _val(SWORD_T),  _valSWord( new sword_t (v)) {}
@@ -220,6 +227,10 @@ void LevelObjectData::clear()
 
 		case STRING320_T:
 			delete _valString320;
+			break;
+
+		case TYPE_T:
+			delete _valType;
 			break;
 
 		case UBYTE_T:
@@ -317,6 +328,9 @@ void LevelObjectData::encodeText(std::ostream & out)
 		_valString320->encodeText(out);
 		break;
 
+	case TYPE_T:
+		break;
+
 	case UBYTE_T:
 		_valUByte->encodeText(out);
 		break;
@@ -377,6 +391,8 @@ LevelObjectData_get(string32_t,  STRING32_T,  getString32,  *_valString32)
 LevelObjectData_get(string80_t,  STRING80_T,  getString80,  *_valString80)
 LevelObjectData_get(string320_t, STRING320_T, getString320, *_valString320)
 
+LevelObjectData_get(type_t, TYPE_T, getType, *_valType)
+
 LevelObjectData_get(ubyte_t,  UBYTE_T,  getUByte,  *_valUByte)
 LevelObjectData_get(sword_t,  SWORD_T,  getSWord,  *_valSWord)
 LevelObjectData_get(uword_t,  UWORD_T,  getUWord,  *_valUWord)
@@ -413,6 +429,8 @@ TYPE##_t LevelObjectData::FUNC_NAME() const \
 	case STRING32_T:  return convert<TYPE##_t, string32_t> (*_valString32); \
 	case STRING80_T:  return convert<TYPE##_t, string80_t> (*_valString80); \
 	case STRING320_T: return convert<TYPE##_t, string320_t>(*_valString320); \
+		\
+	case TYPE_T: throw std::invalid_argument("LevelObjectData(TYPE_T)->" #FUNC_NAME "()"); \
 		\
 	case UBYTE_T:  return convert<TYPE##_t, ubyte_t> (*_valUByte); \
 	case SWORD_T:  return convert<TYPE##_t, sword_t> (*_valSWord); \
@@ -476,6 +494,8 @@ LevelObjectData & LevelObjectData::operator += (LevelObjectData const & other)
 		case STRING32_T:  *_valString32  += other.toString32();  break;
 		case STRING80_T:  *_valString80  += other.toString80();  break;
 		case STRING320_T: *_valString320 += other.toString320(); break;
+
+		case TYPE_T: throw std::invalid_argument("LevelObjectData(TYPE_T)+=...");
 
 		case UBYTE_T:  *_valUByte  += other.toUByte();  break;
 		case SWORD_T:  *_valSWord  += other.toSWord();  break;
@@ -558,6 +578,10 @@ LevelObjectData & LevelObjectData::operator = (LevelObjectData const & other)
 			_valString320 = new string320_t(*other._valString320);
 			break;
 
+		case TYPE_T:
+			_valType = new type_t(*other._valType);
+			break;
+
 		case UBYTE_T:
 			_valUByte = new ubyte_t(*other._valUByte);
 			break;
@@ -612,6 +636,9 @@ int cmp(LevelObjectData const & l, LevelObjectData const & r)
 		case LevelObjectData::STRING80_T:  return cmp(*l._valString80,  r.toString80());
 		case LevelObjectData::STRING320_T: return cmp(*l._valString320, r.toString320());
 
+		// TODO
+		case LevelObjectData::TYPE_T: throw std::invalid_argument("cmp(LevelObjectData(TYPE_T),...)");
+
 		case LevelObjectData::UBYTE_T:  return cmp(*l._valUByte,  r.toUByte());
 		case LevelObjectData::SWORD_T:  return cmp(*l._valSWord,  r.toSWord());
 		case LevelObjectData::UWORD_T:  return cmp(*l._valUWord,  r.toUWord());
@@ -650,6 +677,8 @@ std::ostream & operator << (std::ostream & out, LevelObjectData const & in)
 		case LevelObjectData::STRING32_T:  return out << in.getString32();
 		case LevelObjectData::STRING80_T:  return out << in.getString80();
 		case LevelObjectData::STRING320_T: return out << in.getString320();
+
+		case LevelObjectData::TYPE_T: return out << in.getType().makeString();
 
 		case LevelObjectData::UBYTE_T:  return out << in.getUByte();
 		case LevelObjectData::SWORD_T:  return out << in.getSWord();

@@ -286,6 +286,7 @@ add_executable(DH-dlc
 
 	parsing/FunctionHandler.cpp
 	parsing/FunctionHandlerDDL.cpp
+	parsing/FunctionHandlerDHLX.cpp
 	parsing/FunctionHandlerNative.cpp
 	parsing/parsing.cpp
 	parsing/parsing_functions.cpp
