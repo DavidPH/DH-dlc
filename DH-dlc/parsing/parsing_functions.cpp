@@ -27,6 +27,7 @@
 
 #include "../math.hpp"
 #include "../options.hpp"
+#include "../SourceScanner.hpp"
 #include "../types.hpp"
 
 #include "../exceptions/FunctionException.hpp"
@@ -45,69 +46,134 @@
 
 
 
-#define ADD_FUNCTION2(TYPE1, TYPE2, FUNC, NAME) \
+#define ADD_FUNCTION_BOTH_2(TYPE1, TYPE2, FUNC, NAME) \
 FunctionHandler<TYPE1##_t> const * \
 parse_function_##TYPE1##_##TYPE2##_##FUNC##_##NAME = \
-FunctionHandler<TYPE1##_t>::add_function(#NAME, new FunctionHandlerNative<TYPE1##_t>(parse_function_##FUNC<TYPE2##_t>))
+FunctionHandler<TYPE1##_t>::add_function(#NAME, new FunctionHandlerNative<TYPE1##_t>(parse_function_DDL_##FUNC<TYPE2##_t>, parse_function_DHLX_##FUNC<TYPE2##_t>))
 
-#define ADD_FUNCTION(TYPE, FUNC, NAME) \
-ADD_FUNCTION2(TYPE, TYPE, FUNC, NAME)
+#define ADD_FUNCTION_BOTH(TYPE, FUNC, NAME) \
+ADD_FUNCTION_BOTH_2(TYPE, TYPE, FUNC, NAME)
 
-#define ADD_FUNC_ALL(FUNC, NAME) \
-ADD_FUNC_BOOL  (FUNC, NAME); \
-ADD_FUNC_NUMBER(FUNC, NAME); \
-ADD_FUNC_STRING(FUNC, NAME)
+#define ADD_FUNCTION_BOTH_INT(FUNC, NAME) \
+ADD_FUNCTION_BOTH(int_s,  FUNC, NAME); \
+ADD_FUNCTION_BOTH(int,    FUNC, NAME); \
+ADD_FUNCTION_BOTH(int_l,  FUNC, NAME); \
+ADD_FUNCTION_BOTH(ubyte,  FUNC, NAME); \
+ADD_FUNCTION_BOTH(sword,  FUNC, NAME); \
+ADD_FUNCTION_BOTH(uword,  FUNC, NAME); \
+ADD_FUNCTION_BOTH(sdword, FUNC, NAME); \
+ADD_FUNCTION_BOTH(udword, FUNC, NAME)
 
-#define ADD_FUNC_BOOL(FUNC, NAME) \
-ADD_FUNCTION(bool,   FUNC, NAME)
+#define ADD_FUNCTION_BOTH_NUMBER(FUNC, NAME) \
+ADD_FUNCTION_BOTH_INT (FUNC, NAME); \
+ADD_FUNCTION_BOTH_REAL(FUNC, NAME)
 
-#define ADD_FUNC_INT(FUNC, NAME) \
-ADD_FUNCTION(int_s,  FUNC, NAME); \
-ADD_FUNCTION(int,    FUNC, NAME); \
-ADD_FUNCTION(int_l,  FUNC, NAME); \
-ADD_FUNCTION(ubyte,  FUNC, NAME); \
-ADD_FUNCTION(sword,  FUNC, NAME); \
-ADD_FUNCTION(uword,  FUNC, NAME); \
-ADD_FUNCTION(sdword, FUNC, NAME); \
-ADD_FUNCTION(udword, FUNC, NAME)
+#define ADD_FUNCTION_BOTH_REAL(FUNC, NAME) \
+ADD_FUNCTION_BOTH(real_s, FUNC, NAME); \
+ADD_FUNCTION_BOTH(real,   FUNC, NAME); \
+ADD_FUNCTION_BOTH(real_l, FUNC, NAME)
 
-#define ADD_FUNC_NUMBER(FUNC, NAME) \
-ADD_FUNC_INT (FUNC, NAME); \
-ADD_FUNC_REAL(FUNC, NAME)
+#define ADD_FUNCTION_BOTH_STRING(FUNC, NAME) \
+ADD_FUNCTION_BOTH(string,    FUNC, NAME); \
+ADD_FUNCTION_BOTH(string8,   FUNC, NAME); \
+ADD_FUNCTION_BOTH(string16,  FUNC, NAME); \
+ADD_FUNCTION_BOTH(string32,  FUNC, NAME); \
+ADD_FUNCTION_BOTH(string80,  FUNC, NAME); \
+ADD_FUNCTION_BOTH(string320, FUNC, NAME)
 
-#define ADD_FUNC_REAL(FUNC, NAME) \
-ADD_FUNCTION(real_s, FUNC, NAME); \
-ADD_FUNCTION(real,   FUNC, NAME); \
-ADD_FUNCTION(real_l, FUNC, NAME)
 
-#define ADD_FUNC_STRING(FUNC, NAME) \
-ADD_FUNCTION(string,    FUNC, NAME); \
-ADD_FUNCTION(string8,   FUNC, NAME); \
-ADD_FUNCTION(string16,  FUNC, NAME); \
-ADD_FUNCTION(string32,  FUNC, NAME); \
-ADD_FUNCTION(string80,  FUNC, NAME); \
-ADD_FUNCTION(string320, FUNC, NAME)
+#define ADD_FUNCTION_DDL_2(TYPE1, TYPE2, FUNC, NAME) \
+FunctionHandler<TYPE1##_t> const * \
+parse_function_##TYPE1##_##TYPE2##_##FUNC##_##NAME = \
+FunctionHandler<TYPE1##_t>::add_function(#NAME, new FunctionHandlerNative<TYPE1##_t>(parse_function_DDL_##FUNC<TYPE2##_t>))
 
-#define DEFINE_FUNCTION2(TYPE, FUNC) \
+#define ADD_FUNCTION_DDL(TYPE, FUNC, NAME) \
+ADD_FUNCTION_DDL_2(TYPE, TYPE, FUNC, NAME)
+
+#define ADD_FUNCTION_DDL_ALL(FUNC, NAME) \
+ADD_FUNCTION_DDL_BOOL  (FUNC, NAME); \
+ADD_FUNCTION_DDL_NUMBER(FUNC, NAME); \
+ADD_FUNCTION_DDL_STRING(FUNC, NAME)
+
+#define ADD_FUNCTION_DDL_BOOL(FUNC, NAME) \
+ADD_FUNCTION_DDL(bool,   FUNC, NAME)
+
+#define ADD_FUNCTION_DDL_INT(FUNC, NAME) \
+ADD_FUNCTION_DDL(int_s,  FUNC, NAME); \
+ADD_FUNCTION_DDL(int,    FUNC, NAME); \
+ADD_FUNCTION_DDL(int_l,  FUNC, NAME); \
+ADD_FUNCTION_DDL(ubyte,  FUNC, NAME); \
+ADD_FUNCTION_DDL(sword,  FUNC, NAME); \
+ADD_FUNCTION_DDL(uword,  FUNC, NAME); \
+ADD_FUNCTION_DDL(sdword, FUNC, NAME); \
+ADD_FUNCTION_DDL(udword, FUNC, NAME)
+
+#define ADD_FUNCTION_DDL_NUMBER(FUNC, NAME) \
+ADD_FUNCTION_DDL_INT (FUNC, NAME); \
+ADD_FUNCTION_DDL_REAL(FUNC, NAME)
+
+#define ADD_FUNCTION_DDL_REAL(FUNC, NAME) \
+ADD_FUNCTION_DDL(real_s, FUNC, NAME); \
+ADD_FUNCTION_DDL(real,   FUNC, NAME); \
+ADD_FUNCTION_DDL(real_l, FUNC, NAME)
+
+#define ADD_FUNCTION_DDL_STRING(FUNC, NAME) \
+ADD_FUNCTION_DDL(string,    FUNC, NAME); \
+ADD_FUNCTION_DDL(string8,   FUNC, NAME); \
+ADD_FUNCTION_DDL(string16,  FUNC, NAME); \
+ADD_FUNCTION_DDL(string32,  FUNC, NAME); \
+ADD_FUNCTION_DDL(string80,  FUNC, NAME); \
+ADD_FUNCTION_DDL(string320, FUNC, NAME)
+
+
+#define ADD_FUNCTION_DHLX_2(TYPE1, TYPE2, FUNC, NAME) \
+FunctionHandler<TYPE1##_t> const * \
+parse_function_##TYPE1##_##TYPE2##_##FUNC##_##NAME = \
+FunctionHandler<TYPE1##_t>::add_function(#NAME, new FunctionHandlerNative<TYPE1##_t>(parse_function_DHLX_##FUNC<TYPE2##_t>))
+
+#define ADD_FUNCTION_DHLX(TYPE, FUNC, NAME) \
+ADD_FUNCTION_DHLX_2(TYPE, TYPE, FUNC, NAME)
+
+#define ADD_FUNCTION_DHLX_NUMBER(FUNC, NAME) \
+ADD_FUNCTION_DHLX_INT (FUNC, NAME); \
+ADD_FUNCTION_DHLX_REAL(FUNC, NAME)
+
+
+#define DEFINE_FUNCTION_DDL_2(TYPE, FUNC) \
 template <class T> \
-TYPE parse_function_##FUNC(std::vector<std::string> const & args)
+TYPE parse_function_DDL_##FUNC(std::vector<std::string> const & args)
 
-#define DEFINE_FUNCTION(FUNC) \
-DEFINE_FUNCTION2(T, FUNC)
+#define DEFINE_FUNCTION_DDL(FUNC) \
+DEFINE_FUNCTION_DDL_2(T, FUNC)
+
+#define DEFINE_FUNCTION_DHLX_2(TYPE, FUNC) \
+template <class T> \
+TYPE parse_function_DHLX_##FUNC(SourceScannerDHLX & sc)
+
+#define DEFINE_FUNCTION_DHLX(FUNC) \
+DEFINE_FUNCTION_DHLX_2(T, FUNC)
 
 
 
-DEFINE_FUNCTION(cmp)
+DEFINE_FUNCTION_DDL(cmp)
 {
 	if (args.size() != 2)
 		throw FunctionException("2 args required");
 
 	return convert<T, int_s_t>(int_s_t( cmp(parse<T>(args[0]), parse<T>(args[1])) ));
 }
-ADD_FUNC_NUMBER(cmp, cmp);
-ADD_FUNC_STRING(cmp, cmp);
+DEFINE_FUNCTION_DHLX(cmp)
+{
+	T arg0(parse<T>(sc));
+	sc.get(SourceTokenDHLX::TT_OP_COMMA);
+	T arg1(parse<T>(sc));
 
-DEFINE_FUNCTION2(bool_t, bcmp)
+	return convert<T, int_s_t>(int_s_t( cmp(arg0, arg1) ));
+}
+ADD_FUNCTION_BOTH_NUMBER(cmp, cmp);
+ADD_FUNCTION_BOTH_STRING(cmp, cmp);
+
+DEFINE_FUNCTION_DDL_2(bool_t, bcmp)
 {
 	if (args.size() != 3)
 		throw FunctionException("3 args required");
@@ -123,16 +189,35 @@ DEFINE_FUNCTION2(bool_t, bcmp)
 
 	throw FunctionException("unknown cmp:" + args[1]);
 }
-ADD_FUNCTION2(bool, int_s,  bcmp, cmpis);
-ADD_FUNCTION2(bool, int,    bcmp, cmpi);
-ADD_FUNCTION2(bool, int_l,  bcmp, cmpil);
-ADD_FUNCTION2(bool, real_s, bcmp, cmpfs);
-ADD_FUNCTION2(bool, real,   bcmp, cmpf);
-ADD_FUNCTION2(bool, real_l, bcmp, cmpfl);
-ADD_FUNCTION2(bool, real_l, bcmp, cmp);
-ADD_FUNCTION2(bool, string, bcmp, cmps);
+DEFINE_FUNCTION_DHLX_2(bool_t, bcmp)
+{
+	T arg0(parse<T>(sc));
+	sc.get(SourceTokenDHLX::TT_OP_COMMA);
+	std::string arg1(sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData());
+	sc.get(SourceTokenDHLX::TT_OP_COMMA);
+	T arg2(parse<T>(sc));
 
-DEFINE_FUNCTION(distance)
+	int cmpResult(cmp(arg0, arg2));
+
+	if (arg1 == cmp_name_eq()) return cmpResult == 0;
+	if (arg1 == cmp_name_ne()) return cmpResult != 0;
+	if (arg1 == cmp_name_gt()) return cmpResult >  0;
+	if (arg1 == cmp_name_ge()) return cmpResult >= 0;
+	if (arg1 == cmp_name_lt()) return cmpResult <  0;
+	if (arg1 == cmp_name_le()) return cmpResult <= 0;
+
+	throw FunctionException("unknown cmp:" + arg1);
+}
+ADD_FUNCTION_BOTH_2(bool, int_s,  bcmp, cmpis);
+ADD_FUNCTION_BOTH_2(bool, int,    bcmp, cmpi);
+ADD_FUNCTION_BOTH_2(bool, int_l,  bcmp, cmpil);
+ADD_FUNCTION_BOTH_2(bool, real_s, bcmp, cmpfs);
+ADD_FUNCTION_BOTH_2(bool, real,   bcmp, cmpf);
+ADD_FUNCTION_BOTH_2(bool, real_l, bcmp, cmpfl);
+ADD_FUNCTION_BOTH_2(bool, real_l, bcmp, cmp);
+ADD_FUNCTION_BOTH_2(bool, string, bcmp, cmps);
+
+DEFINE_FUNCTION_DDL(distance)
 {
 	T x1, y1, x2, y2;
 
@@ -158,9 +243,9 @@ DEFINE_FUNCTION(distance)
 
 	return hypot(x1 - x2, y1 - y2);
 }
-ADD_FUNC_NUMBER(distance, distance);
+ADD_FUNCTION_DDL_NUMBER(distance, distance);
 
-DEFINE_FUNCTION(facing)
+DEFINE_FUNCTION_DDL(facing)
 {
 	T x1, y1, x2, y2;
 
@@ -213,25 +298,25 @@ DEFINE_FUNCTION(facing)
 	else
 		return angle3 + T(270);
 }
-ADD_FUNC_REAL(facing, facing);
+ADD_FUNCTION_DDL_REAL(facing, facing);
 
-DEFINE_FUNCTION(hypot)
+DEFINE_FUNCTION_DDL(hypot)
 {
 	if (args.size() != 2)
 		throw FunctionException("2 args required");
 
 	return hypot(parse<T>(args[0]), parse<T>(args[1]));
 }
-ADD_FUNC_NUMBER(hypot, hypot);
+ADD_FUNCTION_DDL_NUMBER(hypot, hypot);
 
-DEFINE_FUNCTION(random)
+DEFINE_FUNCTION_DDL(random)
 {
 	if (args.size() != 2)
 		throw FunctionException("2 args required");
 
 	return random<T>(parse<T>(args[0]), parse<T>(args[1]));
 }
-ADD_FUNC_NUMBER(random, random);
+ADD_FUNCTION_DDL_NUMBER(random, random);
 
 
 
