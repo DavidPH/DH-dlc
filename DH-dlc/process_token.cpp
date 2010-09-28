@@ -71,42 +71,133 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 			return;
 		}
 
-		// [TYPE] # function : NAME [: TYPE ...] { data }
+		// [return type] # function : name [: return type ...] [:: argument type ...] { data }
 		if (st.getName() == command_name_function())
 		{
-			std::vector<std::string> type_vec(st.getBase());
-			type_vec.push_back(st.getType());
+			std::vector<type_t> returnTypes;
 
-			for (size_t index = 1; index < type_vec.size(); ++index)
+			std::string functionName(st.getBase(0));
+
+			std::vector<std::string> const & base(st.getBase());
+			size_t index(1);
+
+			returnTypes.push_back(type_t::get_type(st.getType()));
+			while (index < base.size())
 			{
-				if (type_vec[index] == "")
+				if (base[index].empty())
+				{
+					++index;
+					break;
+				}
+
+				returnTypes.push_back(type_t::get_type(base[index]));
+
+				++index;
+			}
+
+			std::vector<type_t> argTypes;
+
+			while (index < base.size())
+			{
+				if (base[index].empty())
+				{
+					++index;
+					break;
+				}
+
+				argTypes.push_back(type_t::get_type(base[index]));
+
+				++index;
+			}
+
+			FOREACH_T(std::vector<type_t>, it, returnTypes)
+			{
+				switch (it->getNativeType())
+				{
+				case type_t::NT_NONE:
 					break;
 
-				type_t type(type_t::get_type(type_vec[index]));
 
-				if (type == type_t::type_bool()) FunctionHandler<bool_t>::add_function(type_vec[0], new FunctionHandlerDDL<bool_t>(st.getData()));
+				case type_t::NT_BOOL_T:
+					FunctionHandler<bool_t>::add_function(functionName, new FunctionHandlerDDL<bool_t>(st.getData(), argTypes));
+					break;
 
-				     if (type == type_t::type_bool())       FunctionHandler<bool_t>::add_function(type_vec[0], new FunctionHandlerDDL<bool_t>(st.getData()));
-				else if (type == type_t::type_shortint())   FunctionHandler<int_s_t>::add_function(type_vec[0], new FunctionHandlerDDL<int_s_t>(st.getData()));
-				else if (type == type_t::type_int())        FunctionHandler<int_t>::add_function(type_vec[0], new FunctionHandlerDDL<int_t>(st.getData()));
-				else if (type == type_t::type_longint())    FunctionHandler<int_l_t>::add_function(type_vec[0], new FunctionHandlerDDL<int_l_t>(st.getData()));
 
-				else if (type == type_t::type_shortfloat()) FunctionHandler<real_s_t>::add_function(type_vec[0], new FunctionHandlerDDL<real_s_t>(st.getData()));
-				else if (type == type_t::type_float())      FunctionHandler<real_t>::add_function(type_vec[0], new FunctionHandlerDDL<real_t>(st.getData()));
-				else if (type == type_t::type_longfloat())  FunctionHandler<real_l_t>::add_function(type_vec[0], new FunctionHandlerDDL<real_l_t>(st.getData()));
+				case type_t::NT_INT_S_T:
+					FunctionHandler<int_s_t>::add_function(functionName, new FunctionHandlerDDL<int_s_t>(st.getData(), argTypes));
+					break;
 
-				else if (type == type_t::type_string())     FunctionHandler<string_t>::add_function(type_vec[0], new FunctionHandlerDDL<string_t>(st.getData()));
-				else if (type == type_t::type_string8())    FunctionHandler<string8_t>::add_function(type_vec[0], new FunctionHandlerDDL<string8_t>(st.getData()));
-				else if (type == type_t::type_string16())   FunctionHandler<string16_t>::add_function(type_vec[0], new FunctionHandlerDDL<string16_t>(st.getData()));
-				else if (type == type_t::type_string32())   FunctionHandler<string32_t>::add_function(type_vec[0], new FunctionHandlerDDL<string32_t>(st.getData()));
-				else if (type == type_t::type_string80())   FunctionHandler<string80_t>::add_function(type_vec[0], new FunctionHandlerDDL<string80_t>(st.getData()));
-				else if (type == type_t::type_string320())  FunctionHandler<string320_t>::add_function(type_vec[0], new FunctionHandlerDDL<string320_t>(st.getData()));
+				case type_t::NT_INT_T:
+					FunctionHandler<int_t>::add_function(functionName, new FunctionHandlerDDL<int_t>(st.getData(), argTypes));
+					break;
 
-				else if (type == type_t::type_ubyte())      FunctionHandler<ubyte_t>::add_function(type_vec[0], new FunctionHandlerDDL<ubyte_t>(st.getData()));
-				else if (type == type_t::type_sword())      FunctionHandler<sword_t>::add_function(type_vec[0], new FunctionHandlerDDL<sword_t>(st.getData()));
-				else if (type == type_t::type_uword())      FunctionHandler<uword_t>::add_function(type_vec[0], new FunctionHandlerDDL<uword_t>(st.getData()));
-				else if (type == type_t::type_sdword())     FunctionHandler<sdword_t>::add_function(type_vec[0], new FunctionHandlerDDL<sdword_t>(st.getData()));
-				else if (type == type_t::type_udword())     FunctionHandler<udword_t>::add_function(type_vec[0], new FunctionHandlerDDL<udword_t>(st.getData()));
+				case type_t::NT_INT_L_T:
+					FunctionHandler<int_l_t>::add_function(functionName, new FunctionHandlerDDL<int_l_t>(st.getData(), argTypes));
+					break;
+
+
+				case type_t::NT_REAL_S_T:
+					FunctionHandler<real_s_t>::add_function(functionName, new FunctionHandlerDDL<real_s_t>(st.getData(), argTypes));
+					break;
+
+				case type_t::NT_REAL_T:
+					FunctionHandler<real_t>::add_function(functionName, new FunctionHandlerDDL<real_t>(st.getData(), argTypes));
+					break;
+
+				case type_t::NT_REAL_L_T:
+					FunctionHandler<real_l_t>::add_function(functionName, new FunctionHandlerDDL<real_l_t>(st.getData(), argTypes));
+					break;
+
+
+				case type_t::NT_STRING_T:
+					FunctionHandler<string_t>::add_function(functionName, new FunctionHandlerDDL<string_t>(st.getData(), argTypes));
+					break;
+
+				case type_t::NT_STRING8_T:
+					FunctionHandler<string8_t>::add_function(functionName, new FunctionHandlerDDL<string8_t>(st.getData(), argTypes));
+					break;
+
+				case type_t::NT_STRING16_T:
+					FunctionHandler<string16_t>::add_function(functionName, new FunctionHandlerDDL<string16_t>(st.getData(), argTypes));
+					break;
+
+				case type_t::NT_STRING32_T:
+					FunctionHandler<string32_t>::add_function(functionName, new FunctionHandlerDDL<string32_t>(st.getData(), argTypes));
+					break;
+
+				case type_t::NT_STRING80_T:
+					FunctionHandler<string80_t>::add_function(functionName, new FunctionHandlerDDL<string80_t>(st.getData(), argTypes));
+					break;
+
+				case type_t::NT_STRING320_T:
+					FunctionHandler<string320_t>::add_function(functionName, new FunctionHandlerDDL<string320_t>(st.getData(), argTypes));
+					break;
+
+
+				case type_t::NT_TYPE_T:
+					break;
+
+
+				case type_t::NT_UBYTE_T:
+					FunctionHandler<ubyte_t>::add_function(functionName, new FunctionHandlerDDL<ubyte_t>(st.getData(), argTypes));
+					break;
+
+				case type_t::NT_SWORD_T:
+					FunctionHandler<sword_t>::add_function(functionName, new FunctionHandlerDDL<sword_t>(st.getData(), argTypes));
+					break;
+
+				case type_t::NT_UWORD_T:
+					FunctionHandler<uword_t>::add_function(functionName, new FunctionHandlerDDL<uword_t>(st.getData(), argTypes));
+					break;
+
+				case type_t::NT_SDWORD_T:
+					FunctionHandler<sdword_t>::add_function(functionName, new FunctionHandlerDDL<sdword_t>(st.getData(), argTypes));
+					break;
+
+				case type_t::NT_UDWORD_T:
+					FunctionHandler<udword_t>::add_function(functionName, new FunctionHandlerDDL<udword_t>(st.getData(), argTypes));
+					break;
+				}
 			}
 
 			return;
@@ -281,6 +372,7 @@ void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 
 				case type_t::NT_TYPE_T:
 					break;
+
 
 				case type_t::NT_UBYTE_T:
 					FunctionHandler<ubyte_t>::add_function(functionName, new FunctionHandlerDHLX<ubyte_t>(sc, argTypes));
