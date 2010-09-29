@@ -31,6 +31,8 @@
 
 #if USE_GMPLIB
 #include <gmpxx.h>
+#else
+#include <cmath>
 #endif
 
 
