@@ -309,14 +309,91 @@ DEFINE_FUNCTION_DDL(hypot)
 }
 ADD_FUNCTION_DDL_NUMBER(hypot, hypot);
 
-DEFINE_FUNCTION_DDL(random)
+DEFINE_FUNCTION_DDL(randomf)
 {
-	if (args.size() != 2)
-		throw FunctionException("2 args required");
-
-	return random<T>(parse<T>(args[0]), parse<T>(args[1]));
+	if (args.size() == 0)
+	{
+		return random<T>();
+	}
+	else if (args.size() == 1)
+	{
+		return random<T>(parse<T>(args[0]));
+	}
+	else if (args.size() == 2)
+	{
+		return random<T>(parse<T>(args[0]), parse<T>(args[1]));
+	}
+	else
+	{
+		throw FunctionException("0-2 args required");
+	}
 }
-ADD_FUNCTION_DDL_NUMBER(random, random);
+DEFINE_FUNCTION_DDL(randomi)
+{
+	if (args.size() == 1)
+	{
+		return random<T>(parse<T>(args[0]));
+	}
+	else if (args.size() == 2)
+	{
+		return random<T>(parse<T>(args[0]), parse<T>(args[1]));
+	}
+	else
+	{
+		throw FunctionException("1-2 args required");
+	}
+}
+DEFINE_FUNCTION_DHLX(randomf)
+{
+	SourceTokenDHLX argTerm(sc.get());
+	sc.unget(argTerm);
+
+	if (argTerm.getType() == SourceTokenDHLX::TT_OP_PARENTHESIS_C)
+	{
+		return random<T>();
+	}
+
+	T arg0(parse<T>(sc));
+
+	argTerm = sc.get();
+	sc.unget(argTerm);
+
+	if (argTerm.getType() == SourceTokenDHLX::TT_OP_PARENTHESIS_C)
+	{
+		return random<T>(arg0);
+	}
+
+	sc.get(SourceTokenDHLX::TT_OP_COMMA);
+
+	T arg1(parse<T>(sc));
+
+	return random<T>(arg0, arg1);
+	
+}
+DEFINE_FUNCTION_DHLX(randomi)
+{
+	SourceTokenDHLX argTerm(sc.get());
+	sc.unget(argTerm);
+
+	T arg0(parse<T>(sc));
+
+	argTerm = sc.get();
+	sc.unget(argTerm);
+
+	if (argTerm.getType() == SourceTokenDHLX::TT_OP_PARENTHESIS_C)
+	{
+		return random<T>(arg0);
+	}
+
+	sc.get(SourceTokenDHLX::TT_OP_COMMA);
+
+	T arg1(parse<T>(sc));
+
+	return random<T>(arg0, arg1);
+	
+}
+ADD_FUNCTION_BOTH_INT(randomi, random);
+ADD_FUNCTION_BOTH_REAL(randomf, random);
 
 
 
