@@ -25,36 +25,6 @@
 
 #include "../options.hpp"
 
-#if USE_GMPLIB
-mpz_class int_t:: int_t_max = 0;
-mpz_class int_t:: int_t_min = 0;
-mpz_class int_t::uint_t_max = 0;
-#else
-sint_biggest_t int_t:: int_t_max = 0;
-sint_biggest_t int_t:: int_t_min = 0;
-uint_biggest_t int_t::uint_t_max = 0;
-#endif
-
-void int_t::cap_data()
-{
-	if (_data > int_t_MAX || _data < int_t_MIN)
-	{
-		#if USE_GMPLIB
-		int msb = mpz_tstbit(_data.get_mpz_t(), option_precision-1);
-
-		_data &= int_t_MAX;
-
-		if (msb) _data += int_t_MIN;
-		#else
-		int msb = (_data >> option_precision) & 1;
-
-		_data &= int_t_MAX;
-
-		if (msb) _data += int_t_MIN;
-		#endif
-	}
-}
-
 void int_t::encodeText(std::ostream & out)
 {
 	out << _data;
@@ -76,26 +46,6 @@ sint_biggest_t int_t::makeInt() const
 	#else
 	return _data;
 	#endif
-}
-
-
-
-void int_t::resetLimits()
-{
-	uint_t_max = 0;
-
-	// The algorithm looks funny because it has to be able to handle non-GMP
-	// numbers at their limit. Like a precision of 32 with 32 bit ints.
-	for (int i = option_precision - 1; i; --i)
-	{
-		++uint_t_max;
-		uint_t_max <<= 1U;
-	}
-
-	++uint_t_max;
-
-	int_t_max = uint_t_max >> 1;
-	int_t_min = -int_t_max - 1;
 }
 
 

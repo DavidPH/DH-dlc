@@ -50,9 +50,15 @@
 #define  int_s_t_MIN SPOINTER_MIN
 #define uint_s_t_MAX UPOINTER_MAX
 
-#define  int_t_MAX int_t::int_t_max
-#define  int_t_MIN int_t::int_t_min
-#define uint_t_MAX int_t::uint_t_max
+#if USE_GMPLIB
+#define  int_t_MAX 0
+#define  int_t_MIN 0
+#define uint_t_MAX 0
+#else
+#define  int_t_MAX SINT_BIGGEST_MAX
+#define  int_t_MIN SINT_BIGGEST_MIN
+#define uint_t_MAX UINT_BIGGEST_MAX
+#endif
 
 #if USE_GMPLIB
 #define  int_l_t_MAX 0

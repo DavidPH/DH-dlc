@@ -28,8 +28,9 @@
 #include "options.hpp"
 
 #include "main.hpp"
+#include "types.hpp"
 
-#include "types/int_t.hpp"
+#include "types/real_t.hpp"
 
 #include "../common/process_options.c"
 
@@ -189,8 +190,6 @@ void set_precision()
 	#if USE_GMPLIB
 	mpf_set_default_prec(option_precision);
 	#endif
-
-	int_t::resetLimits();
 }
 void set_precision(int new_precision)
 {

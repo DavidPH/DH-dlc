@@ -51,11 +51,11 @@ class int_t
 {
 	public:
 		explicit int_t() : _data(0) {}
-		         int_t(int_t          const & v) : _data(v._data) {cap_data();}
+		         int_t(int_t          const & v) : _data(v._data) {}
 		#if USE_GMPLIB
-		explicit int_t(mpz_class      const & v) : _data(v) {cap_data();}
+		explicit int_t(mpz_class      const & v) : _data(v) {}
 		#else
-		explicit int_t(sint_biggest_t const & v) : _data(v) {cap_data();}
+		explicit int_t(sint_biggest_t const & v) : _data(v) {}
 		#endif
 
 		void encodeText(std::ostream & out);
@@ -63,14 +63,14 @@ class int_t
 		float_biggest_t makeFloat() const;
 		sint_biggest_t  makeInt()  const;
 
-		int_t& operator &= (const int_t& v) {_data &= v._data; cap_data(); return *this;}
-		int_t& operator |= (const int_t& v) {_data |= v._data; cap_data(); return *this;}
-		int_t& operator *= (const int_t& v) {_data *= v._data; cap_data(); return *this;}
-		int_t& operator /= (const int_t& v) {_data /= v._data; cap_data(); return *this;}
-		int_t& operator %= (const int_t& v) {_data %= v._data; cap_data(); return *this;}
-		int_t& operator += (const int_t& v) {_data += v._data; cap_data(); return *this;}
-		int_t& operator -= (const int_t& v) {_data -= v._data; cap_data(); return *this;}
-		int_t& operator  = (const int_t& v) {_data  = v._data; cap_data(); return *this;}
+		int_t& operator &= (const int_t& v) {_data &= v._data; return *this;}
+		int_t& operator |= (const int_t& v) {_data |= v._data; return *this;}
+		int_t& operator *= (const int_t& v) {_data *= v._data; return *this;}
+		int_t& operator /= (const int_t& v) {_data /= v._data; return *this;}
+		int_t& operator %= (const int_t& v) {_data %= v._data; return *this;}
+		int_t& operator += (const int_t& v) {_data += v._data; return *this;}
+		int_t& operator -= (const int_t& v) {_data -= v._data; return *this;}
+		int_t& operator  = (const int_t& v) {_data  = v._data; return *this;}
 
 
 
@@ -88,23 +88,7 @@ class int_t
 		friend real_t   convert<real_t,   int_t>(int_t const &);
 		friend real_l_t convert<real_l_t, int_t>(int_t const &);
 
-
-
-		static void resetLimits();
-
-		#if USE_GMPLIB
-		static mpz_class  int_t_max;
-		static mpz_class  int_t_min;
-		static mpz_class uint_t_max;
-		#else
-		static sint_biggest_t  int_t_max;
-		static sint_biggest_t  int_t_min;
-		static uint_biggest_t uint_t_max;
-		#endif
-
 	private:
-		void cap_data();
-
 		#if USE_GMPLIB
 		mpz_class _data;
 		#else
