@@ -243,7 +243,19 @@ DEFINE_FUNCTION_DDL(distance)
 
 	return hypot(x1 - x2, y1 - y2);
 }
-ADD_FUNCTION_DDL_NUMBER(distance, distance);
+DEFINE_FUNCTION_DHLX(distance)
+{
+	T x1(parse<T>(sc));
+	sc.get(SourceTokenDHLX::TT_OP_COMMA);
+	T y1(parse<T>(sc));
+	sc.get(SourceTokenDHLX::TT_OP_COMMA);
+	T x2(parse<T>(sc));
+	sc.get(SourceTokenDHLX::TT_OP_COMMA);
+	T y2(parse<T>(sc));
+
+	return hypot(x1 - x2, y1 - y2);
+}
+ADD_FUNCTION_BOTH_NUMBER(distance, distance);
 
 DEFINE_FUNCTION_DDL(facing)
 {
@@ -298,7 +310,44 @@ DEFINE_FUNCTION_DDL(facing)
 	else
 		return angle3 + T(270);
 }
-ADD_FUNCTION_DDL_REAL(facing, facing);
+DEFINE_FUNCTION_DHLX(facing)
+{
+	T x1(parse<T>(sc));
+	sc.get(SourceTokenDHLX::TT_OP_COMMA);
+	T y1(parse<T>(sc));
+	sc.get(SourceTokenDHLX::TT_OP_COMMA);
+	T x2(parse<T>(sc));
+	sc.get(SourceTokenDHLX::TT_OP_COMMA);
+	T y2(parse<T>(sc));
+
+	// Flagrant copy-paste from above ensues:
+
+	T length1;
+	T length2 = y2 - y1;
+	T length3 = x2 - x1;
+
+	length1 = hypot(length2, length3);
+
+	/* Not sure what else to do... */
+	if (length1 == T(0)) return T(0);
+
+	T angle1 = (T(180) / convert<T, real_t>(pi()));
+	T angle2 = asin(T(length2 / length1)) * angle1;
+	T angle3 = asin(T(length3 / length1)) * angle1;
+
+	/* up-right */
+	if (angle2 >= T(0) && angle3 >= T(0))
+		return angle2;
+
+	/* up-left */
+	else if (angle2 >= T(0) && angle3 < T(0))
+		return (T(90) - angle2) + T(90);
+
+	/* down right is +270, left is +180 and +90 for negative */
+	else
+		return angle3 + T(270);
+}
+ADD_FUNCTION_BOTH_REAL(facing, facing);
 
 DEFINE_FUNCTION_DDL(hypot)
 {
@@ -307,7 +356,15 @@ DEFINE_FUNCTION_DDL(hypot)
 
 	return hypot(parse<T>(args[0]), parse<T>(args[1]));
 }
-ADD_FUNCTION_DDL_NUMBER(hypot, hypot);
+DEFINE_FUNCTION_DHLX(hypot)
+{
+	T arg0(parse<T>(sc));
+	sc.get(SourceTokenDHLX::TT_OP_COMMA);
+	T arg1(parse<T>(sc));
+
+	return hypot(arg0, arg1);
+}
+ADD_FUNCTION_BOTH_NUMBER(hypot, hypot);
 
 DEFINE_FUNCTION_DDL(randomf)
 {
