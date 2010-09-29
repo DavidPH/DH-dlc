@@ -30,26 +30,40 @@
 
 
 
-std::map<std::string, std::string> compound_object_defines;
+std::map<std::string, std::string> compound_object_defines_DDL;
+std::map<std::string, SourceScannerDHLX> compound_object_defines_DHLX;
 
+void add_compound_object(std::string const & type, SourceScannerDHLX & sc)
+{
+	compound_object_defines_DHLX[type] = sc.getblock(SourceTokenDHLX::TT_OP_BRACE_O, SourceTokenDHLX::TT_OP_BRACE_C);
+}
 void add_compound_object(std::string const & type, std::string const & data)
 {
-	std::map<std::string, std::string>::iterator it = compound_object_defines.find(type);
-
-	if (it != compound_object_defines.end())
-		throw InvalidTypeException("already defined compound object:" + type);
-
-	compound_object_defines[type] = data;
+	compound_object_defines_DDL[type] = data;
 }
 
-std::string const & get_compound_object(std::string const & type)
+void do_compound_object(std::string const & type, obj_t const & object)
 {
-	std::map<std::string, std::string>::iterator it = compound_object_defines.find(type);
+	std::map<std::string, std::string>::iterator itDDL = compound_object_defines_DDL.find(type);
 
-	if (it == compound_object_defines.end())
-		throw InvalidTypeException("undefined compound object:" + type);
+	if (itDDL != compound_object_defines_DDL.end())
+	{
+		object->addData(itDDL->second, type);
+		return;
+	}
 
-	return compound_object_defines[type];
+	std::map<std::string, SourceScannerDHLX>::iterator itDHLX = compound_object_defines_DHLX.find(type);
+
+	if (itDHLX != compound_object_defines_DHLX.end())
+	{
+		SourceScannerDHLX data(itDHLX->second);
+
+		object->addData(data);
+
+		return;
+	}
+
+	throw InvalidTypeException("undefined compound object:" + type);
 }
 
 

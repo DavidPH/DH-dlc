@@ -180,7 +180,7 @@ LevelObject::LevelObject(type_t const type, std::string const & data, std::vecto
 	// compound objects to be compounded even if they were no different.
 	if ((_type.getMode() == type_t::MODE_COMPOUNDOBJECT) && (!_isCompounded && data.size() != 0))
 	{
-		addData(get_compound_object(_type.makeString()), _type.makeString());
+		do_compound_object(_type.makeString(), this);
 		_isCompounded = true;
 	}
 

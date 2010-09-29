@@ -270,7 +270,15 @@ void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 
 		std::string commandString('#' + commandToken.getData());
 
-		if (commandString == command_name_function())
+		// # define IDENTIFIER block
+		if (commandString == command_name_define())
+		{
+			std::string type(sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData());
+
+			add_compound_object(type, sc);
+		}
+		// # function ... block
+		else if (commandString == command_name_function())
 		{
 			std::vector<type_t> returnTypes;
 
@@ -396,6 +404,7 @@ void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 				}
 			}
 		}
+		// # include [:] IDENTIFIER;
 		else if (commandString == command_name_include())
 		{
 			SourceTokenDHLX arg0(sc.get(SourceTokenDHLX::TT_STRING, SourceTokenDHLX::TT_OP_COLON));

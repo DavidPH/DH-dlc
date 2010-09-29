@@ -42,14 +42,37 @@
 
 void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
 {
-	// # break
+	// # break;
 	if (command == command_name_break())
+	{
 		_isBreaked = true;
 
-	// # continue
+		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+	}
+	// # compound [IDENTIFIER];
+	else if (command == command_name_compound())
+	{
+		SourceTokenDHLX type(sc.get());
+
+		if (type.getType() == SourceTokenDHLX::TT_IDENTIFIER)
+		{
+			do_compound_object(type.getData(), this);
+		}
+		else
+		{
+			do_compound_object(_type.makeString(), this);
+			sc.unget(type);
+		}
+
+		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+	}
+	// # continue;
 	else if (command == command_name_continue())
+	{
 		_isContinued = true;
 
+		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+	}
 	else if (command == command_name_else())
 	{
 		if (!last_if_result)
@@ -57,9 +80,11 @@ void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
 		else
 			skipData(sc);
 	}
+	// # if expression block
 	else if (command == command_name_if())
 		addDataIf(sc);
 
+	// # return expression;
 	else if (command == command_name_return())
 	{
 		obj_t returnType  = getObject(name_t::name_return_type);
@@ -71,6 +96,7 @@ void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
 
 		_isReturned = 1;
 	}
+	// # while (expression) block
 	else if (command == command_name_while())
 	{
 		SourceScannerDHLX cond(sc.getblock(SourceTokenDHLX::TT_OP_PARENTHESIS_O, SourceTokenDHLX::TT_OP_PARENTHESIS_C));
@@ -116,10 +142,9 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 	else if (command == command_name_compound())
 	{
 		if (!st.getBase(0).empty())
-			addData(get_compound_object(st.getBase(0)), st.getBase(0));
-
+			do_compound_object(st.getBase(0), this);
 		else
-			addData(get_compound_object(_type.makeString()), _type.makeString());
+			do_compound_object(_type.makeString(), this);
 
 		_isCompounded = true;
 	}

@@ -24,15 +24,19 @@
 #ifndef COMPOUND_OBJECTS_H
 #define COMPOUND_OBJECTS_H
 
-#include <string>
-
+#include "SourceScanner.hpp"
 #include "types.hpp"
 
+#include "LevelObject/LevelObjectPointer.hpp"
+
+#include <string>
 
 
-void add_compound_object(std::string const &, std::string const &);
 
-std::string const & get_compound_object(std::string const &);
+void add_compound_object(std::string const & type, SourceScannerDHLX & sc);
+void add_compound_object(std::string const & type, std::string const & data);
+
+void do_compound_object(std::string const & type, obj_t const & object);
 
 
 
