@@ -88,6 +88,7 @@ void process_map(const std::string& dirnameBase, const std::string& dirname)
 	PROCESS_SPECIAL(S,  "sprite");
 	PROCESS_SPECIAL(SS, "sprites");
 	PROCESS_SPECIAL(TX, "textures");
+	PROCESS_SPECIAL(VX, "voxels");
 
 	if (!process_file(dirnameBase + dirname + '/', lumpName+".txt", ""))
 		if (!process_file(dirnameBase + dirname + '/', lumpName+".lmp", ""))

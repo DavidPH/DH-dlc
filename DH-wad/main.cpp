@@ -238,6 +238,10 @@ int main(int argc, char** argv)
 
 				else if (lumpName == "TX_START")
 					dirSub = lumpName + PATHSEP;
+
+				else if (lumpName == "VX_START")
+					dirSub = lumpName + PATHSEP;
+
 				else
 				{
 					std::list<Lump>::iterator lumpIt2 = lumpIt;
@@ -301,6 +305,9 @@ int main(int argc, char** argv)
 					dirSub.clear();
 
 				else if (lumpName == "TX_END")
+					dirSub.clear();
+
+				else if (lumpName == "VX_END")
 					dirSub.clear();
 
 				else if (lumpName == "ENDMAP")

@@ -174,6 +174,7 @@ Certain directory names are handled specially:
 	S  | S_START  | sprite
 	SS | SS_START | sprites
 	TX | TX_START | textures
+	VX | VX_START | voxels
 		The files in these directories will be placed within the
 		appropriate *_START and *_END lumps.
 
