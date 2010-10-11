@@ -61,7 +61,7 @@ class LevelObject
 	public:
 		~LevelObject();
 
-		void addBase(std::string const &);
+		void addBase(name_t const & base);
 
 		void addData(SourceScannerDHLX & sc);
 		void addData(std::string const & data, std::string const & name = "...");

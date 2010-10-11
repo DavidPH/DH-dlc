@@ -109,6 +109,13 @@ size_t LevelObjectName::size() const
 	return this->_name.size();
 }
 
+LevelObjectName & LevelObjectName::operator = (LevelObjectName const & other)
+{
+	_name = other._name;
+
+	return *this;
+}
+
 bool LevelObjectName::operator == (LevelObjectName const & other) const
 {
 	return this->_name[0] == other._name[0];

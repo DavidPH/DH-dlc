@@ -171,7 +171,7 @@ LevelObject::LevelObject(type_t const type, std::string const & data, std::vecto
 	++_refCount;
 
 	for (size_t index = 0; index < base.size(); ++index)
-		addBase(base[index]);
+		addBase(parse_name(base[index]));
 
 	addData(data);
 

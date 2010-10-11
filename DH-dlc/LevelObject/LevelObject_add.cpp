@@ -68,12 +68,12 @@
 
 
 
-void LevelObject::addBase(std::string const & base)
+void LevelObject::addBase(name_t const & base)
 {
 	if (_data.get_dataType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
 
-	obj_t other = get_object(parse_name(base));
+	obj_t other = get_object(base);
 
 	if (other->_data.get_dataType() != any_t::OBJMAP_T)
 		throw InvalidTypeException("non-objects have no keys");
@@ -502,10 +502,22 @@ void LevelObject::addObject(SourceScannerDHLX & sc)
 
 	SourceTokenDHLX opToken(sc.get());
 
+	std::vector<name_t> baseName;
+
+	while (opToken.getType() == SourceTokenDHLX::TT_OP_COLON)
+	{
+		baseName.push_back(parse_name(sc));
+
+		opToken = sc.get();
+	}
+
 	switch (opToken.getType())
 	{
 	case SourceTokenDHLX::TT_OP_BRACE_O:
 		if (newObject == NULL) newObject = create(newType);
+
+		for (size_t index = 0; index < baseName.size(); ++index)
+			addBase(baseName[index]);
 
 		sc.unget(opToken);
 		newObject->addData(sc);
@@ -519,6 +531,14 @@ void LevelObject::addObject(SourceScannerDHLX & sc)
 			newObject = get_object(parse<int_s_t>(sc), newType);
 
 		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+
+		break;
+
+	case SourceTokenDHLX::TT_OP_SEMICOLON:
+		if (newObject == NULL) newObject = create(newType);
+
+		for (size_t index = 0; index < baseName.size(); ++index)
+			addBase(baseName[index]);
 
 		break;
 
