@@ -517,7 +517,7 @@ void LevelObject::addObject(SourceScannerDHLX & sc)
 		if (newObject == NULL) newObject = create(newType);
 
 		for (size_t index = 0; index < baseName.size(); ++index)
-			addBase(baseName[index]);
+			newObject->addBase(baseName[index]);
 
 		sc.unget(opToken);
 		newObject->addData(sc);
@@ -538,7 +538,7 @@ void LevelObject::addObject(SourceScannerDHLX & sc)
 		if (newObject == NULL) newObject = create(newType);
 
 		for (size_t index = 0; index < baseName.size(); ++index)
-			addBase(baseName[index]);
+			newObject->addBase(baseName[index]);
 
 		break;
 

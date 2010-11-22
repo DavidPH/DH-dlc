@@ -96,6 +96,24 @@ void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
 
 		_isReturned = 1;
 	}
+	// # script-acs string-expr... ;
+	else if (command == "#script_acs")
+	{
+		std::string nameSCRIPTS(option_script_acs);
+		if (option_use_file_extensions && nameSCRIPTS.find('.') == std::string::npos)
+			nameSCRIPTS += ".acs";
+
+		SourceTokenDHLX token(sc.get());
+
+		while (token.getType() != SourceTokenDHLX::TT_OP_SEMICOLON)
+		{
+			sc.unget(token);
+
+			add_script(nameSCRIPTS, parse<string_t>(sc).makeString());
+
+			token = sc.get();
+		}
+	}
 	// # while (expression) block
 	else if (command == command_name_while())
 	{
