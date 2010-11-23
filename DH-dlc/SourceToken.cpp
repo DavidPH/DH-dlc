@@ -297,7 +297,8 @@ SourceTokenDHLX::SourceTokenDHLX(SourceStream & in) : _data(), _type(TT_NONE)
 	int nextChar = in.get();
 
 	// Discard any whitespace before token.
-	if (nextChar == ' ') nextChar = in.get();
+	// FIXME: Should only need a single if. Whitespace compression breaks for comments.
+	while (nextChar == ' ') nextChar = in.get();
 
 	switch (nextChar)
 	{

@@ -111,7 +111,7 @@ SourceScanner<TT, SS> SourceScanner<TT, SS>::getblock(typename TT::TokenType typ
 
 		if (!depth) break;
 
-		if (!*_in) break;
+		if (_in && !*_in) break;
 	}
 
 	// Need to reverse the stack.

@@ -270,8 +270,26 @@ void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 
 		std::string commandString('#' + commandToken.getData());
 
+		// # defaulttype name_t IDENTIFIER [IDENTIFIER]
+		if (commandString == command_name_defaulttype())
+		{
+			name_t name(parse_name(sc));
+			type_t type = type_t::get_type(sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData());
+			type_t context;
+
+			SourceTokenDHLX context_token(sc.get());
+
+			if (context_token.getType() == SourceTokenDHLX::TT_IDENTIFIER)
+				context = type_t::get_type(context_token.getData());
+			else
+				sc.unget(context_token);
+
+			sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+
+			type_t::add_default_type(name, context, type);
+		}
 		// # define IDENTIFIER block
-		if (commandString == command_name_define())
+		else if (commandString == command_name_define())
 		{
 			std::string type(sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData());
 
@@ -404,7 +422,7 @@ void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 				}
 			}
 		}
-		// # include [:] IDENTIFIER;
+		// # include [:] STRING;
 		else if (commandString == command_name_include())
 		{
 			SourceTokenDHLX arg0(sc.get(SourceTokenDHLX::TT_STRING, SourceTokenDHLX::TT_OP_COLON));
@@ -412,6 +430,31 @@ void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 			sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
 
 			process_file(arg0.getData());
+		}
+		// # typedefnew IDENTIFIER IDENTIFIER;
+		else if (commandString == command_name_typedefnew())
+		{
+			std::string mode(sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData());
+			std::string type(sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData());
+			sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+
+			if (mode == "dynamic")
+				type_t::add_type(type, type_t::MODE_DYNAMIC);
+
+			else if (mode == "value")
+				type_t::add_type(type, type_t::MODE_VALUE);
+
+			else if (mode == "object")
+				type_t::add_type(type, type_t::MODE_OBJECT);
+
+			else if (mode == "compoundobject")
+				type_t::add_type(type, type_t::MODE_COMPOUNDOBJECT);
+
+			else if (mode == "inline")
+				type_t::add_type(type, type_t::MODE_INLINE);
+
+			else
+				throw CompilerException("unknown typedefnew:" + mode);
 		}
 		else
 		{

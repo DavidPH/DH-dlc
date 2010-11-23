@@ -522,6 +522,12 @@ void LevelObject::addObject(SourceScannerDHLX & sc)
 		sc.unget(opToken);
 		newObject->addData(sc);
 
+		if ((newObject->_type.getMode() == type_t::MODE_COMPOUNDOBJECT) && !newObject->_isCompounded)
+		{
+			do_compound_object(newObject->_type.makeString(), newObject);
+			newObject->_isCompounded = true;
+		}
+
 		break;
 
 	case SourceTokenDHLX::TT_OP_EQUALS:
