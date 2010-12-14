@@ -89,3 +89,8 @@
 
 
 
+# default type : zceiling : float : VERTEX;
+# default type : zfloor   : float : VERTEX;
+
+
+
