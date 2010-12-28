@@ -100,8 +100,8 @@ void usage()
 		"\n"
 		"If --directory option is not used, default depends on remaining arguments.\n"
 		"If more than one argument, the first is used for target directory.\n"
-		"Otherwise, if the argument ends in .ddl, then directory defaults to the argument\n"
-		"  stripped of the extension.\n"
+		"Otherwise, if the argument ends in .ddl or .dhlx, then directory defaults to the\n"
+		"  argument stripped of the extension.\n"
 		"If only one argument and it does not end with .ddl, it is used for directory.\n"
 		"In this last case, the source file is assumed to be the argument with the .ddl\n"
 		"  extension added.\n"
@@ -208,6 +208,10 @@ int main(int argc, char** argv)
 			if (option_arg[0].size() >= 4 && option_arg[0].compare(option_arg[0].size()-4, 4, ".ddl", 4) == 0)
 			{
 				option_directory = option_arg[0].substr(0, option_arg[0].size()-4);
+			}
+			if (option_arg[0].size() >= 5 && option_arg[0].compare(option_arg[0].size()-5, 5, ".dhlx", 5) == 0)
+			{
+				option_directory = option_arg[0].substr(0, option_arg[0].size()-5);
 			}
 			else
 			{
