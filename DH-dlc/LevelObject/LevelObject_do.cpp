@@ -49,6 +49,15 @@ void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
 
 		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
 	}
+	// # change type : TYPE : [VALUE]
+	// VALUE is used when changing to a value type
+	else if (command == command_name_changetype())
+	{
+		setType(type_t::get_type(sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData()));
+
+		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+	}
+
 	// # compound [IDENTIFIER];
 	else if (command == command_name_compound())
 	{
@@ -70,6 +79,14 @@ void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
 	else if (command == command_name_continue())
 	{
 		_isContinued = true;
+
+		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+	}
+	// # delete KEY...
+	// removes KEYs from this object
+	else if (command == command_name_delete() && _data.get_dataType() == any_t::OBJMAP_T)
+	{
+		_data.getObjMap().del(parse_name(sc));
 
 		sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
 	}
