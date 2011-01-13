@@ -97,6 +97,8 @@ class LevelObject
 
 		LevelObject & operator = (LevelObject const & other);
 
+		void setCompounded() {_isCompounded = true;};
+
 		void skipData(SourceScannerDHLX & sc);
 
 		static obj_t create();

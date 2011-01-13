@@ -49,6 +49,9 @@ void do_compound_object(std::string const & type, obj_t const & object)
 	if (itDDL != compound_object_defines_DDL.end())
 	{
 		object->addData(itDDL->second, type);
+
+		object->setCompounded();
+
 		return;
 	}
 
@@ -59,6 +62,8 @@ void do_compound_object(std::string const & type, obj_t const & object)
 		SourceScannerDHLX data(itDHLX->second);
 
 		object->addData(data);
+
+		object->setCompounded();
 
 		return;
 	}
