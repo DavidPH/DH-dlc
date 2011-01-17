@@ -1,3 +1,4 @@
+//DDL
 // UDMF for DH-dlc definitions.
 
 # typedef new : LINEDEF : object;

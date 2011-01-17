@@ -1,3 +1,4 @@
+//DDL
 // UDMF definitions.
 
 # typedef new : LINEDEF : object;

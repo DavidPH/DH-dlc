@@ -1,3 +1,4 @@
+//DDL
 /* VertexCircle compound object
 
 	Creates a circle of VERTEXes around a center point.

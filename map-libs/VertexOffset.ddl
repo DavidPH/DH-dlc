@@ -1,3 +1,4 @@
+//DDL
 // VertexOffset compound object
 
 # typedef new : VertexOffset : compound object;

@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, 2010 David Hill
+    Copyright 2009, 2010, 2011 David Hill
 
     This file is part of DH-dlc.
 
@@ -69,7 +69,17 @@ void process_file(std::string const & filename)
 		}
 	}
 
-	if ((filename.size() > 5) && (filename.compare(filename.size() - 5, 5, ".dhlx") == 0))
+	std::string idstring;
+	std::getline(sourceFile, idstring);
+	sourceFile.seekg(0);
+
+	if (idstring == "//DDL")
+	{
+		SourceStream ss(sourceFile);
+
+		process_stream<SourceTokenDDL>(ss, filename);
+	}
+	else if (idstring == "//DHLX")
 	{
 		SourceStream ss(sourceFile, SourceStream::ST_DHLX);
 

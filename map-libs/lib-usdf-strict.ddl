@@ -1,3 +1,4 @@
+//DDL
 // USDF definitions.
 
 #typedefnew:CHOICE      :inline;

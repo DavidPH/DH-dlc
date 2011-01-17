@@ -1,3 +1,4 @@
+//DDL
 /* PolyDoorSlide compound object
 
 	Creates a sliding poly-object door.

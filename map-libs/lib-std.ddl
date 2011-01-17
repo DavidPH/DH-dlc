@@ -1,3 +1,4 @@
+//DDL
 // "Standard" definitions.
 
 # typedef new :       bool      : value;

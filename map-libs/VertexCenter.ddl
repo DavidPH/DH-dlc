@@ -1,3 +1,4 @@
+//DDL
 // VertexCenter compound object
 
 # typedef new : VertexCenter : compound object;
