@@ -381,7 +381,7 @@ void LevelObject::addObject(name_t const & name, SourceTokenDDL const & st)
 	// commands start with #
 	if (!name.empty() && name.getString()[0] == '#')
 	{
-		doCommand(name.getString(), st);
+		doCommand(name.getString().substr(1), st);
 
 		return;
 	}
@@ -457,7 +457,7 @@ void LevelObject::addObject(SourceScannerDHLX & sc)
 
 		if (tt == SourceTokenDHLX::TT_OP_HASH)
 		{
-			doCommand("#" + sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData(), sc);
+			doCommand(sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData(), sc);
 
 			return;
 		}

@@ -48,8 +48,10 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 	// commands start with #
 	if (st.getName().size() > 0 && st.getName()[0] == '#')
 	{
+		std::string command(st.getName(), 1);
+
 		// # default type : NAME : TYPE : [CONTEXT]
-		if (st.getName() == command_name_defaulttype())
+		if (command == command_name_defaulttype())
 		{
 			name_t type_name(parse_name(st.getBase(0)));
 			type_t type = type_t::get_type(st.getBase(1));
@@ -64,7 +66,7 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 		}
 
 		// # define : TYPE { data }
-		if (st.getName() == command_name_define())
+		if (command == command_name_define())
 		{
 			add_compound_object(st.getBase(0), st.getData());
 
@@ -72,7 +74,7 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 		}
 
 		// [return type] # function : name [: return type ...] [:: argument type ...] { data }
-		if (st.getName() == command_name_function())
+		if (command == command_name_function())
 		{
 			std::vector<type_t> returnTypes;
 
@@ -204,7 +206,7 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 		}
 
 		// # include : FILENAME
-		if (st.getName() == command_name_include())
+		if (command == command_name_include())
 		{
 			process_file(st.getBase(0));
 
@@ -212,7 +214,7 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 		}
 
 		// # precision : NEW_PRECISION
-		if (st.getName() == command_name_precision())
+		if (command == command_name_precision())
 		{
 			set_precision(parse<int_s_t>(st.getBase(0)));
 
@@ -220,7 +222,7 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 		}
 
 		// # typedef : OLD_TYPE : NEW_TYPE
-		if (st.getName() == command_name_typedef())
+		if (command == command_name_typedef())
 		{
 			type_t::add_redirect_type(st.getBase(1), type_t::get_type(st.getBase(0)));
 
@@ -228,7 +230,7 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 		}
 
 		// # typedef new : TYPE : MODE
-		if (st.getName() == command_name_typedefnew())
+		if (command == command_name_typedefnew())
 		{
 			if (st.getBase(1) == "dynamic")
 				type_t::add_type(st.getBase(0), type_t::MODE_DYNAMIC);
@@ -251,7 +253,7 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 			return;
 		}
 
-		global_object->doCommand(st.getName(), st);
+		global_object->doCommand(command, st);
 
 		return;
 	}
@@ -268,7 +270,7 @@ void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 	{
 		SourceTokenDHLX commandToken(sc.get(SourceTokenDHLX::TT_IDENTIFIER));
 
-		std::string commandString('#' + commandToken.getData());
+		std::string commandString(commandToken.getData());
 
 		// # defaulttype name_t IDENTIFIER [IDENTIFIER]
 		if (commandString == command_name_defaulttype())

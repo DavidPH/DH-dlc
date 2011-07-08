@@ -114,7 +114,7 @@ void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
 		_isReturned = 1;
 	}
 	// # script-acs string-expr... ;
-	else if (command == "#script_acs")
+	else if (command == command_name_script_acs())
 	{
 		std::string nameSCRIPTS(option_script_acs);
 		if (option_use_file_extensions && nameSCRIPTS.find('.') == std::string::npos)
