@@ -49,6 +49,12 @@
 #include <fstream>
 #include <iostream>
 
+#ifdef TARGET_OS_WIN32
+#define PATHSEP '\\'
+#else
+#define PATHSEP '/'
+#endif
+
 
 
 void limits()
@@ -126,9 +132,9 @@ void usage()
 		"  -i, --include        adds to the list of directories to search for files in\n"
 		"  -m, --map-name       sets the map name\n"
 		#if USE_GMPLIB
-		"  -p, --precision      sets the precision for floats in bits [default: " << (POINTER_BIT*2) << "]\n"
+		"  -p, --precision      sets the precision for floats in bits [default: 128]\n"
 		#else
-		"  -p, --precision      sets the precision for floats in bits [default: " << (POINTER_BIT) << "]\n"
+		"  -p, --precision      sets the precision for floats in bits [default: UNUSED]\n"
 		#endif
 		"\n"
 		"Scripts:\n"
@@ -226,12 +232,12 @@ int main(int argc, char** argv)
 		}
 	}
 
-	if (!option_directory.empty() && option_directory[option_directory.size()-1] != PATH_SEP)
-		option_directory += PATH_SEP;
+	if (!option_directory.empty() && option_directory[option_directory.size()-1] != PATHSEP)
+		option_directory += PATHSEP;
 
 	if (option_map_name_default)
 	{
-		size_t lastSep = option_directory.find_last_of(PATH_SEP, option_directory.size()-2);
+		size_t lastSep = option_directory.find_last_of(PATHSEP, option_directory.size()-2);
 
 		option_map_name = option_directory.substr(lastSep+1, (option_directory.size() - lastSep) - 2);
 	}
@@ -251,8 +257,8 @@ int main(int argc, char** argv)
 
 	FOREACH_T(std::vector<std::string>, it, option_include)
 	{
-		if (!it->empty() && (*it)[it->size()-1] != PATH_SEP)
-			*it += PATH_SEP;
+		if (!it->empty() && (*it)[it->size()-1] != PATHSEP)
+			*it += PATHSEP;
 	}
 
 	if (option_seed_default)
@@ -331,7 +337,7 @@ int main(int argc, char** argv)
 
 	FOREACH_T(std::vector<std::string>, it, option_arg)
 	{
-		size_t lastSep = it->find_last_of(PATH_SEP);
+		size_t lastSep = it->find_last_of(PATHSEP);
 
 		// This ensures that files can always be included from the same directory.
 		if (lastSep != std::string::npos)

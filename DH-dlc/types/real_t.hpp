@@ -26,7 +26,6 @@
 
 #include <ostream>
 
-#include "types_limits.hpp"
 #include "../types.hpp"
 
 #if USE_GMPLIB
@@ -37,7 +36,7 @@
 
 
 
-typedef ptrdiff_t int_s_t;
+typedef long long int int_s_t;
 class int_t;
 class int_l_t;
 typedef double real_s_t;
@@ -50,17 +49,17 @@ class real_t
 {
 	public:
 		explicit real_t() : _data(0) {}
-		         real_t(real_t          const & v) : _data(v._data) {}
+		         real_t(real_t      const & v) : _data(v._data) {}
 		#if USE_GMPLIB
-		explicit real_t(mpf_class       const & v) : _data(v) {}
+		explicit real_t(mpf_class   const & v) : _data(v) {}
 		#else
-		explicit real_t(float_biggest_t const & v) : _data(v) {}
+		explicit real_t(long double const & v) : _data(v) {}
 		#endif
 
 		void encodeText(std::ostream & out);
 
-		float_biggest_t makeFloat() const;
-		sint_biggest_t  makeInt()  const;
+		long double makeFloat() const;
+		long long int makeInt() const;
 
 		real_t & operator *= (real_t const & v) {_data *= v._data; return *this;}
 		real_t & operator /= (real_t const & v) {_data /= v._data; return *this;}
@@ -94,7 +93,7 @@ class real_t
 		#if USE_GMPLIB
 		mpf_class _data;
 		#else
-		float_biggest_t _data;
+		long double _data;
 		#endif
 };
 
@@ -102,17 +101,17 @@ class real_l_t
 {
 	public:
 		explicit real_l_t() : _data(0) {}
-		         real_l_t(real_l_t        const & v) : _data(v._data) {}
+		         real_l_t(real_l_t    const & v) : _data(v._data) {}
 		#if USE_GMPLIB
-		explicit real_l_t(mpq_class       const & v) : _data(v) {}
+		explicit real_l_t(mpq_class   const & v) : _data(v) {}
 		#else
-		explicit real_l_t(float_biggest_t const & v) : _data(v) {}
+		explicit real_l_t(long double const & v) : _data(v) {}
 		#endif
 
 		void encodeText(std::ostream & out);
 
-		float_biggest_t makeFloat() const;
-		sint_biggest_t  makeInt()  const;
+		long double makeFloat() const;
+		long long int makeInt() const;
 
 		real_l_t & operator *= (real_l_t const & v) {_data *= v._data; return *this;}
 		real_l_t & operator /= (real_l_t const & v) {_data /= v._data; return *this;}
@@ -146,7 +145,7 @@ class real_l_t
 		#if USE_GMPLIB
 		mpq_class _data;
 		#else
-		float_biggest_t _data;
+		long double _data;
 		#endif
 };
 

@@ -24,8 +24,6 @@
 #ifndef INT_T_H
 #define INT_T_H
 
-#include "types_limits.hpp"
-
 #include "../math.hpp"
 #include "../types.hpp"
 
@@ -38,7 +36,7 @@
 
 
 
-typedef ptrdiff_t int_s_t;
+typedef long long int int_s_t;
 class int_t;
 class int_l_t;
 typedef double real_s_t;
@@ -51,17 +49,17 @@ class int_t
 {
 	public:
 		explicit int_t() : _data(0) {}
-		         int_t(int_t          const & v) : _data(v._data) {}
+		         int_t(int_t         const & v) : _data(v._data) {}
 		#if USE_GMPLIB
-		explicit int_t(mpz_class      const & v) : _data(v) {}
+		explicit int_t(mpz_class     const & v) : _data(v) {}
 		#else
-		explicit int_t(sint_biggest_t const & v) : _data(v) {}
+		explicit int_t(long long int const & v) : _data(v) {}
 		#endif
 
 		void encodeText(std::ostream & out);
 
-		float_biggest_t makeFloat() const;
-		sint_biggest_t  makeInt()  const;
+		long double makeFloat() const;
+		long long int makeInt() const;
 
 		int_t& operator &= (const int_t& v) {_data &= v._data; return *this;}
 		int_t& operator |= (const int_t& v) {_data |= v._data; return *this;}
@@ -92,7 +90,7 @@ class int_t
 		#if USE_GMPLIB
 		mpz_class _data;
 		#else
-		sint_biggest_t _data;
+		long long int _data;
 		#endif
 };
 
@@ -100,17 +98,17 @@ class int_l_t
 {
 	public:
 		explicit int_l_t() : _data(0) {}
-		         int_l_t(int_l_t        const & v) : _data(v._data) {}
+		         int_l_t(int_l_t       const & v) : _data(v._data) {}
 		#if USE_GMPLIB
-		explicit int_l_t(mpz_class      const & v) : _data(v) {}
+		explicit int_l_t(mpz_class     const & v) : _data(v) {}
 		#else
-		explicit int_l_t(sint_biggest_t const & v) : _data(v) {}
+		explicit int_l_t(long long int const & v) : _data(v) {}
 		#endif
 
 		void encodeText(std::ostream & out);
 
-		float_biggest_t makeFloat() const;
-		sint_biggest_t  makeInt()  const;
+		long double makeFloat() const;
+		long long int makeInt() const;
 
 		int_l_t& operator &= (const int_l_t& v) {_data &= v._data; return *this;}
 		int_l_t& operator |= (const int_l_t& v) {_data |= v._data; return *this;}
@@ -140,7 +138,7 @@ class int_l_t
 		#if USE_GMPLIB
 		mpz_class _data;
 		#else
-		sint_biggest_t _data;
+		long long int _data;
 		#endif
 };
 

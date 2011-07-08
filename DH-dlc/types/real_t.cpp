@@ -33,7 +33,7 @@ void real_t::encodeText(std::ostream & out)
 	out << _data;
 }
 
-float_biggest_t real_t::makeFloat() const
+long double real_t::makeFloat() const
 {
 	#if USE_GMPLIB
 	return _data.get_d();
@@ -42,7 +42,7 @@ float_biggest_t real_t::makeFloat() const
 	#endif
 }
 
-sint_biggest_t real_t::makeInt() const
+long long int real_t::makeInt() const
 {
 	#if USE_GMPLIB
 	return _data.get_si();
@@ -63,7 +63,7 @@ void real_l_t::encodeText(std::ostream & out)
 	#endif
 }
 
-float_biggest_t real_l_t::makeFloat() const
+long double real_l_t::makeFloat() const
 {
 	#if USE_GMPLIB
 	return _data.get_d();
@@ -72,7 +72,7 @@ float_biggest_t real_l_t::makeFloat() const
 	#endif
 }
 
-sint_biggest_t real_l_t::makeInt() const
+long long int real_l_t::makeInt() const
 {
 	#if USE_GMPLIB
 	return mpf_class(_data).get_si();

@@ -30,7 +30,7 @@ void int_t::encodeText(std::ostream & out)
 	out << _data;
 }
 
-float_biggest_t int_t::makeFloat() const
+long double int_t::makeFloat() const
 {
 	#if USE_GMPLIB
 	return _data.get_d();
@@ -39,7 +39,7 @@ float_biggest_t int_t::makeFloat() const
 	#endif
 }
 
-sint_biggest_t int_t::makeInt() const
+long long int int_t::makeInt() const
 {
 	#if USE_GMPLIB
 	return _data.get_si();
@@ -55,7 +55,7 @@ void int_l_t::encodeText(std::ostream & out)
 	out << _data;
 }
 
-float_biggest_t int_l_t::makeFloat() const
+long double int_l_t::makeFloat() const
 {
 	#if USE_GMPLIB
 	return _data.get_d();
@@ -64,7 +64,7 @@ float_biggest_t int_l_t::makeFloat() const
 	#endif
 }
 
-sint_biggest_t int_l_t::makeInt() const
+long long int int_l_t::makeInt() const
 {
 	#if USE_GMPLIB
 	return _data.get_si();

@@ -37,8 +37,6 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "types_limits.hpp"
-
 #include <cfloat>
 #include <climits>
 #include <sstream>
@@ -46,28 +44,22 @@
 
 
 
-#define  int_s_t_MAX SPOINTER_MAX
-#define  int_s_t_MIN SPOINTER_MIN
-#define uint_s_t_MAX UPOINTER_MAX
+#define  int_s_t_MAX  LLONG_MAX
+#define  int_s_t_MIN  LLONG_MIN
+#define uint_s_t_MAX ULLONG_MAX
 
-#if USE_GMPLIB
-#define  int_t_MAX 0
-#define  int_t_MIN 0
-#define uint_t_MAX 0
-#else
-#define  int_t_MAX SINT_BIGGEST_MAX
-#define  int_t_MIN SINT_BIGGEST_MIN
-#define uint_t_MAX UINT_BIGGEST_MAX
-#endif
+#define  int_t_MAX  int_l_t_MAX
+#define  int_t_MIN  int_l_t_MIN
+#define uint_t_MAX uint_l_t_MAX
 
 #if USE_GMPLIB
 #define  int_l_t_MAX 0
 #define  int_l_t_MIN 0
 #define uint_l_t_MAX 0
 #else
-#define  int_l_t_MAX SINT_BIGGEST_MAX
-#define  int_l_t_MIN SINT_BIGGEST_MIN
-#define uint_l_t_MAX UINT_BIGGEST_MAX
+#define  int_l_t_MAX  LLONG_MAX
+#define  int_l_t_MIN  LLONG_MIN
+#define uint_l_t_MAX ULLONG_MAX
 #endif
 
 #define  real_s_t_MAX   DBL_MAX
@@ -83,9 +75,9 @@
 #define  real_l_t_MIN 0
 #define ureal_l_t_MAX 0
 #else
-#define  real_l_t_MAX   FLOAT_BIGGEST_MAX
-#define  real_l_t_MIN (-FLOAT_BIGGEST_MAX)
-#define ureal_l_t_MAX   FLOAT_BIGGEST_MAX
+#define  real_l_t_MAX   LDBL_MAX
+#define  real_l_t_MIN (-LDBL_MAX)
+#define ureal_l_t_MAX   LDBL_MAX
 #endif
 
 
@@ -101,7 +93,7 @@ class stringf_t;
 
 typedef LevelObjectData    any_t;
 typedef bool               bool_t;
-typedef ptrdiff_t          int_s_t;
+typedef long long int      int_s_t;
 class                      int_t;
 class                      int_l_t;
 typedef LevelObjectPointer obj_t;

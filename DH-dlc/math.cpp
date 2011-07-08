@@ -87,16 +87,16 @@ const real_t& pi()
 
 template<typename T> inline T random__int(T const & max)
 {
-	sint_biggest_t random_sink = 0;
+	long long int random_sink = 0;
 
-	for (size_t i = sizeof(sint_biggest_t); i; --i)
+	for (size_t i = sizeof(long long int); i; --i)
 	{
 		random_sink <<= CHAR_BIT;
 		random_sink += rand();
 	}
 
 	// If this number is negative, it causes problems.
-	random_sink &= SINT_BIGGEST_MAX;
+	random_sink &= LLONG_MAX;
 
 	// +1 because this function produces 0..max inclusive.
 	random_sink %= max.makeInt() + 1;

@@ -206,7 +206,7 @@ int main(int argc, char** argv)
 			dirBase += PATHSEP;
 
 		std::string dirSub;
-		bool binaryMapHack;
+		bool binaryMapHack(false);
 
 		FOREACH_T(std::list<Lump>, lumpIt, lump_list)
 		{

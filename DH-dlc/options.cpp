@@ -71,7 +71,7 @@ PROCESS_OPTION_DEFINE_bool(strict_types,   false)
 PROCESS_OPTION_DEFINE_bool(use_file_extensions, false)
 
 PROCESS_OPTION_DEFINE_int(error_limit, 1)
-PROCESS_OPTION_DECLARE_int(precision, POINTER_BIT*2)
+PROCESS_OPTION_DECLARE_int(precision, 128)
 {
 	option_precision_default = false;
 	option_precision         = atoi(arg);
