@@ -1,5 +1,5 @@
 /*
-    Copyright 2010 David Hill
+    Copyright 2010, 2011 David Hill
 
     This file is part of DH-dlc.
 
@@ -51,18 +51,19 @@ FunctionHandler<T> const & FunctionHandler<T>::get_function(std::string const & 
 {
 	if (!func_map) throw UnknownFunctionException(name);
 
-	FunctionHandler<T> const * func = (*func_map)[name];
+	typename func_map_t::iterator func(func_map->find(name));
 
-	if (!func) throw UnknownFunctionException(name);
+	if (func == func_map->end())
+		throw UnknownFunctionException(name);
 
-	return *func;
+	return *func->second;
 }
 template<typename T>
 bool FunctionHandler<T>::has_function(std::string const & name)
 {
 	if (!func_map) return false;
 
-	return (*func_map)[name] != NULL;
+	return func_map->find(name) != func_map->end();
 }
 
 
@@ -85,6 +86,5 @@ template class FunctionHandler<sword_t>;
 template class FunctionHandler<uword_t>;
 template class FunctionHandler<sdword_t>;
 template class FunctionHandler<udword_t>;
-
 
 
