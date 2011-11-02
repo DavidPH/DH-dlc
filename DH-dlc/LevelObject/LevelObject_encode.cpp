@@ -665,8 +665,6 @@ void LevelObject::encodeHexen(std::ostream & out)
 				flags |= uword_t(0x1000U);
 			else if (hasObject(name_missilecross) && convert<bool_t, obj_t>(getObject(name_missilecross)))
 				flags |= uword_t(0x1400U);
-
-			flags.encodeBinary(out);
 		}
 		CHECKVALUE2_ASSIGN(special,   name_special,   ubyte,  0); // 06
 		CHECKVALUE2_ASSIGN(arg0,      name_arg0,      ubyte,  0); // 07
@@ -795,6 +793,8 @@ void LevelObject::encodeHexen(std::ostream & out)
 			CHECKFLAG(flags, name_invisible,   uword_t(0x1000U)); // Hexen
 			CHECKFLAG(flags, name_friend,      uword_t(0x2000U)); // Hexen
 			CHECKFLAG(flags, name_standing,    uword_t(0x4000U)); // Hexen
+
+			flags.encodeBinary(out);
 		}
 
 		CHECKVALUE2_BINARY(name_special, ubyte,  0); // 14
