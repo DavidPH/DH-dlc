@@ -1,24 +1,24 @@
-/*
-    Copyright 2010 David Hill
-
-    This file is part of DH-dlc.
-
-    DH-dlc is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    DH-dlc is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with DH-dlc.  If not, see <http://www.gnu.org/licenses/>.
+/* Copyright (C) 2010, 2011 David Hill
+**
+** This file is part of DH-dlc.
+**
+** This program is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 3 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*
-
+/* LevelObject/LevelObject_do.cpp
+**
+** Defines the LevelObject::do* methods.
 */
 
 #include "LevelObject.hpp"
@@ -100,6 +100,10 @@ void LevelObject::doCommand(std::string const & command, SourceScannerDHLX & sc)
 	// # if expression block
 	else if (command == command_name_if())
 		addDataIf(sc);
+
+	// # info string-expr;
+	else if (command == command_name_info())
+		doCommandInfo(sc);
 
 	// # return expression;
 	else if (command == command_name_return())
@@ -262,8 +266,8 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 		addDataIf(st.getData(), st.getBase(0), st.getBase(2), st.getBase(1), st.getBase(3), true);
 
 	// # else if* : name... { data }
-	else if (command.substr(0, 7) == command_name_elseif())
-		addDataIf(st.getData(), st.getBase(), command.substr(7), true);
+	else if (command.substr(0, 6) == command_name_elseif())
+		addDataIf(st.getData(), st.getBase(), command.substr(6), true);
 
 	// # error : message
 	// prints message and counts towards error-limit
@@ -317,8 +321,8 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 		addDataIf(st.getData(), st.getBase(0), st.getBase(2), st.getBase(1), st.getBase(3));
 
 	// # if* : name... { data }
-	else if (command.substr(0, 3) == command_name_if())
-		addDataIf(st.getData(), st.getBase(), command.substr(3));
+	else if (command.substr(0, 2) == command_name_if())
+		addDataIf(st.getData(), st.getBase(), command.substr(2));
 
 	// # info : message
 	else if (command == command_name_info())
@@ -411,5 +415,18 @@ void LevelObject::doCommand(std::string const & command, SourceTokenDDL const & 
 		throw UnknownCommandException(command);
 }
 
+void LevelObject::doCommandInfo(SourceScannerDHLX & sc)
+{
+	doCommandInfo(parse<string_t>(sc));
 
+	sc.get(SourceTokenDHLX::TT_OP_SEMICOLON);
+}
+void LevelObject::doCommandInfo(SourceTokenDDL const & st)
+{
+	doCommandInfo(parse<string_t>(st.getBase(0)));
+}
+void LevelObject::doCommandInfo(string_t const & data)
+{
+	PRINT_AND_COUNT_INFO(data.makeString() << '\n');
+}
 

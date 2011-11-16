@@ -300,6 +300,8 @@ void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 		// # function ... block
 		else if (commandString == command_name_function())
 		{
+			std::string functionName(sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData());
+
 			std::vector<type_t> returnTypes;
 
 			while (true)
@@ -316,8 +318,6 @@ void process_token(SourceTokenDHLX const & st, SourceScannerDHLX & sc)
 			}
 
 			sc.get(SourceTokenDHLX::TT_OP_COLON);
-
-			std::string functionName(sc.get(SourceTokenDHLX::TT_IDENTIFIER).getData());
 
 			std::vector<type_t> argTypes;
 

@@ -128,7 +128,7 @@ void LevelObject::addData(std::string const & data, std::string const & name)
 			ss >> st;
 
 			if (!st.getName().empty() && st.getName()[0] == '#')
-				doCommand(st.getName(), st);
+				doCommand(st.getName().substr(1), st);
 			else
 				addObject(parse_name(st.getName()), st);
 		}
