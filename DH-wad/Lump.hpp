@@ -1,5 +1,5 @@
 /*
-    Copyright 2009 David Hill
+    Copyright 2009, 2011 David Hill
 
     This file is part of DH-wad.
 
@@ -40,6 +40,8 @@ class Lump
 		uint32_t length() const;
 
 	private:
+		void transName();
+
 		std::string _lumpData;
 		std::string _lumpName;
 		uint32_t    _lumpStart;

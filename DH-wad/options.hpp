@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, 2010 David Hill
+    Copyright 2009, 2010, 2011 David Hill
 
     This file is part of DH-wad.
 
@@ -33,6 +33,7 @@
 
 PROCESS_OPTION_EXTERN_bool(explicit);
 PROCESS_OPTION_EXTERN_bool(iwad);
+PROCESS_OPTION_EXTERN_bool(trans_bslash);
 PROCESS_OPTION_EXTERN_bool(unwad);
 
 PROCESS_OPTION_EXTERN_string(output);

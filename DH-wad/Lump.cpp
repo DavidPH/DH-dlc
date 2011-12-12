@@ -1,5 +1,5 @@
 /*
-    Copyright 2009 David Hill
+    Copyright 2009, 2011 David Hill
 
     This file is part of DH-wad.
 
@@ -21,18 +21,18 @@
 
 #include "Lump.hpp"
 #include "main.hpp"
+#include "options.hpp"
 
 
 
 Lump::Lump(const std::string& lumpData, const std::string& lumpName) : _lumpData(lumpData), _lumpName(lumpName), _lumpStart(get_lump_list_length()+12)
 {
-	_lumpName.resize(8);
+	transName();
 }
 Lump::Lump(const std::string& lumpData, const std::string& lumpName, uint32_t lumpStart) : _lumpData(lumpData), _lumpName(lumpName), _lumpStart(lumpStart)
 {
-	_lumpName.resize(8);
+	transName();
 }
-
 
 std::string Lump::encodeBody() const
 {
@@ -65,6 +65,13 @@ std::string Lump::encodeHead() const
 	encodedData[14] = _lumpName[6];
 	encodedData[15] = _lumpName[7];
 
+	if (option_trans_bslash)
+	{
+		for (int i = 8; i < 16; ++i)
+			if (encodedData[i] == '^')
+				encodedData[i] = '\\';
+	}
+
 	return encodedData;
 }
 
@@ -77,12 +84,21 @@ std::string Lump::getName() const
 	return std::string(_lumpName.c_str());
 }
 
-
-
 uint32_t Lump::length() const
 {
 	return _lumpData.length();
 }
 
+void Lump::transName()
+{
+	while (_lumpName.size() < 8)
+		_lumpName += '\0';
 
+	if (option_trans_bslash)
+	{
+		for (int i = 0; i < 8; ++i)
+			if (_lumpName[i] == '\\')
+				_lumpName[i] = '^';
+	}
+}
 

@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, 2010 David Hill
+    Copyright 2009, 2010, 2011 David Hill
 
     This file is part of DH-wad.
 
@@ -33,9 +33,10 @@
 
 
 
-PROCESS_OPTION_DEFINE_bool(explicit, false)
-PROCESS_OPTION_DEFINE_bool(iwad,     false)
-PROCESS_OPTION_DEFINE_bool(unwad,    false)
+PROCESS_OPTION_DEFINE_bool(explicit,     false)
+PROCESS_OPTION_DEFINE_bool(iwad,         false)
+PROCESS_OPTION_DEFINE_bool(trans_bslash, false)
+PROCESS_OPTION_DEFINE_bool(unwad,        false)
 
 PROCESS_OPTION_DEFINE_string(output, "")
 
@@ -59,9 +60,10 @@ PROCESS_OPTION_LONG_DECLARE
 		exit(0);
 	}
 
-	PROCESS_OPTION_HANDLE_LONG_bool(explicit, "explicit", 8);
-	PROCESS_OPTION_HANDLE_LONG_bool(iwad,     "iwad",     4);
-	PROCESS_OPTION_HANDLE_LONG_bool(unwad,    "unwad",    5);
+	PROCESS_OPTION_HANDLE_LONG_bool(explicit,     "explicit",     8);
+	PROCESS_OPTION_HANDLE_LONG_bool(iwad,         "iwad",         4);
+	PROCESS_OPTION_HANDLE_LONG_bool(trans_bslash, "trans-bslash", 7);
+	PROCESS_OPTION_HANDLE_LONG_bool(unwad,        "unwad",        5);
 
 	PROCESS_OPTION_HANDLE_LONG_string(output, "output", 3);
 
@@ -81,6 +83,7 @@ PROCESS_OPTION_SHORT_DECLARE
 	}
 
 	PROCESS_OPTION_HANDLE_SHORT_bool(explicit, 'e');
+	PROCESS_OPTION_HANDLE_SHORT_bool(unwad,    'u');
 
 	PROCESS_OPTION_HANDLE_SHORT_string(output, 'o');
 

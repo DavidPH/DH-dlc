@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, 2010 David Hill
+    Copyright 2009, 2010, 2011 David Hill
 
     This file is part of DH-wad.
 
@@ -80,13 +80,14 @@ void usage()
 		"  -h, --help     displays this text and exits\n"
 		"      --version  displays version and exits\n"
 		"\n"
-		"  -d, --directory  processes the specified directory\n"
-		"  -e, --explicit   processes arguments as an explicit list of files\n"
-		"      --iwad       outputs an IWAD instead of a PWAD\n"
-		"  -m, --map        processes the specified directory as a map\n"
-		"  -o, --output     sets the output directory\n"
-		"  -u, --unwad      writes out directory instead of a wad\n"
-		"  -w, --wad        read the specified file as a wad file and add its lumps\n"
+		"  -d, --directory     processes the specified directory\n"
+		"  -e, --explicit      processes arguments as an explicit list of files\n"
+		"      --iwad          outputs an IWAD instead of a PWAD\n"
+		"  -m, --map           processes the specified directory as a map\n"
+		"  -o, --output        sets the output directory\n"
+		"      --trans-bslash  translates \\ to ^ for files and ^ to \\ for wads\n"
+		"  -u, --unwad         writes out directory instead of a wad\n"
+		"  -w, --wad           read the specified file as a wad file and add its lumps\n"
 	;
 }
 
