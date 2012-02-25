@@ -4,8 +4,8 @@
 // basic layout of a DH-dlc source file.
 //
 // To compile:
-// DH-dlc --dir basic basic.ddl
-// DH-wad --map basic basic.wad
+// DH-dlc --dir MAP01 basic.ddl
+// DH-wad --map MAP01 basic.wad
 
 // Quickly define some vertexes.
 VERTEX vert0 {x = -256; y = -256;}
