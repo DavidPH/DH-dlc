@@ -19,7 +19,6 @@ endif()
 
 
 add_subdirectory(DH-dlc)
-add_subdirectory(DH-wad)
 
 
 
