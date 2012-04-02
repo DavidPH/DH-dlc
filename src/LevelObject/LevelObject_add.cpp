@@ -1,38 +1,25 @@
-/*
-    Copyright 2009, 2010 David Hill
-
-    This file is part of DH-dlc.
-
-    DH-dlc is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    DH-dlc is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with DH-dlc.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-/*
-	2010/02/03 - Minor cleanup. Changed interface for name_t.
-	2010/02/04 - Added #deletevolatile command.
-	2010/02/06 - Should check for multiple name parts after check for
-		command, so that the right error is generated.
-	2010/02/06 - Added #return command.
-	2010/02/14 - Do NOT change last_if_result for else. Doing so breaks
-		if; else if; else if; else horribly.
-	2010/02/15 - Add isBreaked and isContinued checks to addData(str_t) and
-		to #while. Also add #break and #continue.
-	2010/02/15 - Added #for and #do command.
-	2010/02/16 - Remove addGlobal argument from addObject(name_t, obj_t,
-		bool).
-	2010/02/28 - Update for lo_type enum.
-	2010/06/24 - Update for explicit name_t constructors.
-*/
+//-----------------------------------------------------------------------------
+//
+// Copyright(C) 2009-2012 David Hill
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see <http://www.gnu.org/licenses/>.
+//
+//-----------------------------------------------------------------------------
+//
+// LevelObject add functions.
+//
+//-----------------------------------------------------------------------------
 
 #include "LevelObject.hpp"
 
@@ -114,7 +101,7 @@ void LevelObject::addData(std::string const & data, std::string const & name)
 	LevelObjectStack los(this);
 
 	std::istringstream iss(data);
-	SourceStream       ss(iss);
+   SourceStream       ss(iss, "", SourceStream::ST_DDL);
 	SourceTokenDDL     st;
 
 	while (ss)
