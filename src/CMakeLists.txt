@@ -3,6 +3,7 @@ add_executable(DH-dlc
 	global_object.cpp
 	main.cpp
 	math.cpp
+   option.cpp
 	options.cpp
 	process_file.cpp
 	process_stream.cpp

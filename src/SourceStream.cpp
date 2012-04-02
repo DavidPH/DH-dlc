@@ -23,6 +23,9 @@
 
 #include "SourceStream.hpp"
 
+#include "option.hpp"
+
+#include <fstream>
 #include <vector>
 
 
@@ -30,7 +33,6 @@
 // Static Variables                                                           |
 //
 
-#if 0
 static option::option_data<std::vector<std::string> > option_include_dir
 ('i', "include-dir", "input",
  "Specifies a directory to search for includes in.", NULL,
@@ -39,7 +41,6 @@ static option::option_data<std::vector<std::string> > option_include_dir
 static option::option_data<int> option_tab_columns
 ('\0', "tab-columns", "input",
  "How many columns a tab counts for in error reporting.", NULL, 1);
-#endif
 
 
 //----------------------------------------------------------------------------|
@@ -54,7 +55,6 @@ SourceStream::SourceStream(std::string const &_filename, unsigned type)
 {
    initialize(type);
 
-   #if 0
    if (!in)
    {
       std::vector<std::string>::iterator dir;
@@ -70,7 +70,6 @@ SourceStream::SourceStream(std::string const &_filename, unsigned type)
          }
       }
    }
-   #endif
 
    if (!in) throw std::exception();
 }
@@ -114,13 +113,11 @@ char SourceStream::get()
       newC = in->get();
 
 
-      #if 0
       // \t has special counting
       if (curC == '\t')
          countColumn += option_tab_columns.data;
       else
          ++countColumn;
-      #endif
 
       // \n end of line
       if (curC == '\n')
@@ -225,9 +222,7 @@ char SourceStream::get()
             break;
 
          case '\t':
-            #if 0
             countColumn += option_tab_columns.data-1;
-            #endif
          case '\\':
          case '\'':
          case '"':
