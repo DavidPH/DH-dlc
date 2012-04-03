@@ -15,6 +15,7 @@ add_executable(DH-dlc
 	SourceStream.cpp
 	SourceToken.cpp
    SourceTokenC.cpp
+   SourceTokenizerEDMF.cpp
 	types.cpp
 
 	exceptions/CompilerException.cpp
