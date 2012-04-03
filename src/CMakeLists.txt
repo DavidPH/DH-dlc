@@ -1,6 +1,7 @@
 add_executable(DH-dlc
 	compound_objects.cpp
 	global_object.cpp
+   LevelObject.cpp
 	main.cpp
 	math.cpp
    option.cpp
@@ -25,14 +26,12 @@ add_executable(DH-dlc
 	exceptions/UnknownCommandException.cpp
 	exceptions/UnknownFunctionException.cpp
 
-	LevelObject/LevelObject.cpp
 	LevelObject/LevelObject_add.cpp
 	LevelObject/LevelObject_do.cpp
 	LevelObject/LevelObject_encode.cpp
 	LevelObject/LevelObjectData.cpp
 	LevelObject/LevelObjectMap.cpp
 	LevelObject/LevelObjectName.cpp
-	LevelObject/LevelObjectPointer.cpp
 	LevelObject/LevelObjectType.cpp
 
 	parsing/FunctionHandler.cpp

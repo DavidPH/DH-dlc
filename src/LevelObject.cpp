@@ -1,65 +1,58 @@
-/*
-    Copyright 2009, 2010 David Hill
-
-    This file is part of DH-dlc.
-
-    DH-dlc is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    DH-dlc is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with DH-dlc.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-/*
-	2010/02/03 - Update for name_t.
-	2010/02/06 - refCount should be initialized to 0. Except for object
-		constructors, which must initialize to 1 then decrement at end
-		of function. This is because the object is put into use and has
-		to consider itself a reference to itself.
-	2010/06/02 - LevelObject::create functions no longer inline.
-	2010/02/15 - Add isBreaked and isContinued to init list.
-	2010/02/15 - Added operator < and operator += functions.
-	2010/02/16 - Added addGlobal to the init list.
-	2010/02/16 - Removed the math functions that operated on LevelObjects.
-	2010/02/28 - Update for lo_type enum.
-*/
+//-----------------------------------------------------------------------------
+//
+// Copyright(C) 2009-2012 David Hill
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see <http://www.gnu.org/licenses/>.
+//
+//-----------------------------------------------------------------------------
+//
+// Level object.
+//
+//-----------------------------------------------------------------------------
 
 #include "LevelObject.hpp"
 
-#include "LevelObjectMap.hpp"
-#include "LevelObjectName.hpp"
+#include "LevelObject/LevelObjectMap.hpp"
+#include "LevelObject/LevelObjectName.hpp"
 
-#include "../compound_objects.hpp"
-#include "../global_object.hpp"
-#include "../math.hpp"
-#include "../options.hpp"
-#include "../scripts.hpp"
-#include "../SourceStream.hpp"
-#include "../types.hpp"
+#include "compound_objects.hpp"
+#include "global_object.hpp"
+#include "math.hpp"
+#include "options.hpp"
+#include "scripts.hpp"
+#include "SourceStream.hpp"
+#include "types.hpp"
 
-#include "../exceptions/InvalidTypeException.hpp"
-#include "../exceptions/NoSuchElementException.hpp"
-#include "../exceptions/UnknownCommandException.hpp"
+#include "exceptions/InvalidTypeException.hpp"
+#include "exceptions/NoSuchElementException.hpp"
+#include "exceptions/UnknownCommandException.hpp"
 
-#include "../parsing/parsing.hpp"
+#include "parsing/parsing.hpp"
 
-#include "../types/binary.hpp"
-#include "../types/int_t.hpp"
-#include "../types/real_t.hpp"
-#include "../types/string_t.hpp"
+#include "types/binary.hpp"
+#include "types/int_t.hpp"
+#include "types/real_t.hpp"
+#include "types/string_t.hpp"
 
-#include "../../common/foreach.hpp"
+#include "../common/foreach.hpp"
 
 #include <ostream>
 
 
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
 
 // The initialization list for the constructors are all basically the same.
 #define LevelObject_INIT_LIST(TYPE, DATA) _index(-1), _refCount(0), _data(DATA), _type(TYPE), _addGlobal(true), _isBreaked(false), _isCompounded(false), _isContinued(false), _isReturned(false)
@@ -396,5 +389,5 @@ std::ostream & operator << (std::ostream & out, LevelObject const & in)
 	return out;
 }
 
-
+// EOF
 

@@ -1,41 +1,29 @@
-/*
-    Copyright 2009, 2010 David Hill
+//-----------------------------------------------------------------------------
+//
+// Copyright(C) 2009-2012 David Hill
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see <http://www.gnu.org/licenses/>.
+//
+//-----------------------------------------------------------------------------
+//
+// Declares fundamental internal types. Also declares the functions for
+// converting between one another.
+//
+//-----------------------------------------------------------------------------
 
-    This file is part of DH-dlc.
-
-    DH-dlc is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    DH-dlc is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with DH-dlc.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-/*
-	Declares fundamental internal types. Also declares the functions for
-	converting between one another.
-
-	2010/02/03 - Added name_t class to try and make name handling simpler.
-	2010/02/19 - Use the more standard ptrdiff_t for int_s_t instead of
-		ssize_t to improve portability.
-	2010/05/04 - Remove str_t typedef. Replace all uses with either
-		std::string or the new string_t class. Because this obviously
-		affects almost all of the code, it will only be noted here. I
-		am putting an end to the use of "str" and also much of the
-		overlap between user-exposed types and internal types.
-	2010/05/05 - Moved int_t to its own file.
-	2010/05/06 - No more inline functions here, mostly because of the new
-		types. (Circular dependencies make me weep.)
-*/
-
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef HPP_types_
+#define HPP_types_
 
 #include <cfloat>
 #include <climits>
@@ -43,6 +31,9 @@
 #include <string>
 
 
+//----------------------------------------------------------------------------|
+// Macros                                                                     |
+//
 
 #define  int_s_t_MAX  LLONG_MAX
 #define  int_s_t_MIN  LLONG_MIN
@@ -81,12 +72,17 @@
 #endif
 
 
+//----------------------------------------------------------------------------|
+// Types                                                                      |
+//
 
+class LevelObject;
 class LevelObjectData;
 class LevelObjectMap;
 class LevelObjectName;
-class LevelObjectPointer;
 class LevelObjectType;
+
+template<typename T> class CounterPointer;
 
 template <size_t S>
 class stringf_t;
@@ -96,7 +92,7 @@ typedef bool               bool_t;
 typedef long long int      int_s_t;
 class                      int_t;
 class                      int_l_t;
-typedef LevelObjectPointer obj_t;
+typedef CounterPointer<LevelObject> obj_t;
 typedef LevelObjectMap     objmap_t;
 typedef double             real_s_t;
 class                      real_t;
@@ -117,6 +113,9 @@ typedef LevelObjectName name_t;
 typedef LevelObjectType type_t;
 
 
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
 
 template<class T>
 std::string make_string(T const & in)
@@ -152,9 +151,5 @@ T num_from_string(std::string const & value);
 template<typename Tto, typename Tfrom>
 Tto convert(Tfrom const &);
 
-
-
-#endif /* TYPES_H */
-
-
+#endif//HPP_types_
 
