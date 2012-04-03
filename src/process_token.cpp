@@ -1,25 +1,25 @@
-/*
-    Copyright 2009, 2010 David Hill
-
-    This file is part of DH-dlc.
-
-    DH-dlc is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    DH-dlc is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with DH-dlc.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-/*
-	2010/02/28 - Update for lo_type enum.
-*/
+//-----------------------------------------------------------------------------
+//
+// Copyright(C) 2009-2012 David Hill
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see <http://www.gnu.org/licenses/>.
+//
+//-----------------------------------------------------------------------------
+//
+// Token processing and interpretation.
+//
+//-----------------------------------------------------------------------------
 
 #include "process_token.hpp"
 
@@ -209,14 +209,6 @@ void process_token(SourceTokenDDL const & st, SourceScannerDDL & sc)
 		if (command == command_name_include())
 		{
 			process_file(st.getBase(0));
-
-			return;
-		}
-
-		// # precision : NEW_PRECISION
-		if (command == command_name_precision())
-		{
-			set_precision(parse<int_s_t>(st.getBase(0)));
 
 			return;
 		}

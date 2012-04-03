@@ -1,202 +1,203 @@
-/*
-    Copyright 2009, 2010 David Hill
-
-    This file is part of DH-dlc.
-
-    DH-dlc is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    DH-dlc is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with DH-dlc.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-/*
-	2010/02/03 - Update for new process_options.h.
-	2010/02/06 - Added --debug-token option for debugging.
-	2010/06/24 - Added option_lib_udmf_strict.
-*/
-
-#define PROCESS_OPTION_USER_ERROR usage(); exit(2);
+//-----------------------------------------------------------------------------
+//
+// Copyright(C) 2009-2012 David Hill
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see <http://www.gnu.org/licenses/>.
+//
+//-----------------------------------------------------------------------------
+//
+// Global program options.
+//
+//-----------------------------------------------------------------------------
 
 #include "options.hpp"
 
-#include "main.hpp"
-#include "types.hpp"
-
-#include "types/real_t.hpp"
-
-#include "../common/process_options.c"
-
-#include <cstdlib>
-#include <iostream>
+#include "option.hpp"
 
 
+//----------------------------------------------------------------------------|
+// Static Variables                                                           |
+//
 
-PROCESS_OPTION_DEFINE_bool(debug,       false)
-PROCESS_OPTION_DEFINE_bool(debug_dump,  false)
-PROCESS_OPTION_DEFINE_bool(debug_seed,  false)
-PROCESS_OPTION_DEFINE_bool(debug_time,  false)
-PROCESS_OPTION_DEFINE_bool(debug_token, false)
+static option::option_dptr<bool> option_debug_handler
+('\0', "debug", "debugging", "Enables debugging messages.", NULL,
+ &option_debug);
 
-PROCESS_OPTION_DEFINE_bool(case_sensitive, true)
-PROCESS_OPTION_DEFINE_bool(case_upper,     false)
+static option::option_dptr<bool> option_debug_dump_handler
+('\0', "debug-dump", "debugging",
+ "Prints every object at the end of program.\nWARNING: Will go into an "
+ "infinite loop if an object references itself, directly or otherwise.", NULL,
+ &option_debug_dump);
 
-PROCESS_OPTION_DEFINE_bool(force_default_types, false)
+static option::option_dptr<bool> option_debug_seed_handler
+('\0', "debug-seed", "debugging", "Prints the starting seed.", NULL,
+ &option_debug_seed);
 
-PROCESS_OPTION_DEFINE_bool(lib_std,         true)
-PROCESS_OPTION_DEFINE_bool(lib_udmf,        true)
-PROCESS_OPTION_DEFINE_bool(lib_udmf_strict, false)
-PROCESS_OPTION_DEFINE_bool(lib_usdf,        false)
-PROCESS_OPTION_DEFINE_bool(lib_usdf_strict, false)
+static option::option_dptr<bool> option_debug_time_handler
+('\0', "debug-time", "debugging", "Prints the compile times.", NULL,
+ &option_debug_time);
 
-PROCESS_OPTION_DEFINE_bool(output_any,       true)
-PROCESS_OPTION_DEFINE_bool(output_doom,      false)
-PROCESS_OPTION_DEFINE_bool(output_extradata, false)
-PROCESS_OPTION_DEFINE_bool(output_heretic,   false)
-PROCESS_OPTION_DEFINE_bool(output_hexen,     false)
-PROCESS_OPTION_DEFINE_bool(output_strife,    false)
-PROCESS_OPTION_DEFINE_bool(output_udmf,      true)
-PROCESS_OPTION_DEFINE_bool(output_usdf,      false)
+static option::option_dptr<bool> option_debug_token_handler
+('\0', "debug-token", "debugging", NULL, NULL, &option_debug_token);
 
-PROCESS_OPTION_DEFINE_bool(strict_strings, true)
-PROCESS_OPTION_DEFINE_bool(strict_types,   false)
+static option::option_dptr<bool> option_case_sensitive_handler
+('\0', "case-sensitive", "input", "Enables case sensitivity. On by default.",
+ NULL, &option_case_sensitive);
 
-PROCESS_OPTION_DEFINE_bool(use_file_extensions, false)
+static option::option_dptr<bool> option_case_upper_handler
+('\0', "case-upper", "input", NULL, NULL, &option_case_upper);
 
-PROCESS_OPTION_DEFINE_int(error_limit, 1)
-PROCESS_OPTION_DECLARE_int(precision, 128)
-{
-	option_precision_default = false;
-	option_precision         = atoi(arg);
+static option::option_dptr<bool> option_force_default_types_handler
+('\0', "force-default-types", "features", NULL, NULL,
+ &option_force_default_types);
 
-	set_precision();
+static option::option_dptr<bool> option_lib_std_handler
+('\0', "lib-std", "libraries",
+ "Automatically includes lib-std.ddl. On by default.", NULL, &option_lib_std);
 
-	return 2;
-}
-PROCESS_OPTION_DEFINE_int(seed, 0)
+static option::option_dptr<bool> option_lib_udmf_handler
+('\0', "lib-udmf", "libraries",
+ "Automatically includes lib-udmf.ddl. On by default.", NULL, &option_lib_udmf);
 
-PROCESS_OPTION_DEFINE_string(directory,        "")
-PROCESS_OPTION_DEFINE_string(map_name,         "")
-PROCESS_OPTION_DEFINE_string(script_acs,       "SCRIPTS")
-PROCESS_OPTION_DEFINE_string(script_extradata, "EXTRADAT")
+static option::option_dptr<bool> option_lib_udmf_strict_handler
+('\0', "lib-udmf-strict", "libraries",
+ "Automatically includes lib-udmf-strict.ddl.", NULL, &option_lib_udmf);
 
-PROCESS_OPTION_DEFINE_string_multi(include)
+static option::option_dptr<bool> option_lib_usdf_handler
+('\0', "lib-usdf", "libraries",
+ "Automatically includes lib-usdf.ddl.", NULL, &option_lib_usdf);
 
+static option::option_dptr<bool> option_lib_usdf_strict_handler
+('\0', "lib-usdf-strict", "libraries",
+ "Automatically includes lib-usdf-strict.ddl.", NULL, &option_lib_usdf);
 
+static option::option_dptr<bool> option_output_any_handler
+('\0', "output-any", "output", "Enables any output. On by default.", NULL,
+ &option_output_any);
 
-PROCESS_OPTION_LONG_DECLARE
-{
-	if (cmp_opt(opt, "help") > 4)
-	{
-		usage();
-		exit(0);
-	}
+static option::option_dptr<bool> option_output_doom_handler
+('\0', "output-doom", "output", "Enables Doom output.", NULL,
+ &option_output_doom);
 
-	if (cmp_opt(opt, "limits") > 6)
-	{
-		limits();
-		exit(0);
-	}
+static option::option_dptr<bool> option_output_extradata_handler
+('\0', "output-extradata", "output", "Enables ExtraData output.", NULL,
+ &option_output_extradata);
 
-	if (cmp_opt(opt, "version") > 7)
-	{
-		version();
-		exit(0);
-	}
+static option::option_dptr<bool> option_output_heretic_handler
+('\0', "output-heretic", "output", "Enables Heretic output.", NULL,
+ &option_output_heretic);
 
-	PROCESS_OPTION_HANDLE_LONG_bool(debug,       "debug",        6);
-	PROCESS_OPTION_HANDLE_LONG_bool(debug_dump,  "debug-dump",  11);
-	PROCESS_OPTION_HANDLE_LONG_bool(debug_seed,  "debug-seed",  11);
-	PROCESS_OPTION_HANDLE_LONG_bool(debug_time,  "debug-time",  11);
-	PROCESS_OPTION_HANDLE_LONG_bool(debug_token, "debug-token", 12);
+static option::option_dptr<bool> option_output_hexen_handler
+('\0', "output-hexen", "output", "Enables Hexen output.", NULL,
+ &option_output_hexen);
 
-	PROCESS_OPTION_HANDLE_LONG_bool(case_sensitive, "case-sensitive", 15);
-	PROCESS_OPTION_HANDLE_LONG_bool(case_upper,     "case-upper",     11);
+static option::option_dptr<bool> option_output_strife_handler
+('\0', "output-strife", "output", "Enables Strife output.", NULL,
+ &option_output_strife);
 
-	PROCESS_OPTION_HANDLE_LONG_bool(force_default_types, "force-default-types", 20);
+static option::option_dptr<bool> option_output_udmf_handler
+('\0', "output-udmf", "output", "Enables UDMF output. On by default", NULL,
+ &option_output_udmf);
 
-	PROCESS_OPTION_HANDLE_LONG_bool(lib_std,         "lib-std",          8);
-	PROCESS_OPTION_HANDLE_LONG_bool(lib_udmf,        "lib-udmf",         9);
-	PROCESS_OPTION_HANDLE_LONG_bool(lib_udmf_strict, "lib-udmf-strict", 16);
-	PROCESS_OPTION_HANDLE_LONG_bool(lib_usdf,        "lib-usdf",         9);
-	PROCESS_OPTION_HANDLE_LONG_bool(lib_usdf_strict, "lib-usdf-strict", 16);
+static option::option_dptr<bool> option_output_usdf_handler
+('\0', "output-usdf", "output", "Enables USDF output.", NULL,
+ &option_output_usdf);
 
-	PROCESS_OPTION_HANDLE_LONG_bool(output_any,       "output-any",       11);
-	PROCESS_OPTION_HANDLE_LONG_bool(output_doom,      "output-doom",      12);
-	PROCESS_OPTION_HANDLE_LONG_bool(output_extradata, "output-extradata", 17);
-	PROCESS_OPTION_HANDLE_LONG_bool(output_heretic,   "output-heretic",   15);
-	PROCESS_OPTION_HANDLE_LONG_bool(output_hexen,     "output-hexen",     13);
-	PROCESS_OPTION_HANDLE_LONG_bool(output_strife,    "output-strife",    14);
-	PROCESS_OPTION_HANDLE_LONG_bool(output_udmf,      "output-udmf",      12);
-	PROCESS_OPTION_HANDLE_LONG_bool(output_usdf,      "output-usdf",      12);
+static option::option_dptr<bool> option_strict_strings_handler
+('\0', "strict-strings", "features", NULL, NULL, &option_strict_strings);
 
-	PROCESS_OPTION_HANDLE_LONG_bool(strict_strings, "strict-strings", 15);
-	PROCESS_OPTION_HANDLE_LONG_bool(strict_types,   "strict-types",   13);
+static option::option_dptr<bool> option_strict_types_handler
+('\0', "strict-types", "features", NULL, NULL, &option_strict_types);
 
-	PROCESS_OPTION_HANDLE_LONG_bool(use_file_extensions, "extensions", 3);
+static option::option_dptr<bool> option_use_file_extensions_handler
+('\0', "file-extensions", "output", "Adds file-extensions to output files.",
+ NULL, &option_use_file_extensions);
 
-	PROCESS_OPTION_HANDLE_LONG_int(error_limit, "error-limit", 12);
-	PROCESS_OPTION_HANDLE_LONG_int(precision,   "precision",    4);
-	PROCESS_OPTION_HANDLE_LONG_int(seed,        "seed",         5);
+static option::option_dptr<int> option_error_limit_handler
+('\0', "error-limit", "input",
+ "Sets the number of errors that can occur before terminating. 1 by default.",
+ NULL, &option_error_limit);
 
-	PROCESS_OPTION_HANDLE_LONG_string(directory,        "directory",         3);
-	PROCESS_OPTION_HANDLE_LONG_string(map_name,         "map-name",          3);
-	PROCESS_OPTION_HANDLE_LONG_string(script_acs,       "script-acs",       11);
-	PROCESS_OPTION_HANDLE_LONG_string(script_extradata, "script-extradata", 17);
+static option::option_dptr<int> option_seed_handler
+('\0', "seed", "features", "Sets the seed for the random number generator.",
+ NULL, &option_seed);
 
-	PROCESS_OPTION_HANDLE_LONG_string_multi(include, "include", 3);
+static option::option_dptr<std::string> option_directory_handler
+('\0', "directory", "output", "Sets the output directory.", NULL,
+ &option_directory);
+static option::option_copy option_directory_handler_copy
+('o', "output", &option_directory_handler);
 
-	PROCESS_OPTION_HANDLE_LONG_UNKNOWN();
-}
+static option::option_dptr<std::string> option_map_name_handler
+('\0', "map-name", "scripts", "Sets the map name.", NULL, &option_map_name);
 
-PROCESS_OPTION_SHORT_DECLARE
-{
-	if (opt == 'h')
-	{
-		usage();
-		exit(0);
-	}
+static option::option_dptr<std::string> option_script_acs_handler
+('\0', "script-acs", "scripts",
+ "Sets the output file for ACS. SCRIPTS by default.", NULL,
+ &option_script_acs);
 
-	PROCESS_OPTION_HANDLE_SHORT_bool(case_sensitive, 'c');
-
-	PROCESS_OPTION_HANDLE_SHORT_int(error_limit, 'e');
-	PROCESS_OPTION_HANDLE_SHORT_int(precision,   'p');
-
-	PROCESS_OPTION_HANDLE_SHORT_string(directory, 'd');
-	PROCESS_OPTION_HANDLE_SHORT_string(map_name,  'm');
-
-	PROCESS_OPTION_HANDLE_SHORT_string_multi(include, 'i');
-
-	PROCESS_OPTION_HANDLE_SHORT_UNKNOWN();
-}
+static option::option_dptr<std::string> option_script_extradata_handler
+('\0', "script-extradata", "scripts",
+ "Sets the output file for ExtraData. EXTRADAT by default.", NULL,
+ &option_script_extradata);
 
 
+//----------------------------------------------------------------------------|
+// Global Variables                                                           |
+//
 
-PROCESS_OPTION_ARG_DEFINE
+bool option_debug       = false;
+bool option_debug_dump  = false;
+bool option_debug_seed  = false;
+bool option_debug_time  = false;
+bool option_debug_token = false;
 
-PROCESS_OPTION_DEFINE
+bool option_case_sensitive = true;
+bool option_case_upper     = false;
 
+bool option_force_default_types = false;
 
+bool option_lib_std         = true;
+bool option_lib_udmf        = true;
+bool option_lib_udmf_strict = false;
+bool option_lib_usdf        = false;
+bool option_lib_usdf_strict = false;
 
-void set_precision()
-{
-	#if USE_GMPLIB
-	mpf_set_default_prec(option_precision);
-	#endif
-}
-void set_precision(int new_precision)
-{
-	option_precision = new_precision;
+bool option_output_any       = true;
+bool option_output_doom      = false;
+bool option_output_extradata = false;
+bool option_output_heretic   = false;
+bool option_output_hexen     = false;
+bool option_output_strife    = false;
+bool option_output_udmf      = true;
+bool option_output_usdf      = false;
 
-	set_precision();
-}
+bool option_strict_strings = true;
+bool option_strict_types   = false;
 
+bool option_use_file_extensions = false;
 
+int option_error_limit = 1;
+int option_seed        = 0;
+
+std::string option_directory;
+std::string option_map_name;
+std::string option_script_acs       = "SCRIPTS";
+std::string option_script_extradata = "EXTRADAT";
+
+bool &option_map_name_handled = option_map_name_handler.handled;
+bool &option_seed_handled = option_seed_handler.handled;
+
+// EOF
 

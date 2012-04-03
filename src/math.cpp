@@ -1,27 +1,25 @@
-/*
-    Copyright 2009, 2010 David Hill
-
-    This file is part of DH-dlc.
-
-    DH-dlc is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    DH-dlc is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with DH-dlc.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-/*
-	2010/02/14 - get_z_range is 0..max-1, not 0..max. Oops.
-	2010/02/14 - Made generating the seed independant of the size of long.
-	2010/06/24 - Added binary type RNGs.
-*/
+//-----------------------------------------------------------------------------
+//
+// Copyright(C) 2009-2012 David Hill
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see <http://www.gnu.org/licenses/>.
+//
+//-----------------------------------------------------------------------------
+//
+// Mathematics.
+//
+//-----------------------------------------------------------------------------
 
 #include "math.hpp"
 
@@ -57,7 +55,7 @@ real_t pi_make()
 	real_t a1, b1, t1, p1;
 
 	// index is halved each time because the precision doubles per iteration.
-	for (int index = option_precision + 2; index > 0; index /= 2)
+	for (int index = sizeof(real_t) * CHAR_BIT + 2; index > 0; index /= 2)
 	{
 		a1 = (a0 + b0) / real_t(2);
 		b1 = sqrt(real_t(a0 * b0));
@@ -74,11 +72,7 @@ real_t pi_make()
 }
 const real_t& pi()
 {
-	static real_t current_pi        = pi_make();
-	static int    current_precision = option_precision;
-
-	if (current_precision != option_precision)
-		current_pi = pi_make();
+   static real_t current_pi = pi_make();
 
 	return current_pi;
 }

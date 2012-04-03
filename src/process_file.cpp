@@ -50,6 +50,7 @@ void process_file(std::string const & filename)
 
 	std::ifstream sourceFile(filename.c_str());
 
+   #if 0
 	if (!sourceFile)
 	{
 		for (size_t index = 0; index < option_include.size(); ++index)
@@ -68,6 +69,7 @@ void process_file(std::string const & filename)
 			return;
 		}
 	}
+   #endif
 
 	std::string idstring;
 	std::getline(sourceFile, idstring);

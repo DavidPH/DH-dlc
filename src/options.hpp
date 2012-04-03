@@ -1,167 +1,150 @@
-/*
-    Copyright 2009, 2010 David Hill
+//-----------------------------------------------------------------------------
+//
+// Copyright(C) 2009-2012 David Hill
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see <http://www.gnu.org/licenses/>.
+//
+//-----------------------------------------------------------------------------
+//
+// Global program options.
+//
+//-----------------------------------------------------------------------------
 
-    This file is part of DH-dlc.
+#ifndef HPP_options_
+#define HPP_options_
 
-    DH-dlc is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    DH-dlc is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with DH-dlc.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-/*
-	2010/02/03 - Update for new process_options.h.
-	2010/02/04 - Added command_name_deletevolatile().
-	2010/02/06 - Added --debug-token option for debugging.
-	2010/02/06 - Added command_name_return().
-	2010/02/15 - Added command_name_break(), command_name_continue(),
-		command_name_for(), and command_name_do().
-	2010/06/24 - Added several type_*().
-	2010/06/24 - Added option_lib_udmf_strict.
-*/
-
-#ifndef OPTIONS_H
-#define OPTIONS_H
-
-#include "../common/process_options.h"
+#include <string>
 
 
-
-PROCESS_OPTION_EXTERN_bool(debug);
-PROCESS_OPTION_EXTERN_bool(debug_dump);
-PROCESS_OPTION_EXTERN_bool(debug_seed);
-PROCESS_OPTION_EXTERN_bool(debug_time);
-PROCESS_OPTION_EXTERN_bool(debug_token);
-
-PROCESS_OPTION_EXTERN_bool(case_sensitive);
-PROCESS_OPTION_EXTERN_bool(case_upper);
-
-PROCESS_OPTION_EXTERN_bool(force_default_types);
-
-PROCESS_OPTION_EXTERN_bool(lib_std);
-PROCESS_OPTION_EXTERN_bool(lib_udmf);
-PROCESS_OPTION_EXTERN_bool(lib_udmf_strict);
-PROCESS_OPTION_EXTERN_bool(lib_usdf);
-PROCESS_OPTION_EXTERN_bool(lib_usdf_strict);
-
-PROCESS_OPTION_EXTERN_bool(output_any);
-PROCESS_OPTION_EXTERN_bool(output_doom);
-PROCESS_OPTION_EXTERN_bool(output_extradata);
-PROCESS_OPTION_EXTERN_bool(output_heretic);
-PROCESS_OPTION_EXTERN_bool(output_hexen);
-PROCESS_OPTION_EXTERN_bool(output_strife);
-PROCESS_OPTION_EXTERN_bool(output_udmf);
-PROCESS_OPTION_EXTERN_bool(output_usdf);
-
-PROCESS_OPTION_EXTERN_bool(strict_strings);
-PROCESS_OPTION_EXTERN_bool(strict_types);
-
-PROCESS_OPTION_EXTERN_bool(use_file_extensions);
-
-PROCESS_OPTION_EXTERN_int(error_limit);
-PROCESS_OPTION_EXTERN_int(precision);
-PROCESS_OPTION_EXTERN_int(seed);
-
-PROCESS_OPTION_EXTERN_string(directory);
-PROCESS_OPTION_EXTERN_string(map_name);
-PROCESS_OPTION_EXTERN_string(script_acs);
-PROCESS_OPTION_EXTERN_string(script_extradata);
-
-PROCESS_OPTION_EXTERN_string_multi(include);
-
-
-
-PROCESS_OPTION_LONG_EXTERN;
-PROCESS_OPTION_SHORT_EXTERN;
-
-PROCESS_OPTION_ARG_EXTERN;
-
-PROCESS_OPTION_EXTERN;
-
-
-
-void set_precision();
-void set_precision(int);
-
-
+//----------------------------------------------------------------------------|
+// Macros                                                                     |
+//
 
 #define COUNT_INFO (void) 0
 #define COUNT_DEBUG (void) 0
 #define COUNT_WARNING (void) 0
-#define COUNT_ERROR					\
-if (option_error_limit && --option_error_limit == 0)	\
-{							\
-	std::cerr << "error limit reached\n";		\
-	exit(1);					\
-}							\
+#define COUNT_ERROR                                  \
+if (option_error_limit && --option_error_limit == 0) \
+{                                                    \
+     std::cerr << "error limit reached\n";           \
+     exit(1);                                        \
+}                                                    \
 else (void) 0
 
-#define PRINT_INFO(MSG)	\
+#define PRINT_INFO(MSG) \
 std::cerr << MSG
 
-#define PRINT_DEBUG(MSG)		\
-if (option_debug)			\
-	std::cerr << "debug:" << MSG;	\
+#define PRINT_DEBUG(MSG)           \
+if (option_debug)                  \
+     std::cerr << "debug:" << MSG; \
 else (void) 0
 
-#define PRINT_WARNING(MSG)	\
+#define PRINT_WARNING(MSG) \
 std::cerr << "warning:" << MSG
 
-#define PRINT_ERROR(MSG)	\
+#define PRINT_ERROR(MSG) \
 std::cerr << "error:" << MSG
 
-#define PRINT_AND_COUNT_INFO(MSG)	\
-if (true)				\
-{					\
-	PRINT_INFO(MSG);		\
-	COUNT_INFO;			\
-}					\
+#define PRINT_AND_COUNT_INFO(MSG) \
+if (true)                         \
+{                                 \
+     PRINT_INFO(MSG);             \
+     COUNT_INFO;                  \
+}                                 \
 else (void) 0
 
-#define PRINT_AND_COUNT_DEBUG(MSG)	\
-if (option_debug)			\
-{					\
-	PRINT_DEBUG(MSG);		\
-	COUNT_DEBUG;			\
-}					\
+#define PRINT_AND_COUNT_DEBUG(MSG) \
+if (option_debug)                  \
+{                                  \
+     PRINT_DEBUG(MSG);             \
+     COUNT_DEBUG;                  \
+}                                  \
 else (void) 0
 
-#define PRINT_AND_COUNT_WARNING(MSG)	\
-if (true)				\
-{					\
-	PRINT_WARNING(MSG);		\
-	COUNT_WARNING;			\
-}					\
+#define PRINT_AND_COUNT_WARNING(MSG) \
+if (true)                            \
+{                                    \
+     PRINT_WARNING(MSG);             \
+     COUNT_WARNING;                  \
+}                                    \
 else (void) 0
 
-#define PRINT_AND_COUNT_ERROR(MSG)	\
-if (true)				\
-{					\
-	PRINT_ERROR(MSG);		\
-	COUNT_ERROR;			\
-}					\
+#define PRINT_AND_COUNT_ERROR(MSG) \
+if (true)                          \
+{                                  \
+     PRINT_ERROR(MSG);             \
+     COUNT_ERROR;                  \
+}                                  \
 else (void) 0
 
 
+//----------------------------------------------------------------------------|
+// Global Variables                                                           |
+//
 
-/*
-	These functions make it so I don't have to worry so much about the case
-	sensitivity issue.
-*/
+extern bool option_debug;
+extern bool option_debug_dump;
+extern bool option_debug_seed;
+extern bool option_debug_time;
+extern bool option_debug_token;
 
-#define NAME_FUNC(TYPE, NAME, STR_TRUE, STR_UPPER, STR_LOWER)	\
-inline const char* TYPE##_name_##NAME()				\
-{								\
-	return option_case_sensitive ? STR_TRUE :		\
-		(option_case_upper ? STR_UPPER : STR_LOWER);	\
+extern bool option_case_sensitive;
+extern bool option_case_upper;
+
+extern bool option_force_default_types;
+
+extern bool option_lib_std;
+extern bool option_lib_udmf;
+extern bool option_lib_udmf_strict;
+extern bool option_lib_usdf;
+extern bool option_lib_usdf_strict;
+
+extern bool option_output_any;
+extern bool option_output_doom;
+extern bool option_output_extradata;
+extern bool option_output_heretic;
+extern bool option_output_hexen;
+extern bool option_output_strife;
+extern bool option_output_udmf;
+extern bool option_output_usdf;
+
+extern bool option_strict_strings;
+extern bool option_strict_types;
+
+extern bool option_use_file_extensions;
+
+extern int option_error_limit;
+extern int option_seed;
+
+extern std::string option_directory;
+extern std::string option_map_name;
+extern std::string option_script_acs;
+extern std::string option_script_extradata;
+
+extern bool &option_map_name_handled;
+extern bool &option_seed_handled;
+
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+#define NAME_FUNC(TYPE, NAME, STR_TRUE, STR_UPPER, STR_LOWER) \
+inline const char* TYPE##_name_##NAME()                       \
+{                                                             \
+   return option_case_sensitive ? STR_TRUE :                  \
+      (option_case_upper ? STR_UPPER : STR_LOWER);            \
 }
 
 // command names
@@ -305,9 +288,5 @@ NAME_FUNC(misc, true,   "true",   "TRUE",   "true")
 
 #undef NAME_FUNC
 
-
-
-#endif /* OPTIONS_H */
-
-
+#endif//HPP_options_
 

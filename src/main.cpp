@@ -25,6 +25,7 @@
 
 #include "global_object.hpp"
 #include "math.hpp"
+#include "option.hpp"
 #include "options.hpp"
 #include "process_file.hpp"
 #include "process_stream.hpp"
@@ -39,7 +40,6 @@
 
 #include "../common/foreach.hpp"
 #include "../common/IO.hpp"
-#include "../common/process_options.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -177,69 +177,47 @@ void version()
 
 int main(int argc, char** argv)
 {
+   char const *const *argit;
+   char const *const *argend;
+
 	clock_t clock_start(clock());
 	clock_t clock_total(0);
 
-	PROCESS_OPTIONS();
+   option::help_program = argv[0];
 
-	if (option_arg.size() == 0)
-	{
-		usage();
+   if (argc == 1)
+   {
+      option::print_help(stderr);
+      return 0;
+   }
 
-		return 0;
-	}
+   option::process_options(argc-1, argv+1, option::OPTF_KEEPA);
+   if (option_directory.empty() && option::option_args::arg_count)
+   {
+      option_directory =
+         option::option_args::arg_vector[--option::option_args::arg_count];
+   }
 
-	if (option_arg.size() == 1 && option_arg[0] == "-")
-	{
-		if (option_error_limit_default) option_error_limit = 0;
-		if (option_output_any_default)  option_output_any  = false;
+   if (!option::option_args::arg_count)
+   {
+      option::print_help(stderr);
+      return 1;
+   }
 
-		if (option_directory_default)
-		{
-			option_directory_default = false;
-			option_directory         = "./";
-		}
-	}
+   argend = option::option_args::arg_vector + option::option_args::arg_count;
 
-
-
-	set_precision();
-
-	if (option_directory_default)
-	{
-		if (option_arg.size() == 1)
-		{
-			if (option_arg[0].size() >= 4 && option_arg[0].compare(option_arg[0].size()-4, 4, ".ddl", 4) == 0)
-			{
-				option_directory = option_arg[0].substr(0, option_arg[0].size()-4);
-			}
-			if (option_arg[0].size() >= 5 && option_arg[0].compare(option_arg[0].size()-5, 5, ".dhlx", 5) == 0)
-			{
-				option_directory = option_arg[0].substr(0, option_arg[0].size()-5);
-			}
-			else
-			{
-				option_directory = option_arg[0];
-				option_arg[0] += ".ddl";
-			}
-		}
-		else
-		{
-			option_directory = option_arg[0];
-			option_arg[0].clear();
-		}
-	}
 
 	if (!option_directory.empty() && option_directory[option_directory.size()-1] != PATHSEP)
 		option_directory += PATHSEP;
 
-	if (option_map_name_default)
+   if (!option_map_name_handled)
 	{
 		size_t lastSep = option_directory.find_last_of(PATHSEP, option_directory.size()-2);
 
 		option_map_name = option_directory.substr(lastSep+1, (option_directory.size() - lastSep) - 2);
 	}
 
+   #if 0
 	if (getenv("DH_DLC_PATH"))
 	{
 		char* token = strtok(getenv("DH_DLC_PATH"), ":");
@@ -252,14 +230,17 @@ int main(int argc, char** argv)
 				option_include.push_back(token);
 		}
 	}
+   #endif
 
+   #if 0
 	FOREACH_T(std::vector<std::string>, it, option_include)
 	{
 		if (!it->empty() && (*it)[it->size()-1] != PATHSEP)
 			*it += PATHSEP;
 	}
+   #endif
 
-	if (option_seed_default)
+   if (!option_seed_handled)
 	{
 		std::ifstream ifs("/dev/urandom");
 
@@ -271,10 +252,10 @@ int main(int argc, char** argv)
 				option_seed += ifs.get();
 			}
 
-			option_seed_default = false;
+         option_seed_handled = true;
 		}
 	}
-	if (option_seed_default)
+   if (!option_seed_handled)
 	{
 		std::ifstream ifs("/dev/random");
 
@@ -286,14 +267,14 @@ int main(int argc, char** argv)
 				option_seed += ifs.get();
 			}
 
-			option_seed_default = false;
+         option_seed_handled = true;
 		}
 	}
-	if (option_seed_default)
+   if (!option_seed_handled)
 	{
 		option_seed = time(NULL);
 
-		option_seed_default = false;
+      option_seed_handled = true;
 	}
 
 
@@ -333,21 +314,24 @@ int main(int argc, char** argv)
 	else if (option_lib_usdf)
 		process_file("lib-usdf.ddl");
 
-	FOREACH_T(std::vector<std::string>, it, option_arg)
+   for (argit = option::option_args::arg_vector; argit != argend; ++argit)
 	{
-		size_t lastSep = it->find_last_of(PATHSEP);
+      std::string arg = *argit;
+      size_t lastSep = arg.find_last_of(PATHSEP);
 
+      #if 0
 		// This ensures that files can always be included from the same directory.
 		if (lastSep != std::string::npos)
 			option_include.push_back(it->substr(0, lastSep+1));
+      #endif
 
-		if (*it == "-")
+      if (arg == "-")
 		{
          SourceStream ss(std::cin, "<stdin>", SourceStream::ST_DDL);
 			process_stream<SourceTokenDDL>(ss, "stdin");
 		}
 		else
-			process_file(*it);
+         process_file(arg);
 	}
 
 
